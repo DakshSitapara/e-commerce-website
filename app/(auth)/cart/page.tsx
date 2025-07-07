@@ -4,17 +4,46 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
+import { Heart, ShoppingBagIcon, ShoppingCart } from "lucide-react";
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import toast from "react-hot-toast";
+import {useWishlistStore} from "@/lib/wishlistStore";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCartStore();
+  const { wishlist } = useWishlistStore();
   const router = useRouter();
 
+      if (cart.length === 0) {
+        return (
+          <div className="items-center px-4 py-2">
+            Your wishlist is empty.
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 mt-4"
+              onClick={() => router.push("/shop")}
+              aria-label="Shop"
+            >
+              <ShoppingBagIcon className="h-5 w-5" />
+              Shop
+            </Button>
+            {wishlist.length > 0 && (
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 mt-4"
+                onClick={() => router.push("/wishlist")}
+                aria-label="wishlist"
+              >
+                <Heart className="h-5 w-5" />
+                wishlist ({wishlist.length})
+              </Button>
+            )}
+          </div>
+        );
+      }
   return (
     <div className="px-4 py-2">
       <div className="flex justify-between mb-4">
