@@ -6,11 +6,28 @@ import { useCartStore } from "@/lib/cartStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { ShoppingBagIcon } from "lucide-react";
 
 export default function CheckoutPage() {
     const router = useRouter();
     const cart = useCartStore((state) => state.cart);
 
+    if (cart.length === 0) {
+        return (
+            <div className="items-center px-4 py-2">
+                Your cart is empty.
+                <Button
+                    variant="outline"
+                    className="flex items-center gap-2 mt-4"
+                    onClick={() => router.push("/shop")}
+                    aria-label="Shop"
+                >
+                    <ShoppingBagIcon className="h-5 w-5" />
+                    Shop
+                </Button>
+            </div>
+        );
+    }
     return (
         <div className="flex flex-col items-center mx-auto max-w-md p-4">
             <h1 className="text-2xl font-bold mb-4">Thank you for your order!</h1>
