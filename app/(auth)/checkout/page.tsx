@@ -1,18 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ShoppingBagIcon } from "lucide-react";
+import { set } from "zod";
 
 export default function CheckoutPage() {
     const router = useRouter();
     const cart = useCartStore((state) => state.cart);
+    const [lastCart, setLastCart] = React.useState<any[]>([]);
 
-    if (cart.length === 0) {
+    useEffect(() => {
+        const storedOrder = JSON.parse(localStorage.getItem("lastCart") || "[]");
+        setLastCart(storedOrder);
+    }, []);
+
+    const clearLastOrder = () => {
+        localStorage.removeItem("lastCart");
+        router.push("/shop")
+    };
+
+    if(lastCart.length === 0) {
         return (
             <div className="items-center px-4 py-2">
                 Your cart is empty.
@@ -26,8 +38,9 @@ export default function CheckoutPage() {
                     Shop
                 </Button>
             </div>
-        );
+        )
     }
+
     return (
         <div className="flex flex-col items-center mx-auto max-w-md p-4">
             <h1 className="text-2xl font-bold mb-4">Thank you for your order!</h1>
@@ -37,7 +50,7 @@ export default function CheckoutPage() {
                 </CardHeader>
                 <CardContent>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {cart.map((product, index) => (
+                        {lastCart.map((product, index) => (
                             <li key={index} className="flex flex-col items-center">
                                 <Image
                                     src={product.image}
@@ -56,12 +69,13 @@ export default function CheckoutPage() {
                 <CardFooter className="flex justify-between">
                     <p className="text-lg font-medium">
                         Total: ₹
-                        {cart.reduce((total, product) => total + product.price, 0)}
+                        {lastCart.reduce((total, product) => total + product.price, 0)}
                     </p>
-                    <Button onClick={() => {router.push("/shop"), useCartStore.getState().clearCart()}}>Continue Shopping</Button>
+                    <Button onClick={() => clearLastOrder()}>Continue Shopping</Button>
                 </CardFooter>
             </Card>
         </div>
     );
 }
+
 

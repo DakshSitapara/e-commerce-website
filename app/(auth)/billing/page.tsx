@@ -1,19 +1,24 @@
 "use client";
 
 import React from "react";
-import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import Image from "next/image";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingBagIcon } from "lucide-react";
 
 
 export default function BillingPage() {
     const router = useRouter();
-    const { cart } = useCartStore();
+    const { cart, clearCart } = useCartStore();
+
+const handlePlaceOrder = () => {
+    localStorage.setItem("lastCart", JSON.stringify(cart));
+    router.push("/checkout");
+    clearCart();
+  };
 
     if(cart.length === 0) {
         return (
@@ -65,7 +70,7 @@ export default function BillingPage() {
             )}
           </p>
           <Button onClick={() => router.push("/cart")}>Edit Cart</Button>
-          <Button onClick={() => router.push("/checkout")}>Checkout</Button>
+          <Button onClick={() => handlePlaceOrder()}>Checkout</Button>
         </CardFooter>
       </Card>
     </div>

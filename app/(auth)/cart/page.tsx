@@ -20,7 +20,7 @@ export default function CartPage() {
       if (cart.length === 0) {
         return (
           <div className="items-center px-4 py-2">
-            Your wishlist is empty.
+            Your cart is empty.
             <Button
               variant="outline"
               className="flex items-center gap-2 mt-4"
