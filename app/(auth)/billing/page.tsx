@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
