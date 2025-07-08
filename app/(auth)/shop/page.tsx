@@ -17,7 +17,7 @@ import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "@/compo
 
 export default function ShopPage() {
   const { addToCart ,cart } = useCartStore();
-  const { wishlist, addToWishlist } = useWishlistStore();
+  const { wishlist, addToWishlist , removeFromWishlist } = useWishlistStore();
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -170,10 +170,17 @@ export default function ShopPage() {
                   <Button
                     className="w-full"
                     onClick={() => {
+                      if (wishlist.some((item) => item.id === product.id)) {
+                        removeFromWishlist(product.id);
+                        addToCart(product);
+                         toast.success(`${product.name} added to cart!`);
+                        return;
+                      }
                       addToCart(product);
                       toast.success(`${product.name} added to cart!`);
                     }}
                     aria-label="Add to Cart"
+                    disabled={cart.some((item) => item.id === product.id)}
                   >
                     Add to Cart
                   </Button>
@@ -184,6 +191,7 @@ export default function ShopPage() {
                       toast.success(`${product.name} added to wishlist!`);
                     }}
                     aria-label="Add to Wishlist"
+                    disabled={wishlist.some((item) => item.id === product.id) || cart.some((item) => item.id === product.id)}
                   >
                     Add to Wishlist
                   </Button>

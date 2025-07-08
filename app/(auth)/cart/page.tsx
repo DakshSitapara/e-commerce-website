@@ -51,6 +51,15 @@ export default function CartPage() {
         <p className="text-sm text-gray-600">
           You have {cart.length} items in your cart.
         </p>
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={() => router.push("/wishlist")}
+          aria-label="wishlist"
+        >
+          <Heart className="h-5 w-5" />
+          wishlist ({wishlist.length})
+        </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cart.map((product) => (
@@ -85,15 +94,29 @@ export default function CartPage() {
                 className="w-32 h-32 object-cover rounded-lg"
               />
             </CardContent>
-            <CardFooter className="absolute bottom-4 right-0 px-2">
-              <Button onClick={() => {removeFromCart(product.id),toast.success(` ${product.name} Removed from cart!`);}}>Remove</Button>
+            <CardFooter className="flex flex-col gap-2 absolute bottom-4 right-0 px-2">
+              <p className="text-sm text-gray-600">₹{product.price}</p>
+              <Button
+                onClick={() => {
+                  removeFromCart(product.id),
+                    toast.success(` ${product.name} Removed from cart!`);
+                }}
+              >
+                Remove
+              </Button>
             </CardFooter>
           </Card>
         ))}
       </div>
       <div className="flex flex-row justify-end gap-4 mt-4">
         <Button onClick={() => router.push("/shop")}>Continue Shopping</Button>
-        <Button onClick={() => {clearCart(),toast.success(`Cart cleared!`);}}>Clear Cart</Button>
+        <Button
+          onClick={() => {
+            clearCart(), toast.success(`Cart cleared!`);
+          }}
+        >
+          Clear Cart
+        </Button>
         <Button onClick={() => router.push("/billing")}>Billing</Button>
       </div>
     </div>

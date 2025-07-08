@@ -53,15 +53,15 @@ export default function CartPage() {
         <p className="text-sm text-gray-600">
           You have {wishlist.length} items in your wishlist.
         </p>
-         <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={() => router.push("/cart")}
-            aria-label="Cart"
-            >
-            <ShoppingCart className="h-5 w-5" />
-            Cart ({cart.length})
-            </Button>
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={() => router.push("/cart")}
+          aria-label="Cart"
+        >
+          <ShoppingCart className="h-5 w-5" />
+          Cart ({cart.length})
+        </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {wishlist.map((product) => (
@@ -96,18 +96,38 @@ export default function CartPage() {
                 className="w-32 h-32 object-cover rounded-lg"
               />
             </CardContent>
-            <CardFooter className="absolute bottom-4 right-0 px-2 gap-2">
-              <Button onClick={() => {addToCart(product),
-                removeFromWishlist(product.id),
-                toast.success(` ${product.name} Added to cart!`);} }>Add to Cart</Button>
-              <Button onClick={() =>{ removeFromWishlist(product.id),toast.success(` ${product.name} Removed from wishlist!`);}}>Remove</Button>
+            <CardFooter className="flex flex-col absolute bottom-4 right-0 px-2 gap-2">
+              <p className="text-sm text-gray-600">₹{product.price}</p>
+              <Button
+                onClick={() => {
+                  addToCart(product),
+                    removeFromWishlist(product.id),
+                    toast.success(` ${product.name} Added to cart!`);
+                }}
+              >
+                Add to Cart
+              </Button>
+              <Button
+                onClick={() => {
+                  removeFromWishlist(product.id),
+                    toast.success(` ${product.name} Removed from wishlist!`);
+                }}
+              >
+                Remove
+              </Button>
             </CardFooter>
           </Card>
         ))}
       </div>
       <div className="flex flex-row justify-end gap-4 mt-4">
         <Button onClick={() => router.push("/shop")}>Continue Shopping</Button>
-        <Button onClick={() =>{ clearWishlist(), toast.success("Wishlist cleared!");}}>Clear Wishlist</Button>
+        <Button
+          onClick={() => {
+            clearWishlist(), toast.success("Wishlist cleared!");
+          }}
+        >
+          Clear Wishlist
+        </Button>
       </div>
     </div>
   );
