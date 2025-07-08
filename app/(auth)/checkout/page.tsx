@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { ShoppingBagIcon } from "lucide-react";
-import { set } from "zod";
+import { CreditCardIcon, ShoppingBagIcon } from "lucide-react";
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -23,6 +22,23 @@ export default function CheckoutPage() {
         localStorage.removeItem("lastCart");
         router.push("/shop")
     };
+
+    if(cart.length > 0) {
+        return (
+            <div className="items-center px-4 py-2">
+            complet your order first.
+            <Button
+                variant="outline"
+                className="flex items-center gap-2 mt-4"
+                onClick={() => router.push("/billing")}
+                aria-label="Shop"
+            >
+                <CreditCardIcon className="h-5 w-5" />
+                Billing
+            </Button>
+            </div>
+        );
+    }
 
     if(lastCart.length === 0) {
         return (

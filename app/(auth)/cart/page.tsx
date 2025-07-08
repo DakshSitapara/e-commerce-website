@@ -13,9 +13,14 @@ import toast from "react-hot-toast";
 import {useWishlistStore} from "@/lib/wishlistStore";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart } = useCartStore();
+  const { cart, removeFromCart, clearCart, updateQuantity } = useCartStore();
+  const [quantity, setQuantity] = React.useState(1);
   const { wishlist } = useWishlistStore();
   const router = useRouter();
+
+  const handleQuantityChange = (id: number, quantity: number) => {
+    updateQuantity(id, quantity);
+  };
 
       if (cart.length === 0) {
         return (

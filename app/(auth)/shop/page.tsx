@@ -141,7 +141,6 @@ export default function ShopPage() {
                       alt={product.name}
                       width={500}
                       height={500}
-                      loader={() => product.image}
                       className="h-80 w-100 transition-transform group-hover:scale-105"
                     />
                   </div>
@@ -173,7 +172,7 @@ export default function ShopPage() {
                       if (wishlist.some((item) => item.id === product.id)) {
                         removeFromWishlist(product.id);
                         addToCart(product);
-                         toast.success(`${product.name} added to cart!`);
+                        toast.success(`${product.name} added to cart!`);
                         return;
                       }
                       addToCart(product);

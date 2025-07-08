@@ -14,6 +14,7 @@ export type Product = {
 interface CartState {
     cart: Product[]
     addToCart: (product: Product) => void
+    updateQuantity: (id: number, quantity: number) => void
     removeFromCart: (id: number) => void
     clearCart: () => void
 }
@@ -23,6 +24,7 @@ export const useCartStore = create<CartState>()(
         (set) => ({
             cart: [],
             addToCart: (product) => set((state) => ({ cart: [...state.cart, product] })),
+            updateQuantity: (id, quantity) => set((state) => ({ cart: state.cart.map((item) => item.id === id ? { ...item, quantity } : item) })),
             removeFromCart: (id) => set((state) => ({ cart: state.cart.filter((item) => item.id !== id) })),
             clearCart: () => set({ cart: [] }),
         }),

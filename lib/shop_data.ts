@@ -2,7 +2,7 @@ type Category = "Men" | "Women" | "Kids";
 type Type = "T-Shirt" | "Shirt" | "Jeans" | "Other";
 
 export const Category = ["Men", "Women", "Kids"];
-export const Type = ["T-Shirt", "Shirt", "Jeans", "Other"];
+export const Type = ["T-Shirt", "Shirt", "Jeans"];
 
 export interface Product {
   id: number;
