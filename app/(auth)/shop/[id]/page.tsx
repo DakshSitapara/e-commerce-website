@@ -12,7 +12,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isAdded, setIsAdded] = useState(false);
-  const id = params.id;
 
   if (!product) return <div>Product not found  <Button onClick={() => router.push(`/shop`)}>Go back</Button></div>;
 
@@ -22,3 +21,4 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+

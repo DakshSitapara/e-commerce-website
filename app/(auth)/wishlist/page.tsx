@@ -96,7 +96,7 @@ export default function CartPage() {
                 className="w-32 h-32 object-cover rounded-lg"
               />
             </CardContent>
-            <CardFooter className="absolute bottom-4 right-0 px-2">
+            <CardFooter className="absolute bottom-4 right-0 px-2 gap-2">
               <Button onClick={() => {addToCart(product),
                 removeFromWishlist(product.id),
                 toast.success(` ${product.name} Added to cart!`);} }>Add to Cart</Button>

@@ -4,22 +4,29 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, Star, Heart, Search } from "lucide-react";
-import { products, CategoryColor, TypeColor } from "@/lib/shop_data";
+import { ShoppingCart, User, Star, Heart, Search, RotateCw } from "lucide-react";
+import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {useCartStore} from "@/lib/cartStore";
 import {useWishlistStore} from "@/lib/wishlistStore";
 import {Input} from "@/components/ui/input";
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "@/components/ui/select";
+
 
 export default function ShopPage() {
   const { addToCart ,cart } = useCartStore();
   const { wishlist, addToWishlist } = useWishlistStore();
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [type, setType] = useState("all");
+  const [price, setPrice] = useState("all");
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
+    product.name.toLowerCase().includes(search.toLowerCase()) &&
+    (category === "all" || product.category === category) &&
+    (type === "all" || product.type === type)
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +77,56 @@ export default function ShopPage() {
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
+
+              <div className="flex flex-row gap-4 items-center mb-4">
+                <h2>Filtere : </h2>
+                <Select
+                  value={category}
+                  onValueChange={setCategory}
+                >
+                  <SelectTrigger className="flex items-center space-x-2">
+                    <span className="text-sm font-medium">Category:</span>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    {Object.values(Category).map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={type}
+                  onValueChange={setType}
+                >
+                  <SelectTrigger className="flex items-center space-x-2">
+                    <span className="text-sm font-medium">Type:</span>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    {Object.values(Type).map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="ghost"
+                  className="flex items-center"
+                  onClick={() => {
+                    setSearch("");
+                    setCategory("all");
+                    setType("all");
+                  }}
+                >
+                  <RotateCw className="h-5 w-5"/>
+                </Button>
+              </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (

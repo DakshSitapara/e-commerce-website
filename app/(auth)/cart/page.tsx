@@ -94,6 +94,7 @@ export default function CartPage() {
       <div className="flex flex-row justify-end gap-4 mt-4">
         <Button onClick={() => router.push("/shop")}>Continue Shopping</Button>
         <Button onClick={() => {clearCart(),toast.success(`Cart cleared!`);}}>Clear Cart</Button>
+        <Button onClick={() => router.push("/billing")}>Billing</Button>
       </div>
     </div>
   );
