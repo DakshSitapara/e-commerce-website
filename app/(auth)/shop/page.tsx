@@ -177,6 +177,7 @@ export default function ShopPage() {
                         : "Add to wishlist"
                     }
                       className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
+                      size={"icon"}
                       onClick={() => {
                         if (wishlist.some((item) => item.id === product.id)) {
                           removeFromWishlist(product.id);
@@ -222,8 +223,6 @@ export default function ShopPage() {
                   variant={
                     cart.some((item) => item.id === product.id)
                       ? "destructive"
-                      : wishlist.some((item) => item.id === product.id)
-                      ? "outline"
                       : "outline"
                   }
                     className="w-full"
