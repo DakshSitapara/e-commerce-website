@@ -1,31 +1,92 @@
 "use client";
 
-import React , { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, ShoppingBagIcon, Heart, ShoppingCart } from "lucide-react";
 import { logout } from "@/lib/auth";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
 
 export default function AccountPage() {
- 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (error) {
-      console.error("Error logging out:", error);
+  const router = useRouter();
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const cart = useCartStore((state) => state.cart);
+  const wishlist = useWishlistStore((state) => state.wishlist);
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loginUser") || "null");
+    if (loggedInUser) {
+      setUser(loggedInUser);
     }
-  };
-  const [address, setAddress] = useState<string>()
-    const [password, setPassword] = useState<string>()
-    const router = useRouter();
+  }, []);
+
+  const handleLogout = () => { logout(); router.push("/login");};
+
   return (
     <div className="flex flex-col items-center mx-auto max-w-md p-4">
-      <h1 className="text-2xl font-bold mb-4">Account</h1>
-      <Button onClick={() => router.push("/shop")}>Shop</Button>
-      <Button variant={"destructive"} onClick={handleLogout}>
-        <LogOut /> Logout
-      </Button>
+      <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
+        <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Account
+            </h1>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button variant="outline" onClick={() => router.push("/shop")}>
+                <ShoppingBagIcon size={20} />
+                Shop
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => router.push("/wishlist")}
+                aria-label="Wishlist"
+              >
+                <Heart size={20} />
+                <span className="hidden sm:inline">
+                  Wishlist ({wishlist.length})
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => router.push("/cart")}
+                aria-label="Cart"
+              >
+                <ShoppingCart size={20} />
+                <span className="hidden sm:inline">Cart ({cart.length})</span>
+              </Button>
+              <Button variant="destructive" onClick={handleLogout}>
+                <LogOut size={20} />
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {user && (
+        <div className="w-full mt-15">
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Name: {user.name}</p>
+              <p>Email: {user.email}</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
     </div>
   );
 }
+

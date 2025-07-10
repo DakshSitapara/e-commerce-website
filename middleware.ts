@@ -2,18 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.get('isAuthenticated')?.value === 'true';
-  const { pathname } = request.nextUrl;
+  const privateRoutes = ["/shop", "/account", "/cart", "/checkout", "/billing"];
+  const isAuthenticated = request.cookies.get('authenticated')?.value === 'true';
+  const pathname = request.nextUrl.pathname;
 
-  if (isAuthenticated && (pathname === '/login' || pathname === '/register')) {
-    return NextResponse.redirect(new URL('/shop', request.url));
+  if (privateRoutes.includes(pathname) && !isAuthenticated) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
+  if(!privateRoutes.includes(pathname) && isAuthenticated) {
+    return NextResponse.redirect(new URL("/shop", request.url));
+  }
+  return NextResponse.next();
 }
-export const config = {
-  matcher: [
-    '/login',
-    '/register',
-    '/:path*',
-  ],
-};
 
+export const config = {
+  matcher: ['/shop', '/account', '/cart', '/checkout', '/billing', '/login', '/register'],
+};

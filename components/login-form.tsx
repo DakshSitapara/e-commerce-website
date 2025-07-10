@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { login, isAuthenticated } from "@/lib/auth"
+import { login } from "@/lib/auth"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -34,9 +34,7 @@ export function LoginForm({
       toast.error("Login failed");
     }
   }
- if (isAuthenticated()) {
-    router.push("/shop")
-  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
