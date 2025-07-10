@@ -1,7 +1,8 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,13 +14,29 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import * as z from "zod"
-
+import { register, isAuthenticated } from "@/lib/auth"
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useRouter()
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    if (register(name, email, password)) {
+      router.push("/shop")
+    } else {
+      alert("Email already exists")
+    }
+  }
+
+  if (isAuthenticated()) {
+    router.push("/shop")
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,7 +47,7 @@ export function RegisterForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
@@ -39,6 +56,8 @@ export function RegisterForm({
                   type="text"
                   placeholder="Enter your name"
                   required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div className="grid gap-3">
@@ -48,13 +67,21 @@ export function RegisterForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
@@ -72,5 +99,6 @@ export function RegisterForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
+
