@@ -1,34 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOut, ShoppingBagIcon, Heart, ShoppingCart } from "lucide-react";
-import { logout } from "@/lib/auth";
+import { useUserStore } from "@/lib/userStore";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCartStore } from "@/lib/cartStore";
-import { useWishlistStore } from "@/lib/wishlistStore";
 
 export default function AccountPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-  const cart = useCartStore((state) => state.cart);
-  const wishlist = useWishlistStore((state) => state.wishlist);
+  const currentUser = useUserStore((state) => state.currentUser);
+  const logout = useUserStore((state) => state.logout);
 
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loginUser") || "null");
-    if (loggedInUser) {
-      setUser(loggedInUser);
-    }
-  }, []);
-
-  const handleLogout = () => { logout(); router.push("/login");};
+  const handleLogout = () => { logout(); router.push("/login"); };
 
   return (
     <div className="flex flex-col items-center mx-auto max-w-md p-4">
@@ -52,7 +41,7 @@ export default function AccountPage() {
               >
                 <Heart size={20} />
                 <span className="hidden sm:inline">
-                  Wishlist ({wishlist.length})
+                  Wishlist ({currentUser?.wishlist.length ?? 0})
                 </span>
               </Button>
               <Button
@@ -63,7 +52,7 @@ export default function AccountPage() {
                 aria-label="Cart"
               >
                 <ShoppingCart size={20} />
-                <span className="hidden sm:inline">Cart ({cart.length})</span>
+                <span className="hidden sm:inline">Cart ({currentUser?.cart.length ?? 0})</span>
               </Button>
               <Button title="Logout" variant="destructive" onClick={handleLogout}>
                 <LogOut size={20} />
@@ -74,20 +63,19 @@ export default function AccountPage() {
         </div>
       </nav>
 
-      {user && (
+      {currentUser && (
         <div className="w-full mt-15">
           <Card>
             <CardHeader>
               <CardTitle>Account Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Name: {user.name}</p>
-              <p>Email: {user.email}</p>
+              <p>Name: {currentUser.name}</p>
+              <p>Email: {currentUser.email}</p>
             </CardContent>
           </Card>
         </div>
       )}
-
     </div>
   );
 }

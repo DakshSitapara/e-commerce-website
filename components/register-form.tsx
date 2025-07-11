@@ -1,38 +1,33 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import React from "react"
-import { useState } from "react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader, 
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { register } from "@/lib/auth"
+import { useState } from "react";
+import { useUserStore } from "@/lib/userStore";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const router = useRouter()
+}: React.ComponentPropsWithoutRef<"div">) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { register } = useUserStore();
+  const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    if (register(name, email, password)) {
-      router.push("/shop")
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const success = register(name, email, password);
+    if (success) {
+      router.push("/shop");
     } else {
-      alert("Email already exists")
+      alert("Email already exists");
     }
-  }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

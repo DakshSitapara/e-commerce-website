@@ -9,13 +9,15 @@ import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
-import { useWishlistStore } from "@/lib/wishlistStore";
+import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-export default function CartPage() {
-    const { cart, addToCart } = useCartStore();
-    const { wishlist, removeFromWishlist, clearWishlist } = useWishlistStore();
+export default function WishlistPage() {
+    const { removeFromWishlist, clearWishlist , currentUser } = useUserStore();
+    const wishlist = currentUser?.wishlist ?? [];
+    const cart = currentUser?.cart ?? [];
+    const { addToCart } = useCartStore();
   const router = useRouter();
 
   return (
@@ -51,7 +53,7 @@ export default function CartPage() {
                       variant="outline"
                       onClick={() => {
                         clearWishlist();
-                        toast.success(`Cart cleared!`);
+                        toast.success(`Wishlist cleared!`);
                       }}
                       aria-label="Clear Wishlist"
                     >
@@ -117,6 +119,7 @@ export default function CartPage() {
                   variant="outline"
                   onClick={() => {
                     addToCart(product);
+                    removeFromWishlist(product.id);
                     toast.success(`${product.name} Added to cart!`);
                   }}
                   className="px-4 py-2 text-sm font-medium text-gray-900 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
@@ -127,7 +130,7 @@ export default function CartPage() {
                   variant="outline"
                   onClick={() => {
                     removeFromWishlist(product.id);
-                    toast.success(`${product.name} Removed from cart!`);
+                    toast.success(`${product.name} Removed from wishlist!`);
                   }}
                   className="px-4 py-2 text-sm font-medium text-gray-900 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
                 >
@@ -142,5 +145,4 @@ export default function CartPage() {
     </div>
   );
 }
-
 

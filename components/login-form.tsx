@@ -1,7 +1,6 @@
-
 "use client"
 
-import * as React from "react"
+import { useUserStore } from "@/lib/userStore"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -14,7 +13,6 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { login } from "@/lib/auth"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -22,15 +20,17 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const userStore = useUserStore()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    if (login(email, password)) {
-      router.push("/shop")
-      toast.success("Login successful")
-    } else {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      await userStore.login(email, password);
+      router.push("/shop");
+      toast.success("Login successful");
+    } catch {
       toast.error("Login failed");
     }
   }

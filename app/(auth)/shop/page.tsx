@@ -28,8 +28,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useCartStore } from "@/lib/cartStore";
-import { useWishlistStore } from "@/lib/wishlistStore";
+import { useUserStore } from "@/lib/userStore";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -40,9 +39,13 @@ import {
 } from "@/components/ui/select";
 
 export default function ShopPage() {
-  const { addToCart, cart, updateQuantity, removeFromCart } = useCartStore();
-  const { wishlist, addToWishlist, removeFromWishlist } = useWishlistStore();
+
   const router = useRouter();
+  
+  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
+  const cart = currentUser?.cart ?? [];
+  const wishlist = currentUser?.wishlist ?? [];
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");

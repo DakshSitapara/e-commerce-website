@@ -1,22 +1,27 @@
 "use client";
 
-import React from "react";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/lib/userStore";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingBag, ShoppingBagIcon, RotateCw,CreditCardIcon } from "lucide-react";
+import { ShoppingBagIcon,  ShoppingBag, RotateCw, Heart, CreditCardIcon } from "lucide-react";
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCartStore } from "@/lib/cartStore";
+import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
-import { useWishlistStore } from "@/lib/wishlistStore";
-import Link from "next/link";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart } = useCartStore();
-  const { wishlist } = useWishlistStore();
   const router = useRouter();
+  const { removeFromCart, clearCart, currentUser } = useUserStore();
+  const wishlist = currentUser?.wishlist ?? [];
+  const cart = currentUser?.cart ?? [];
 
   return (
     <div className="flex flex-col items-center mx-auto max-w-md p-4">
