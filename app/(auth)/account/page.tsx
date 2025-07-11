@@ -39,11 +39,12 @@ export default function AccountPage() {
               Account
             </h1>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <Button variant="outline" onClick={() => router.push("/shop")}>
+              <Button title="Shop" variant="outline" onClick={() => router.push("/shop")}>
                 <ShoppingBagIcon size={20} />
-                Shop
+                <span className="hidden sm:inline">Shop</span>
               </Button>
               <Button
+                title="Wishlist"
                 variant="outline"
                 className="flex items-center gap-2"
                 onClick={() => router.push("/wishlist")}
@@ -55,6 +56,7 @@ export default function AccountPage() {
                 </span>
               </Button>
               <Button
+                title="Cart"
                 variant="outline"
                 className="flex items-center gap-2"
                 onClick={() => router.push("/cart")}
@@ -63,9 +65,9 @@ export default function AccountPage() {
                 <ShoppingCart size={20} />
                 <span className="hidden sm:inline">Cart ({cart.length})</span>
               </Button>
-              <Button variant="destructive" onClick={handleLogout}>
+              <Button title="Logout" variant="destructive" onClick={handleLogout}>
                 <LogOut size={20} />
-                Logout
+                <span className="hidden sm:inline">Logout</span>  
               </Button>
             </div>
           </div>

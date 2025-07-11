@@ -9,7 +9,7 @@ export const login = (email: string, password: string) => {
   const user = users.find((u: User) => u.email === email && u.password === password);
   if (user) {
     localStorage.setItem("loginUser", JSON.stringify(user));
-    document.cookie = `authenticated=true; path=/`;
+    document.cookie = `authenticated=true; Max-Age=Infinity; path=/`;
     return true;
   }
   return false;
@@ -21,7 +21,7 @@ export const register = (name: string, email: string, password: string) => {
   users.push({ name, email, password });
   localStorage.setItem("registeredusers", JSON.stringify(users));
   localStorage.setItem("loginUser", JSON.stringify(users[users.length - 1]));
-  document.cookie = `authenticated=true; path=/`;
+  document.cookie = `authenticated=true; Max-Age=Infinity; path=/`;
   return true;
 };
 
