@@ -41,15 +41,13 @@ import {
 export default function ShopPage() {
 
   const router = useRouter();
-  
+
   const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
-  const cart = currentUser?.cart ?? [];
-  const wishlist = currentUser?.wishlist ?? [];
+  const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
-  const [price, setPrice] = useState("all");
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(search.toLowerCase()) &&

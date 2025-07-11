@@ -11,18 +11,33 @@ export type Product = {
   type: string;
 };
 
+type ShippingDetails = {
+  address: string;
+  city: string;
+  country: string;
+  phoneNumber: string;
+};
+
 type User = {
   name: string;
   email: string;
   password: string;
   cart: Product[];
   wishlist: Product[];
+  shippingDetails: ShippingDetails | null;
 };
 
 interface UserState {
   currentUser: User | null;
   users: User[];
-  register: (name: string, email: string, password: string) => boolean;
+
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    shippingDetails?: ShippingDetails
+  ) => boolean;
+
   login: (email: string, password: string) => boolean;
   logout: () => void;
 
@@ -34,6 +49,10 @@ interface UserState {
   removeFromWishlist: (id: number) => void;
   clearWishlist: () => void;
 
+  addShippingDetails: (details: ShippingDetails) => void;
+  updateShippingDetails: (details: ShippingDetails) => void;
+
+  updateUser: (user: User) => void;
   isAuthenticated: () => boolean;
 }
 
@@ -43,15 +62,24 @@ export const useUserStore = create<UserState>()(
       currentUser: null,
       users: [],
 
-      register: (name, email, password) => {
+      register: (name, email, password, shippingDetails) => {
         const { users } = get();
         if (users.some((u) => u.email === email)) return false;
 
-        const newUser: User = { name, email, password, cart: [], wishlist: [] };
+        const newUser: User = {
+          name,
+          email,
+          password,
+          cart: [],
+          wishlist: [],
+          shippingDetails: shippingDetails || null,
+        };
+
         set({
           users: [...users, newUser],
           currentUser: newUser,
         });
+
         document.cookie = `authenticated=true; Max-Age=Infinity; path=/`;
         return true;
       },
@@ -74,7 +102,7 @@ export const useUserStore = create<UserState>()(
       isAuthenticated: () => {
         return !!get().currentUser;
       },
-        
+
       addToCart: (product) => {
         const { currentUser, users } = get();
         if (!currentUser) return;
@@ -151,10 +179,42 @@ export const useUserStore = create<UserState>()(
 
         set({ currentUser: updatedUser, users: updatedUsers });
       },
+
+      addShippingDetails: (details) => {
+        const { currentUser, users } = get();
+        if (!currentUser || currentUser.shippingDetails) return;
+
+        const updatedUser = { ...currentUser, shippingDetails: details };
+        const updatedUsers = users.map((u) =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      updateShippingDetails: (details) => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedUser = { ...currentUser, shippingDetails: details };
+        const updatedUsers = users.map((u) =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      updateUser: (user) => {
+        const { users } = get();
+        const updatedUsers = users.map((u) =>
+          u.email === user.email ? user : u
+        );
+
+        set({ currentUser: user, users: updatedUsers });
+      },
     }),
     {
       name: 'user-store',
     }
   )
 );
-

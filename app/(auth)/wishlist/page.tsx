@@ -8,17 +8,14 @@ import { ShoppingBagIcon, ShoppingCart, ShoppingBag, RotateCw  } from "lucide-re
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCartStore } from "@/lib/cartStore";
 import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
 export default function WishlistPage() {
-    const { removeFromWishlist, clearWishlist , currentUser } = useUserStore();
-    const wishlist = currentUser?.wishlist ?? [];
-    const cart = currentUser?.cart ?? [];
-    const { addToCart } = useCartStore();
-  const router = useRouter();
+    const { removeFromWishlist, clearWishlist , currentUser, addToCart } = useUserStore();
+    const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
+    const router = useRouter();
 
   return (
     <div className="flex flex-col items-center mx-auto max-w-md p-4">

@@ -20,8 +20,7 @@ import toast from "react-hot-toast";
 export default function CartPage() {
   const router = useRouter();
   const { removeFromCart, clearCart, currentUser } = useUserStore();
-  const wishlist = currentUser?.wishlist ?? [];
-  const cart = currentUser?.cart ?? [];
+  const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
 
   return (
     <div className="flex flex-col items-center mx-auto max-w-md p-4">
