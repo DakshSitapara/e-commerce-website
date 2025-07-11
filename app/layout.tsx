@@ -24,21 +24,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-     <html lang="en" suppressHydrationWarning = {true}>
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
         <Toaster
           position="top-center"
           toastOptions={{
-        style: {
-          background: "var(--toast-bg, #fff)",
-          color: "var(--toast-color, #222)",
-          borderRadius: "8px",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-          fontFamily: "var(--font-geist-sans), sans-serif",
-        },
-        className:
-          "dark:!bg-[#27272a] dark:!text-white !bg-white !text-black",
+            style: {
+              background: "var(--toast-bg, #fff)",
+              color: "var(--toast-color, #222)",
+              borderRadius: "8px",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+              fontFamily: "var(--font-geist-sans), sans-serif",
+            },
+            className:
+              "dark:!bg-[#27272a] dark:!text-white !bg-white !text-black",
           }}
         />
       </body>

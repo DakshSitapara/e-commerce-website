@@ -80,7 +80,7 @@ export const useUserStore = create<UserState>()(
           currentUser: newUser,
         });
 
-        document.cookie = `authenticated=true; Max-Age=Infinity; path=/`;
+        document.cookie = `authenticated=true;  Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
 
@@ -90,7 +90,7 @@ export const useUserStore = create<UserState>()(
         if (!user) return false;
 
         set({ currentUser: user });
-        document.cookie = `authenticated=true; Max-Age=Infinity; path=/`;
+        document.cookie = `authenticated=true; Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
 
