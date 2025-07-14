@@ -3,10 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCartStore } from "@/lib/cartStore";
+import { useUserStore } from "@/lib/userStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBagIcon, ShoppingCart, ShoppingBag } from "lucide-react";
+import { ShoppingBagIcon, ShoppingCart, ShoppingBag, Heart } from "lucide-react";
 import Link from "next/link";
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,11 @@ import { Badge } from "@/components/ui/badge";
 
 export default function BillingPage() {
     const router = useRouter();
-    const { cart, clearCart, removeFromCart } = useCartStore();
+    const currentUser = useUserStore((state) => state.currentUser);
+    const cart = currentUser?.cart || [];
+    const { clearCart } = useUserStore();
+    const shippingDetails = currentUser?.shippingDetails;
+
 
 const handlePlaceOrder = () => {
     localStorage.setItem("lastCart", JSON.stringify(cart));
@@ -52,7 +56,16 @@ const handlePlaceOrder = () => {
                         <ShoppingCart size={20} />
                         <span className="hidden sm:inline">Cart</span>
                       </Button>
-                      <Button onClick={handlePlaceOrder}>Place Order</Button> 
+                      <Button
+                        variant="outline"
+                        onClick={() => router.push("/wishlist")}
+                        className="flex items-center gap-2"
+                        aria-label="Wishlist"
+                      >
+                        <Heart size={20} />
+                        <span className="hidden sm:inline">Wishlist</span>
+                      </Button>
+                      <Button onClick={handlePlaceOrder} disabled={!shippingDetails}>Place Order</Button> 
                     </div>
                   )}
                 </div>
@@ -71,54 +84,69 @@ const handlePlaceOrder = () => {
           <p className="text-gray-600 mb-8">Add some products to your cart!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 w-full gap-4 mt-16">
-          {cart.map((product) => (
-            <Card
-              key={product.id}
-              className="relative mb-4 p-4 rounded-lg shadow-md bg-white"
-            >
-              <CardHeader className="flex justify-between">
-                <CardTitle className="text-lg font-semibold">
-                  {product.name}
-                </CardTitle>
-                <Badge
-                  className={`absolute top-2 right-2 ${CategoryColor(
-                    product.category
-                  )}`}
-                >
-                  {product.category}
-                </Badge>
-                <Badge
-                  className={`absolute top-10 right-2 ${TypeColor(
-                    product.type
-                  )}`}
-                >
-                  {product.type}
-                </Badge>
-              </CardHeader>
-              <CardContent className="flex justify-between">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={100}
-                  height={100}
-                  loader={() => product.image}
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-              </CardContent>
-              <CardFooter className="flex flex-col gap-2 absolute bottom-4 right-0 px-2">
-                <p className="text-sm text-gray-600">₹{product.price}</p>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      removeFromCart(product.id);
-                    }}
-                  >
-                    Remove
-                  </Button>
-             </CardFooter>
-            </Card>
-          ))}
+        <div className="grid grid-row gap-auto mt-16 space-y-4">
+          <Card className="relative p-4 rounded-lg shadow-md bg-white w-max">
+            <CardHeader>
+              <CardTitle>Cart</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              {cart.map((product) => (
+                <div key={product.id} className="flex justify-between">
+                  <div className="flex gap-4">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={100}
+                      height={100}
+                      loader={() => product.image}
+                      className="w-32 h-32 object-cover rounded-lg shadow-md"
+                    />
+                    <div className="flex flex-col">
+                      <h2 className="text-lg font-semibold">{product.name}</h2>
+                      <p className="text-sm text-gray-600">
+                        ₹{product.price}
+                      </p>
+                      <Badge
+                        className={`mt-2 ${CategoryColor(
+                          product.category
+                        )}`}
+                      >
+                        {product.category}
+                      </Badge>
+                      <Badge
+                        className={`mt-2 ${TypeColor(product.type)}`}
+                      >
+                        {product.type}
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardFooter>
+                    <Button
+                      className="mt-2 absolute right-4 bottom-4"
+                      variant="outline"
+                      onClick={() => router.push('/cart')}
+                    >
+                      Edit Cart
+                    </Button>
+                  </CardFooter>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          <Card className="p-4 rounded-lg shadow-md bg-white">
+            <CardHeader>
+              <CardTitle>Billing</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <h2 className="text-lg font-semibold">Total: ₹{cart.reduce((acc, product) => acc + product.price, 0)}</h2>
+              <h2><strong className="text-lg font-semibold">Payment Method:</strong> Card || Cash || UPI</h2>
+              <h2 className="text-lg font-semibold">Shipping Address</h2>
+              <p>{shippingDetails?.address}</p>
+              <p>{shippingDetails?.city}</p>
+              <p>{shippingDetails?.country}</p>
+              <Button onClick={() => router.push("/account")}>{shippingDetails ? "Edit Address" : "Add Address"}</Button>
+            </CardContent>
+          </Card>
         </div>
       )}
       </div>
