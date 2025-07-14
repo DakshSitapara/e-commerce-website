@@ -174,56 +174,76 @@ export default function AccountPage() {
 
   if (!currentUser) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
         <svg className="animate-spin h-8 w-8 text-gray-600" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
           <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
-        <span className="ml-2">Loading...</span>
+        <span className="ml-2 text-gray-600 text-lg">Loading...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center mx-auto max-w-xl p-4">
-      <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
+    <div className="min-h-screen flex flex-col items-center mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Account</h1>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Button variant="outline" onClick={() => router.push("/shop")} aria-label="Go to Shop">
-                <ShoppingBagIcon size={20} />
-                <span className="hidden sm:inline">Shop</span>
+            <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => router.push("/shop")}
+                aria-label="Go to Shop"
+              >
+                <ShoppingBagIcon size={20} className="mr-2" />
+                <span>Shop</span>
               </Button>
-              <Button variant="outline" onClick={() => router.push("/wishlist")} aria-label={`Wishlist with ${currentUser?.wishlist.length ?? 0} items`}>
-                <Heart size={20} />
-                <span className="hidden sm:inline">
-                  Wishlist ({currentUser?.wishlist.length ?? 0})
-                </span>
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => router.push("/wishlist")}
+                aria-label={`Wishlist with ${currentUser?.wishlist.length ?? 0} items`}
+              >
+                <Heart size={20} className="mr-2" />
+                <span>Wishlist ({currentUser?.wishlist.length ?? 0})</span>
               </Button>
-              <Button variant="outline" onClick={() => router.push("/cart")} aria-label={`Cart with ${currentUser?.cart.length ?? 0} items`}>
-                <ShoppingCart size={20} />
-                <span className="hidden sm:inline">
-                  Cart ({currentUser?.cart.length ?? 0})
-                </span>
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => router.push("/cart")}
+                aria-label={`Cart with ${currentUser?.cart.length ?? 0} items`}
+              >
+                <ShoppingCart size={20} className="mr-2" />
+                <span>Cart ({currentUser?.cart.length ?? 0})</span>
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" aria-label="Log out">
-                    <LogOut size={20} />
-                    <span className="hidden sm:inline">Logout</span>
+                  <Button
+                    variant="destructive"
+                    className="bg-red-600 hover:bg-red-700"
+                    aria-label="Log out"
+                  >
+                    <LogOut size={20} className="mr-2" />
+                    <span>Logout</span>
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You’ll be logged out, but your data will remain saved.
+                    <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                    <AlertDialogDescription className="text-gray-600">
+                      Are you sure you want to log out? Your data will remain saved.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleLogout}>
+                    <AlertDialogCancel className="border-gray-300 text-gray-700 hover:bg-gray-100">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-red-600 hover:bg-red-700"
+                      onClick={handleLogout}
+                    >
                       Logout
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -234,31 +254,40 @@ export default function AccountPage() {
         </div>
       </nav>
 
-      <div className="w-full mt-20 space-y-6">
+      <main className="w-full mt-20 space-y-8">
+        <div className="flex flex-col-1 gap-4 items-center space-y-4">
         {showUserInfoForm ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Update User Information</CardTitle>
+          <Card className="w-full bg-white shadow-lg rounded-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                Update Your Information
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleUserInfoSubmit(onUpdateUserInfo)} className="space-y-4">
+            <CardContent className="p-6 pt-0">
+              <form onSubmit={handleUserInfoSubmit(onUpdateUserInfo)} className="space-y-6">
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                    Full Name
+                  </Label>
                   <Input
                     id="name"
                     type="text"
+                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
                     {...registerUserInfo("name", { required: "Name is required" })}
                     aria-invalid={errorsUserInfo.name ? "true" : "false"}
                   />
                   {errorsUserInfo.name && (
-                    <p className="text-red-500 text-sm">{errorsUserInfo.name.message}</p>
+                    <p className="text-red-500 text-sm mt-1">{errorsUserInfo.name.message}</p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                    Email Address
+                  </Label>
                   <Input
                     id="email"
                     type="email"
+                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
                     {...registerUserInfo("email", {
                       required: "Email is required",
                       pattern: {
@@ -269,25 +298,42 @@ export default function AccountPage() {
                     aria-invalid={errorsUserInfo.email ? "true" : "false"}
                   />
                   {errorsUserInfo.email && (
-                    <p className="text-red-500 text-sm">{errorsUserInfo.email.message}</p>
+                    <p className="text-red-500 text-sm mt-1">{errorsUserInfo.email.message}</p>
                   )}
                 </div>
-                <div className="flex space-x-2">
-                  <Button type="submit" disabled={isSubmittingUserInfo}>
+                <div className="flex space-x-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmittingUserInfo}
+                  >
                     {isSubmittingUserInfo ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
                         </svg>
                         Updating...
                       </span>
                     ) : (
-                      "Update"
+                      "Update Profile"
                     )}
                   </Button>
                   <Button
                     variant="outline"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
                     onClick={() => setShowUserInfoForm(false)}
                     aria-label="Cancel user info edit"
                   >
@@ -298,31 +344,47 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>User Information</CardTitle>
+          <Card className="w-full bg-white shadow-lg rounded-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                User Information
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <p><strong>Name:</strong> {currentUser.name}</p>
-              <p><strong>Email:</strong> {currentUser.email}</p>
-              <Button onClick={() => setShowUserInfoForm(true)} aria-label="Edit user information">
-                Edit Info
+            <CardContent className="p-6 pt-0 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <p>
+                  <strong className="text-gray-700">Name:</strong> {currentUser.name}
+                </p>
+                <p>
+                  <strong className="text-gray-700">Email:</strong> {currentUser.email}
+                </p>
+              </div>
+              <Button
+                onClick={() => setShowUserInfoForm(true)}
+                aria-label="Edit user information"
+              >
+                Edit Profile
               </Button>
             </CardContent>
           </Card>
         )}
         {showShippingForm ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>{editingType ? `Edit "${editingType}" Address` : "Add Shipping Address"}</CardTitle>
+          <Card className="w-full bg-white shadow-lg rounded-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                {editingType ? `Edit "${editingType}" Address` : "Add New Address"}
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleShippingSubmit(onSubmitShipping)} className="space-y-4">
+            <CardContent className="p-6 pt-0">
+              <form onSubmit={handleShippingSubmit(onSubmitShipping)} className="space-y-6">
                 {!editingType && (
                   <div>
-                    <Label htmlFor="type">Type (e.g., Home, Work)</Label>
+                    <Label htmlFor="type" className="text-sm font-medium text-gray-700">
+                      Address Type (e.g., Home, Work)
+                    </Label>
                     <Input
                       id="type"
+                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
                       {...registerShipping("type", {
                         required: "Type is required",
                         validate: (value) =>
@@ -332,15 +394,18 @@ export default function AccountPage() {
                       aria-invalid={errorsShipping.type ? "true" : "false"}
                     />
                     {errorsShipping.type && (
-                      <p className="text-red-500 text-sm">{errorsShipping.type.message}</p>
+                      <p className="text-red-500 text-sm mt-1">{errorsShipping.type.message}</p>
                     )}
                   </div>
                 )}
                 <div>
-                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
+                    Phone Number
+                  </Label>
                   <Input
                     id="phoneNumber"
                     type="tel"
+                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
                     {...registerShipping("phoneNumber", {
                       required: "Phone number is required",
                       pattern: {
@@ -351,56 +416,84 @@ export default function AccountPage() {
                     aria-invalid={errorsShipping.phoneNumber ? "true" : "false"}
                   />
                   {errorsShipping.phoneNumber && (
-                    <p className="text-red-500 text-sm">{errorsShipping.phoneNumber.message}</p>
+                    <p className="text-red-500 text-sm mt-1">{errorsShipping.phoneNumber.message}</p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address" className="text-sm font-medium text-gray-700">
+                    Street Address
+                  </Label>
                   <Input
                     id="address"
+                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
                     {...registerShipping("address", { required: "Address is required" })}
                     aria-invalid={errorsShipping.address ? "true" : "false"}
                   />
                   {errorsShipping.address && (
-                    <p className="text-red-500 text-sm">{errorsShipping.address.message}</p>
+                    <p className="text-red-500 text-sm mt-1">{errorsShipping.address.message}</p>
                   )}
                 </div>
-                <div>
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    {...registerShipping("city", { required: "City is required" })}
-                    aria-invalid={errorsShipping.city ? "true" : "false"}
-                  />
-                  {errorsShipping.city && (
-                    <p className="text-red-500 text-sm">{errorsShipping.city.message}</p>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="city" className="text-sm font-medium text-gray-700">
+                      City
+                    </Label>
+                    <Input
+                      id="city"
+                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
+                      {...registerShipping("city", { required: "City is required" })}
+                      aria-invalid={errorsShipping.city ? "true" : "false"}
+                    />
+                    {errorsShipping.city && (
+                      <p className="text-red-500 text-sm mt-1">{errorsShipping.city.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="country" className="text-sm font-medium text-gray-700">
+                      Country
+                    </Label>
+                    <Input
+                      id="country"
+                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
+                      {...registerShipping("country", { required: "Country is required" })}
+                      aria-invalid={errorsShipping.country ? "true" : "false"}
+                    />
+                    {errorsShipping.country && (
+                      <p className="text-red-500 text-sm mt-1">{errorsShipping.country.message}</p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="country">Country</Label>
-                  <Input
-                    id="country"
-                    {...registerShipping("country", { required: "Country is required" })}
-                    aria-invalid={errorsShipping.country ? "true" : "false"}
-                  />
-                  {errorsShipping.country && (
-                    <p className="text-red-500 text-sm">{errorsShipping.country.message}</p>
-                  )}
-                </div>
-                <div className="flex space-x-2">
-                  <Button type="submit" disabled={isSubmittingShipping}>
+                <div className="flex space-x-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmittingShipping}
+                  >
                     {isSubmittingShipping ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
                         </svg>
                         Saving...
                       </span>
-                    ) : editingType ? "Update" : "Add"}
+                    ) : editingType ? "Update Address" : "Add Address"}
                   </Button>
                   <Button
                     variant="outline"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
                     onClick={() => {
                       setShowShippingForm(false);
                       setEditingType(null);
@@ -421,9 +514,9 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
+          <Card className="w-full bg-white shadow-lg rounded-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="flex justify-between items-center text-xl font-semibold text-gray-900">
                 Saved Addresses
                 <Button
                   onClick={() => {
@@ -443,38 +536,60 @@ export default function AccountPage() {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {shippingDetails.map((detail) => (
-                <div key={detail.type} className="border p-4 rounded space-y-1">
-                  <p><strong>Type:</strong> {detail.type}</p>
-                  <p><strong>Phone:</strong> {detail.phoneNumber}</p>
-                  <p><strong>Address:</strong> {detail.address}</p>
-                  <p><strong>City:</strong> {detail.city}</p>
-                  <p><strong>Country:</strong> {detail.country}</p>
-                  <div className="flex space-x-2 mt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditShipping(detail.type)}
-                      aria-label={`Edit ${detail.type} address`}
-                    >
-                      <Pencil size={16} /> Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => onDeleteShipping(detail.type)}
-                      aria-label={`Delete ${detail.type} address`}
-                    >
-                      <Trash size={16} /> Delete
-                    </Button>
+            <CardContent className="p-6 pt-0 space-y-6">
+              {shippingDetails.length === 0 ? (
+                <p className="text-gray-600">No saved addresses. Add one to get started!</p>
+              ) : (
+                shippingDetails.map((detail) => (
+                  <div
+                    key={detail.type}
+                    className="border border-gray-200 p-4 rounded-lg space-y-2 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <p>
+                        <strong className="text-gray-700">Type:</strong> {detail.type}
+                      </p>
+                      <p>
+                        <strong className="text-gray-700">Phone:</strong> {detail.phoneNumber}
+                      </p>
+                      <p>
+                        <strong className="text-gray-700">Address:</strong> {detail.address}
+                      </p>
+                      <p>
+                        <strong className="text-gray-700">City:</strong> {detail.city}
+                      </p>
+                      <p>
+                        <strong className="text-gray-700">Country:</strong> {detail.country}
+                      </p>
+                    </div>
+                    <div className="flex space-x-4 mt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                        onClick={() => onEditShipping(detail.type)}
+                        aria-label={`Edit ${detail.type} address`}
+                      >
+                        <Pencil size={16} className="mr-2" /> Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="bg-red-600 hover:bg-red-700"
+                        onClick={() => onDeleteShipping(detail.type)}
+                        aria-label={`Delete ${detail.type} address`}
+                      >
+                        <Trash size={16} className="mr-2" /> Delete
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </CardContent>
           </Card>
         )}
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
