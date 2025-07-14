@@ -12,6 +12,7 @@ export type Product = {
 };
 
 type ShippingDetails = {
+  type: string;
   address: string;
   city: string;
   country: string;
@@ -24,8 +25,9 @@ type User = {
   password: string;
   cart: Product[];
   wishlist: Product[];
-  shippingDetails: ShippingDetails | null;
+  shippingDetails: ShippingDetails[];
 };
+
 
 interface UserState {
   currentUser: User | null;
@@ -72,7 +74,7 @@ export const useUserStore = create<UserState>()(
           password,
           cart: [],
           wishlist: [],
-          shippingDetails: shippingDetails || null,
+          shippingDetails: shippingDetails ? [shippingDetails] : [],
         };
 
         set({
@@ -89,7 +91,16 @@ export const useUserStore = create<UserState>()(
         const user = users.find((u) => u.email === email && u.password === password);
         if (!user) return false;
 
-        set({ currentUser: user });
+        const normalizedUser = {
+          ...user,
+          shippingDetails: Array.isArray(user.shippingDetails)
+            ? user.shippingDetails
+            : user.shippingDetails
+            ? [user.shippingDetails]
+            : [],
+        };
+
+        set({ currentUser: normalizedUser });
         document.cookie = `authenticated=true; Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
@@ -182,9 +193,18 @@ export const useUserStore = create<UserState>()(
 
       addShippingDetails: (details) => {
         const { currentUser, users } = get();
-        if (!currentUser || currentUser.shippingDetails) return;
+        if (!currentUser) return;
 
-        const updatedUser = { ...currentUser, shippingDetails: details };
+        const exists = currentUser.shippingDetails.some(
+          (item) => item.type.toLowerCase() === details.type.toLowerCase()
+        );
+        if (exists) return;
+
+        const updatedUser = {
+          ...currentUser,
+          shippingDetails: [...currentUser.shippingDetails, details],
+        };
+
         const updatedUsers = users.map((u) =>
           u.email === currentUser.email ? updatedUser : u
         );
@@ -192,11 +212,31 @@ export const useUserStore = create<UserState>()(
         set({ currentUser: updatedUser, users: updatedUsers });
       },
 
-      updateShippingDetails: (details) => {
+      updateShippingDetails: (updatedDetail) => {
         const { currentUser, users } = get();
         if (!currentUser) return;
 
-        const updatedUser = { ...currentUser, shippingDetails: details };
+        const updatedShippingDetails = currentUser.shippingDetails.map((detail) =>
+          detail.type === updatedDetail.type ? updatedDetail : detail
+        );
+
+        const updatedUser = { ...currentUser, shippingDetails: updatedShippingDetails };
+        const updatedUsers = users.map((u) =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      deleteShippingDetails: (typeToDelete: string) => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedShippingDetails = currentUser.shippingDetails.filter(
+          (detail) => detail.type !== typeToDelete
+        );
+
+        const updatedUser = { ...currentUser, shippingDetails: updatedShippingDetails };
         const updatedUsers = users.map((u) =>
           u.email === currentUser.email ? updatedUser : u
         );

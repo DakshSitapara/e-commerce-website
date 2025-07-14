@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { LogOut, ShoppingBagIcon, Heart, ShoppingCart } from "lucide-react";
+import { LogOut, ShoppingBagIcon, Heart, ShoppingCart, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,8 +14,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserStore } from "@/lib/userStore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type ShippingFormData = {
+  type: string;
   address: string;
   city: string;
   country: string;
@@ -30,18 +42,14 @@ type UserInfoFormData = {
 export default function AccountPage() {
   const router = useRouter();
 
-  const [showShippingForm, setShowShippingForm] = useState(false);
+  const [editingType, setEditingType] = useState<string | null>(null);
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
+  const [showShippingForm, setShowShippingForm] = useState(false);
 
   const currentUser = useUserStore((state) => state.currentUser);
   const updateUser = useUserStore((state) => state.updateUser);
-  const shippingDetails = currentUser?.shippingDetails;
-
   const logout = useUserStore((state) => state.logout);
-    const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
+  const shippingDetails = currentUser?.shippingDetails || [];
 
   const {
     register: registerShipping,
@@ -57,37 +65,48 @@ export default function AccountPage() {
     formState: { isSubmitting: isSubmittingUserInfo },
   } = useForm<UserInfoFormData>();
 
-  const onSubmitShipping = async (data: ShippingFormData) => {
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
+  const onSubmitShipping = (data: ShippingFormData) => {
     if (!currentUser) return;
 
-    const updatedUser = {
-      ...currentUser,
-      shippingDetails: data,
-    };
+    const updatedShippingDetails = editingType
+      ? currentUser.shippingDetails.map((detail) =>
+          detail.type === editingType ? { ...data, type: editingType } : detail
+        )
+      : [...currentUser.shippingDetails, data];
 
-    updateUser(updatedUser);
+    updateUser({ ...currentUser, shippingDetails: updatedShippingDetails });
+    resetShipping();
+    setEditingType(null);
     setShowShippingForm(false);
   };
 
-  const onUpdateUserInfo = async (data: UserInfoFormData) => {
-    if (!currentUser) return;
-
-    const updatedUser = {
-      ...currentUser,
-      name: data.name,
-      email: data.email,
-    };
-
-    updateUser(updatedUser);
-    setShowUserInfoForm(false);
+  const onEditShipping = (type: string) => {
+    const detail = currentUser?.shippingDetails.find((d) => d.type === type);
+    if (detail) {
+      resetShipping(detail);
+      setEditingType(type);
+      setShowShippingForm(true);
+    }
   };
 
-  
-  useEffect(() => {
-    if (shippingDetails) {
-      resetShipping(shippingDetails);
-    }
-  }, [shippingDetails, resetShipping]);
+  const onDeleteShipping = (type: string) => {
+    if (!currentUser) return;
+    const updatedShipping = currentUser.shippingDetails.filter(
+      (detail) => detail.type !== type
+    );
+    updateUser({ ...currentUser, shippingDetails: updatedShipping });
+  };
+
+  const onUpdateUserInfo = (data: UserInfoFormData) => {
+    if (!currentUser) return;
+    updateUser({ ...currentUser, ...data });
+    setShowUserInfoForm(false);
+  };
 
   useEffect(() => {
     if (currentUser) {
@@ -99,7 +118,7 @@ export default function AccountPage() {
   }, [currentUser, resetUserInfo]);
 
   return (
-    <div className="flex flex-col items-center mx-auto max-w-md p-4">
+    <div className="flex flex-col items-center mx-auto max-w-xl p-4">
       <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -121,10 +140,26 @@ export default function AccountPage() {
                   Cart ({currentUser?.cart.length ?? 0})
                 </span>
               </Button>
-              <Button variant="destructive" onClick={handleLogout}>
-                <LogOut size={20} />
-                <span className="hidden sm:inline">Logout</span>
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <LogOut size={20} />
+                    <span className="hidden sm:inline">Logout</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You’ll be logged out, but your data will remain saved.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleLogout}>Logout</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>
@@ -133,87 +168,23 @@ export default function AccountPage() {
       <div className="w-full mt-20 space-y-6">
         {currentUser && (
           <>
-          {showUserInfoForm ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Update User Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleUserInfoSubmit(onUpdateUserInfo)} className="space-y-4">
-                  <div>
-                    <Label className="mb-2">Name</Label>
-                    <Input
-                      type="text"
-                      {...registerUserInfo("name", { required: true })}
-                    />
-                  </div>
-                  <div>
-                    <Label className="mb-2">Email</Label>
-                    <Input
-                      type="email"
-                      {...registerUserInfo("email", { required: true })}
-                    />
-                  </div>
-                  <Button type="submit" disabled={isSubmittingUserInfo}>
-                    {isSubmittingUserInfo ? "Updating..." : "Update"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          ):
-          <Card>
-            <CardHeader>
-              <CardTitle>User Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                  <p><strong>Name: </strong>{currentUser.name}</p>
-                  <p><strong>Email: </strong>{currentUser.email}</p>
-              <Button onClick={() => setShowUserInfoForm(true)}>Update User Information</Button>
-            </CardContent>
-          </Card>
-          }
-
-            {showShippingForm ? (
+            {showUserInfoForm ? (
               <Card>
                 <CardHeader>
-                  <CardTitle>
-                    {shippingDetails ? "Update Shipping Information" : "Add Shipping Information"}
-                  </CardTitle>
+                  <CardTitle>Update User Information</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleShippingSubmit(onSubmitShipping)} className="space-y-4">
+                  <form onSubmit={handleUserInfoSubmit(onUpdateUserInfo)} className="space-y-4">
                     <div>
-                      <Label className="mb-2">Phone Number</Label>
-                      <Input
-                        type="tel"
-                        pattern="[0-9]{10}"
-                        placeholder="1234567890"
-                        {...registerShipping("phoneNumber", { required: true, pattern: /^[0-9]{10}$/ })}
-                      />
+                      <Label>Name</Label>
+                      <Input type="text" {...registerUserInfo("name", { required: true })} />
                     </div>
                     <div>
-                      <Label className="mb-2">Address</Label>
-                      <Input
-                        type="text"
-                        {...registerShipping("address", { required: true })}
-                      />
+                      <Label>Email</Label>
+                      <Input type="email" {...registerUserInfo("email", { required: true })} />
                     </div>
-                    <div>
-                      <Label className="mb-2">City</Label>
-                      <Input
-                        type="text"
-                        {...registerShipping("city", { required: true })}
-                      />
-                    </div>
-                    <div>
-                      <Label className="mb-2">Country</Label>
-                      <Input
-                        type="text"
-                        {...registerShipping("country", { required: true })}
-                      />
-                    </div>
-                    <Button type="submit" disabled={isSubmittingShipping}>
-                      {shippingDetails ? "Update" : "Add and Save"}
+                    <Button type="submit" disabled={isSubmittingUserInfo}>
+                      {isSubmittingUserInfo ? "Updating..." : "Update"}
                     </Button>
                   </form>
                 </CardContent>
@@ -221,19 +192,111 @@ export default function AccountPage() {
             ) : (
               <Card>
                 <CardHeader>
-                  <CardTitle>Shipping Details</CardTitle>
+                  <CardTitle>User Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p><strong>Phone Number:</strong> {shippingDetails?.phoneNumber}</p>
-                  <p><strong>Address:</strong> {shippingDetails?.address}</p>
-                  <p><strong>City:</strong> {shippingDetails?.city}</p>
-                  <p><strong>Country:</strong> {shippingDetails?.country}</p>
-                  <Button onClick={() => setShowShippingForm(true)}>
-                    {shippingDetails ? "Update Shipping Information" : "Add Shipping Information"}
-                  </Button>
+                  <p><strong>Name:</strong> {currentUser.name}</p>
+                  <p><strong>Email:</strong> {currentUser.email}</p>
+                  <Button onClick={() => setShowUserInfoForm(true)}>Edit Info</Button>
                 </CardContent>
               </Card>
             )}
+            {showShippingForm ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{editingType ? `Edit "${editingType}" Address` : "Add Shipping Address"}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleShippingSubmit(onSubmitShipping)} className="space-y-4">
+                      {!editingType && (
+                        <div>
+                          <Label>Type (e.g., Home, Work)</Label>
+                          <Input {...registerShipping("type", { required: true })} />
+                        </div>
+                      )}
+                      <div>
+                        <Label>Phone Number</Label>
+                        <Input
+                          type="tel"
+                          pattern="[0-9]{10}"
+                          {...registerShipping("phoneNumber", { required: true })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Address</Label>
+                        <Input {...registerShipping("address", { required: true })} />
+                      </div>
+                      <div>
+                        <Label>City</Label>
+                        <Input {...registerShipping("city", { required: true })} />
+                      </div>
+                      <div>
+                        <Label>Country</Label>
+                        <Input {...registerShipping("country", { required: true })} />
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button type="submit" disabled={isSubmittingShipping}>
+                          {editingType ? "Update" : "Add"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setShowShippingForm(false);
+                            setEditingType(null);
+                            resetShipping();
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      Saved Addresses
+                      <Button
+                        onClick={() => {
+                          resetShipping();
+                          setEditingType(null);
+                          setShowShippingForm(true);
+                        }}
+                      >
+                        Add New Address
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {shippingDetails.map((detail) => (
+                      <div key={detail.type} className="border p-4 rounded space-y-1">
+                        <p><strong>Type:</strong> {detail.type}</p>
+                        <p><strong>Phone:</strong> {detail.phoneNumber}</p>
+                        <p><strong>Address:</strong> {detail.address}</p>
+                        <p><strong>City:</strong> {detail.city}</p>
+                        <p><strong>Country:</strong> {detail.country}</p>
+                        <div className="flex space-x-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onEditShipping(detail.type)}
+                          >
+                            <Pencil size={16} /> Edit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => onDeleteShipping(detail.type)}
+                          >
+                            <Trash size={16} /> Delete
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
           </>
         )}
       </div>

@@ -2,15 +2,17 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useCartStore } from "@/lib/cartStore";
+import { useUserStore } from "@/lib/userStore";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { CreditCardIcon, ShoppingBagIcon } from "lucide-react";
+import { CreditCardIcon, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const cart = useCartStore((state) => state.cart);
+    const currentUser = useUserStore((state) => state.currentUser);
+    const cart = currentUser?.cart || [];
     const [lastCart, setLastCart] = React.useState<any[]>([]);
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export default function CheckoutPage() {
 
     if(cart.length > 0) {
         return (
-            <div className="items-center px-4 py-2">
+            <div className="fixed min-h-screen flex flex-col items-center justify-center-safe">
             complet your order first.
             <Button
                 variant="outline"
@@ -42,18 +44,15 @@ export default function CheckoutPage() {
 
     if(lastCart.length === 0) {
         return (
-            <div className="items-center px-4 py-2">
-                Your cart is empty.
-                <Button
-                    variant="outline"
-                    className="flex items-center gap-2 mt-4"
-                    onClick={() => router.push("/shop")}
-                    aria-label="Shop"
-                >
-                    <ShoppingBagIcon className="h-5 w-5" />
-                    Shop
-                </Button>
-            </div>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+          <Link href="/shop">
+            <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Your cart is empty
+          </h1>
+          <p className="text-gray-600 mb-8">Add some products to your cart!</p>
+        </div>
         )
     }
 

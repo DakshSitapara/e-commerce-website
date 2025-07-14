@@ -17,14 +17,12 @@ export default function BillingPage() {
     const currentUser = useUserStore((state) => state.currentUser);
     const cart = currentUser?.cart || [];
     const { clearCart } = useUserStore();
-    const shippingDetails = currentUser?.shippingDetails;
-
-
-const handlePlaceOrder = () => {
-    localStorage.setItem("lastCart", JSON.stringify(cart));
-    router.push("/checkout");
-    clearCart();
-  };
+    const shippingDetails = currentUser?.shippingDetails || [];
+    const handlePlaceOrder = () => {
+        localStorage.setItem("lastCart", JSON.stringify(cart));
+        router.push("/checkout");
+        clearCart();
+      };
 
     return (
       <div className="flex flex-col items-center mx-auto max-w-md p-4">
@@ -74,7 +72,7 @@ const handlePlaceOrder = () => {
           </div>
         </nav>
       {cart.length === 0 ? (
-        <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="fixed min-h-screen flex flex-col items-center justify-center">
           <Link href="/shop">
             <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
           </Link>
@@ -141,9 +139,6 @@ const handlePlaceOrder = () => {
               <h2 className="text-lg font-semibold">Total: ₹{cart.reduce((acc, product) => acc + product.price, 0)}</h2>
               <h2><strong className="text-lg font-semibold">Payment Method:</strong> Card || Cash || UPI</h2>
               <h2 className="text-lg font-semibold">Shipping Address</h2>
-              <p>{shippingDetails?.address}</p>
-              <p>{shippingDetails?.city}</p>
-              <p>{shippingDetails?.country}</p>
               <Button onClick={() => router.push("/account")}>{shippingDetails ? "Edit Address" : "Add Address"}</Button>
             </CardContent>
           </Card>

@@ -78,7 +78,7 @@ export default function CartPage() {
         </div>
       </nav>
       {cart.length === 0 ? (
-        <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="fixed min-h-screen flex flex-col items-center justify-center">
           <Link href="/shop">
             <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
           </Link>
