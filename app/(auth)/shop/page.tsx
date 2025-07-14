@@ -2,44 +2,18 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ShoppingCart,
-  User,
-  Star,
-  Heart,
-  Search,
-  RotateCw,
-} from "lucide-react";
-import {
-  products,
-  CategoryColor,
-  TypeColor,
-  Category,
-  Type,
-} from "@/lib/shop_data";
+import { ShoppingCart, User, Star, Heart, Search, RotateCw } from "lucide-react";
+import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function ShopPage() {
-
   const router = useRouter();
 
   const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
@@ -156,7 +130,7 @@ export default function ShopPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.length > 0 ? (  
+          {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <Card
                 key={product.id}
@@ -172,20 +146,24 @@ export default function ShopPage() {
                       className="h-80 w-full transition-transform group-hover:scale-105"
                     />
                     <Button
-                    title={
-                      wishlist.some((item) => item.id === product.id)
-                        ? "Remove from wishlist"
-                        : "Add to wishlist"
-                    }
+                      title={
+                        wishlist.some((item) => item.id === product.id)
+                          ? "Remove from wishlist"
+                          : "Add to wishlist"
+                      }
                       className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
                       size={"icon"}
                       onClick={() => {
                         if (wishlist.some((item) => item.id === product.id)) {
                           removeFromWishlist(product.id);
-                          toast.success(`${product.name} removed from wishlist!`);
+                          toast.success(
+                            `${product.name} removed from wishlist!`
+                          );
                         } else {
                           addToWishlist(product);
-                          toast.success(`${product.name} added to wishlist!`);
+                          toast.success(
+                            `${product.name} added to wishlist!`
+                          );
                         }
                       }}
                       hidden={cart.some((item) => item.id === product.id)}
@@ -193,8 +171,8 @@ export default function ShopPage() {
                       <Heart
                         className={`h-6 w-6 ${wishlist.some((item) => item.id === product.id)
                           ? "fill-red-500 text-red-500"
-                          : " text-red-500"}
-                        `}
+                          : " text-red-500"
+                        }`}
                       />
                     </Button>
                   </div>
@@ -216,16 +194,18 @@ export default function ShopPage() {
                   </div>
                   <div className="flex items-center">
                     <Star className="h-4 w-4 text-yellow-400" />
-                    <span className="text-gray-500 ml-1">{product.rating}</span>
+                    <span className="text-gray-500 ml-1">
+                      {product.rating}
+                    </span>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center p-4 pt-0">
                   <Button
-                  variant={
-                    cart.some((item) => item.id === product.id)
-                      ? "destructive"
-                      : "outline"
-                  }
+                    variant={
+                      cart.some((item) => item.id === product.id)
+                        ? "destructive"
+                        : "outline"
+                    }
                     className="w-full"
                     onClick={() => {
                       if (wishlist.some((item) => item.id === product.id)) {
@@ -233,7 +213,7 @@ export default function ShopPage() {
                         addToCart(product);
                         toast.success(`${product.name} added to cart!`);
                         return;
-                      }else if (cart.some((item) => item.id === product.id)) {
+                      } else if (cart.some((item) => item.id === product.id)) {
                         removeFromCart(product.id);
                         toast.success(`${product.name} removed from cart!`);
                         return;
@@ -247,7 +227,7 @@ export default function ShopPage() {
                       ? "Remove from Cart"
                       : "Add to Cart"}
                   </Button>
-               </CardFooter>
+                </CardFooter>
               </Card>
             ))
           ) : (
@@ -260,3 +240,4 @@ export default function ShopPage() {
     </div>
   );
 }
+
