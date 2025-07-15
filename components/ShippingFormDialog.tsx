@@ -1,0 +1,157 @@
+"use client";
+
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+export type ShippingFormData = {
+  type: string;
+  address: string;
+  city: string;
+  country: string;
+  phoneNumber: string;
+};
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  initialData?: ShippingFormData | null;
+  existingTypes: string[];
+  onSave: (data: ShippingFormData) => Promise<void>;
+}
+
+export function ShippingFormDialog({
+  open,
+  onClose,
+  initialData = null,
+  existingTypes,
+  onSave,
+}: Props) {
+  const isEdit = Boolean(initialData);
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ShippingFormData>();
+
+  useEffect(() => {
+    reset(
+      initialData || {
+        type: "",
+        address: "",
+        city: "",
+        country: "",
+        phoneNumber: "",
+      }
+    );
+  }, [initialData, reset]);
+
+  const submit = async (data: ShippingFormData) => {
+    await onSave(data);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-lg">
+        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>
+              {isEdit ? "Edit Address" : "Add New Address"}
+            </DialogTitle>
+          </DialogHeader>
+          {!isEdit && (
+            <div>
+              <Label>Type</Label>
+              <Input
+                {...register("type", {
+                  required: "Type is required",
+                  validate: (val) =>
+                    !existingTypes.includes(val) ||
+                    "Type already exists",
+                })}
+              />
+              {errors.type && (
+                <p className="text-sm text-red-600">
+                  {errors.type.message}
+                </p>
+              )}
+            </div>
+          )}
+          <div>
+            <Label>Phone</Label>
+            <Input
+              {...register("phoneNumber", {
+                required: "Phone is required",
+              })}
+            />
+            {errors.phoneNumber && (
+              <p className="text-sm text-red-600">
+                {errors.phoneNumber.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Label>Address</Label>
+            <Input
+              {...register("address", {
+                required: "Address is required",
+              })}
+            />
+            {errors.address && (
+              <p className="text-sm text-red-600">
+                {errors.address.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Label>City</Label>
+            <Input
+              {...register("city", { required: "City is required" })}
+            />
+            {errors.city && (
+              <p className="text-sm text-red-600">
+                {errors.city.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Label>Country</Label>
+            <Input
+              {...register("country", {
+                required: "Country is required",
+              })}
+            />
+            {errors.country && (
+              <p className="text-sm text-red-600">
+                {errors.country.message}
+              </p>
+            )}
+          </div>
+          <DialogFooter className="flex justify-end space-x-2">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Saving..."
+                : isEdit
+                ? "Update Address"
+                : "Add Address"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -7,9 +7,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
-import {
-  Card, CardContent, CardHeader, CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -60,18 +58,6 @@ export default function BillingPage() {
     }
   };
 
-  const renderEmptyCart = () => (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
-          <Link href="/shop">
-            <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Your cart is empty
-          </h1>
-          <p className="text-gray-600 mb-8">Add some products to your cart!</p>
-        </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3 px-4">
@@ -99,7 +85,18 @@ export default function BillingPage() {
       </nav>
 
       <div className="mt-10 max-w-4xl mx-auto">
-        {cart.length === 0 ? renderEmptyCart() : (
+        {cart.length === 0 ? 
+        (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+          <Link href="/shop">
+            <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Your cart is empty
+          </h1>
+          <p className="text-gray-600 mb-8">Add some products to your cart!</p>
+        </div>
+        ) : (
           <form onSubmit={handleSubmit(handlePlaceOrder)} className="space-y-8">
             <Card>
               <CardHeader>

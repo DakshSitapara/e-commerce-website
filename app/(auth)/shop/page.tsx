@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Link from "next/link";
 
 export default function ShopPage() {
   const router = useRouter();
@@ -179,7 +180,9 @@ export default function ShopPage() {
                 </CardHeader>
                 <CardContent className="p-4 py-0 space-y-2">
                   <CardTitle className="text-sm sm:text-lg font-semibold">
+                    <Link href={`/shop/${product.id}`}>
                     {product.name}
+                    </Link>
                   </CardTitle>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">₹{product.price}</p>

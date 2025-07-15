@@ -1,39 +1,37 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { LogOut, ShoppingBagIcon, Heart, ShoppingCart, Pencil, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  LogOut,
+  ShoppingBagIcon,
+  Heart,
+  ShoppingCart,
+  Pencil,
+  Trash,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useUserStore } from "@/lib/userStore";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogTrigger,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogDescription,
   AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
-
-type ShippingFormData = {
-  type: string;
-  address: string;
-  city: string;
-  country: string;
-  phoneNumber: string;
-};
+import {
+  ShippingFormDialog,
+  ShippingFormData,
+} from "@/components/ShippingFormDialog";
 
 type UserInfoFormData = {
   name: string;
@@ -42,150 +40,89 @@ type UserInfoFormData = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const [editingType, setEditingType] = useState<string | null>(null);
+  const currentUser = useUserStore((s) => s.currentUser);
+  const updateUser = useUserStore((s) => s.updateUser);
+  const logout = useUserStore((s) => s.logout);
+
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
-  const [showShippingForm, setShowShippingForm] = useState(false);
-
-  const currentUser = useUserStore((state) => state.currentUser);
-  const updateUser = useUserStore((state) => state.updateUser);
-  const logout = useUserStore((state) => state.logout);
-  const shippingDetails = currentUser?.shippingDetails || [];
+  const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
+  const [editingShipping, setEditingShipping] =
+    useState<ShippingFormData | null>(null);
 
   const {
-    register: registerShipping,
-    handleSubmit: handleShippingSubmit,
-    reset: resetShipping,
-    formState: { errors: errorsShipping, isSubmitting: isSubmittingShipping },
-  } = useForm<ShippingFormData>({
-    defaultValues: {
-      type: "",
-      address: "",
-      city: "",
-      country: "",
-      phoneNumber: "",
-    },
-  });
-
-  const {
-    register: registerUserInfo,
-    handleSubmit: handleUserInfoSubmit,
-    reset: resetUserInfo,
-    formState: { errors: errorsUserInfo, isSubmitting: isSubmittingUserInfo },
-  } = useForm<UserInfoFormData>({
-    defaultValues: {
-      name: "",
-      email: "",
-    },
-  });
+    register: regUser,
+    handleSubmit: subUser,
+    reset: resetUser,
+    formState: { errors: errUser, isSubmitting: submittingUser },
+  } = useForm<UserInfoFormData>();
 
   const handleLogout = async () => {
     try {
       await logout();
-      toast.success("Logged out successfully!");
+      toast.success("Logged out!");
       router.push("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Failed to log out. Please try again.");
+    } catch {
+      toast.error("Logout failed");
     }
   };
 
-  const onSubmitShipping = async (data: ShippingFormData) => {
+  const onSubmitUser = async (data: UserInfoFormData) => {
     if (!currentUser) return;
-
-    const sanitizedData = {
-      type: data.type,
-      address: data.address,
-      city: data.city,
-      country: data.country,
-      phoneNumber: data.phoneNumber,
-    };
-
-    try {
-      const updatedShippingDetails = editingType
-        ? currentUser.shippingDetails.map((detail) =>
-            detail.type === editingType ? { ...sanitizedData, type: editingType } : detail
-          )
-        : [...currentUser.shippingDetails, sanitizedData];
-
-      await updateUser({ ...currentUser, shippingDetails: updatedShippingDetails });
-      toast.success(editingType ? "Address updated!" : "Address added!");
-      resetShipping({
-        type: "",
-        address: "",
-        city: "",
-        country: "",
-        phoneNumber: "",
-      });
-      setEditingType(null);
-      setShowShippingForm(false);
-    } catch (error) {
-      console.error("Failed to update shipping details:", error);
-      toast.error("Failed to save address. Please try again.");
-    }
-  };
-
-  const onEditShipping = useCallback((type: string) => {
-    const detail = currentUser?.shippingDetails.find((d) => d.type === type);
-    if (detail) {
-      resetShipping(detail);
-      setEditingType(type);
-      setShowShippingForm(true);
-    }
-  }, [currentUser, resetShipping]);
-
-  const onDeleteShipping = async (type: string) => {
-    if (!currentUser) return;
-    try {
-      const updatedShipping = currentUser.shippingDetails.filter(
-        (detail) => detail.type !== type
-      );
-      await updateUser({ ...currentUser, shippingDetails: updatedShipping });
-      toast.success("Address deleted!");
-    } catch (error) {
-      console.error("Failed to delete address:", error);
-      toast.error("Failed to delete address. Please try again.");
-    }
-  };
-
-  const onUpdateUserInfo = async (data: UserInfoFormData) => {
-    if (!currentUser) return;
-    const sanitizedData = {
-      name: data.name,
-      email: data.email,
-    };
-    try {
-      await updateUser({ ...currentUser, ...sanitizedData });
-      toast.success("User information updated!");
-      setShowUserInfoForm(false);
-    } catch (error) {
-      console.error("Failed to update user:", error);
-      toast.error("Failed to update user information. Please try again.");
-    }
+    await updateUser({ ...currentUser, ...data });
+    toast.success("Profile updated!");
+    setShowUserInfoForm(false);
   };
 
   useEffect(() => {
     if (currentUser && showUserInfoForm) {
-      resetUserInfo({
+      resetUser({
         name: currentUser.name,
         email: currentUser.email,
       });
     }
-  }, [currentUser, resetUserInfo, showUserInfoForm]);
+  }, [currentUser, showUserInfoForm, resetUser]);
+
+  const handleShippingSave = async (data: ShippingFormData) => {
+    if (!currentUser) return;
+    const updated = editingShipping
+      ? currentUser.shippingDetails.map((d) =>
+          d.type === editingShipping.type
+            ? { ...data, type: editingShipping.type }
+            : d
+        )
+      : [...(currentUser.shippingDetails || []), data];
+
+    await updateUser({ ...currentUser, shippingDetails: updated });
+    setEditingShipping(null);
+  };
+
+  const onEdit = useCallback(
+    (detail: ShippingFormData) => {
+      setEditingShipping(detail);
+      setShippingDialogOpen(true);
+    },
+    []
+  );
+
+  const onDelete = async (t: string) => {
+    if (!currentUser) return;
+    await updateUser({
+      ...currentUser,
+      shippingDetails: currentUser.shippingDetails.filter((d) => d.type !== t),
+    });
+    toast.success("Deleted!");
+  };
 
   if (!currentUser) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-        <svg className="animate-spin h-8 w-8 text-gray-600" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
-        <span className="ml-2 text-gray-600 text-lg">Loading...</span>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="spinner" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
@@ -254,341 +191,110 @@ export default function AccountPage() {
         </div>
       </nav>
 
-      <main className="w-full mt-20 space-y-8">
-        <div className="flex flex-col-1 gap-4 items-center space-y-4">
-        {showUserInfoForm ? (
-          <Card className="w-full bg-white shadow-lg rounded-lg">
-            <CardHeader className="p-6">
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                Update Your Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 pt-0">
-              <form onSubmit={handleUserInfoSubmit(onUpdateUserInfo)} className="space-y-6">
-                <div>
-                  <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                    Full Name
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                    {...registerUserInfo("name", { required: "Name is required" })}
-                    aria-invalid={errorsUserInfo.name ? "true" : "false"}
-                  />
-                  {errorsUserInfo.name && (
-                    <p className="text-red-500 text-sm mt-1">{errorsUserInfo.name.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email Address
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                    {...registerUserInfo("email", {
-                      required: "Email is required",
-                      pattern: {
-                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message: "Invalid email format",
-                      },
-                    })}
-                    aria-invalid={errorsUserInfo.email ? "true" : "false"}
-                  />
-                  {errorsUserInfo.email && (
-                    <p className="text-red-500 text-sm mt-1">{errorsUserInfo.email.message}</p>
-                  )}
-                </div>
-                <div className="flex space-x-4">
-                  <Button
-                    type="submit"
-                    disabled={isSubmittingUserInfo}
-                  >
-                    {isSubmittingUserInfo ? (
-                      <span className="flex items-center">
-                        <svg
-                          className="animate-spin h-5 w-5 mr-2"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                          />
-                          <path
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                          />
-                        </svg>
-                        Updating...
-                      </span>
-                    ) : (
-                      "Update Profile"
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                    onClick={() => setShowUserInfoForm(false)}
-                    aria-label="Cancel user info edit"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="w-full bg-white shadow-lg rounded-lg">
-            <CardHeader className="p-6">
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                User Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 pt-0 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <p>
-                  <strong className="text-gray-700">Name:</strong> {currentUser.name}
-                </p>
-                <p>
-                  <strong className="text-gray-700">Email:</strong> {currentUser.email}
-                </p>
-              </div>
-              <Button
-                onClick={() => setShowUserInfoForm(true)}
-                aria-label="Edit user information"
-              >
-                Edit Profile
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-        {showShippingForm ? (
-          <Card className="w-full bg-white shadow-lg rounded-lg">
-            <CardHeader className="p-6">
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                {editingType ? `Edit "${editingType}" Address` : "Add New Address"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 pt-0">
-              <form onSubmit={handleShippingSubmit(onSubmitShipping)} className="space-y-6">
-                {!editingType && (
-                  <div>
-                    <Label htmlFor="type" className="text-sm font-medium text-gray-700">
-                      Address Type (e.g., Home, Work)
-                    </Label>
-                    <Input
-                      id="type"
-                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                      {...registerShipping("type", {
-                        required: "Type is required",
-                        validate: (value) =>
-                          !currentUser.shippingDetails.some((d) => d.type === value) ||
-                          "Address type already exists",
-                      })}
-                      aria-invalid={errorsShipping.type ? "true" : "false"}
-                    />
-                    {errorsShipping.type && (
-                      <p className="text-red-500 text-sm mt-1">{errorsShipping.type.message}</p>
-                    )}
+      <main className="mt-24">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="lg:w-1/2">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {showUserInfoForm ? (
+                  <form onSubmit={subUser(onSubmitUser)} className="space-y-4">
+                    <div>
+                      <Label>Name</Label>
+                      <Input {...regUser("name", { required: "Name is required" })} />
+                      {errUser.name && (
+                        <p className="text-sm text-red-600">{errUser.name.message}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label>Email</Label>
+                      <Input
+                        {...regUser("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^[^@]+@[^@]+\.[^@]+$/,
+                            message: "Invalid email",
+                          },
+                        })}
+                      />
+                      {errUser.email && (
+                        <p className="text-sm text-red-600">{errUser.email.message}</p>
+                      )}
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button type="button" variant="outline" onClick={() => setShowUserInfoForm(false)}>
+                        Cancel
+                      </Button>
+                      <Button type="submit" disabled={submittingUser}>
+                        {submittingUser ? "Updating..." : "Update Profile"}
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Name:</strong> {currentUser.name}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {currentUser.email}
+                    </p>
+                    <Button onClick={() => setShowUserInfoForm(true)}>Edit Profile</Button>
                   </div>
                 )}
-                <div>
-                  <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
-                    Phone Number
-                  </Label>
-                  <Input
-                    id="phoneNumber"
-                    type="tel"
-                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                    {...registerShipping("phoneNumber", {
-                      required: "Phone number is required",
-                      pattern: {
-                        value: /^\+?[1-9]\d{1,14}$/,
-                        message: "Invalid phone number format (e.g., +1234567890)",
-                      },
-                    })}
-                    aria-invalid={errorsShipping.phoneNumber ? "true" : "false"}
-                  />
-                  {errorsShipping.phoneNumber && (
-                    <p className="text-red-500 text-sm mt-1">{errorsShipping.phoneNumber.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="address" className="text-sm font-medium text-gray-700">
-                    Street Address
-                  </Label>
-                  <Input
-                    id="address"
-                    className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                    {...registerShipping("address", { required: "Address is required" })}
-                    aria-invalid={errorsShipping.address ? "true" : "false"}
-                  />
-                  {errorsShipping.address && (
-                    <p className="text-red-500 text-sm mt-1">{errorsShipping.address.message}</p>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="city" className="text-sm font-medium text-gray-700">
-                      City
-                    </Label>
-                    <Input
-                      id="city"
-                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                      {...registerShipping("city", { required: "City is required" })}
-                      aria-invalid={errorsShipping.city ? "true" : "false"}
-                    />
-                    {errorsShipping.city && (
-                      <p className="text-red-500 text-sm mt-1">{errorsShipping.city.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Label htmlFor="country" className="text-sm font-medium text-gray-700">
-                      Country
-                    </Label>
-                    <Input
-                      id="country"
-                      className="mt-1 w-full rounded-md border-gray-300 focus:ring-blue-500"
-                      {...registerShipping("country", { required: "Country is required" })}
-                      aria-invalid={errorsShipping.country ? "true" : "false"}
-                    />
-                    {errorsShipping.country && (
-                      <p className="text-red-500 text-sm mt-1">{errorsShipping.country.message}</p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex space-x-4">
-                  <Button
-                    type="submit"
-                    disabled={isSubmittingShipping}
-                  >
-                    {isSubmittingShipping ? (
-                      <span className="flex items-center">
-                        <svg
-                          className="animate-spin h-5 w-5 mr-2"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                          />
-                          <path
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                          />
-                        </svg>
-                        Saving...
-                      </span>
-                    ) : editingType ? "Update Address" : "Add Address"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                    onClick={() => {
-                      setShowShippingForm(false);
-                      setEditingType(null);
-                      resetShipping({
-                        type: "",
-                        address: "",
-                        city: "",
-                        country: "",
-                        phoneNumber: "",
-                      });
-                    }}
-                    aria-label="Cancel address form"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="w-full bg-white shadow-lg rounded-lg">
-            <CardHeader className="p-6">
-              <CardTitle className="flex justify-between items-center text-xl font-semibold text-gray-900">
-                Saved Addresses
-                <Button
-                  onClick={() => {
-                    resetShipping({
-                      type: "",
-                      address: "",
-                      city: "",
-                      country: "",
-                      phoneNumber: "",
-                    });
-                    setEditingType(null);
-                    setShowShippingForm(true);
-                  }}
-                  aria-label="Add new shipping address"
-                >
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="lg:w-1/2">
+            <Card>
+              <CardHeader className="flex justify-between items-center">
+                <CardTitle>My Addresses</CardTitle>
+                <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
                   Add New Address
                 </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 pt-0 space-y-6">
-              {shippingDetails.length === 0 ? (
-                <p className="text-gray-600">No saved addresses. Add one to get started!</p>
-              ) : (
-                shippingDetails.map((detail) => (
-                  <div
-                    key={detail.type}
-                    className="border border-gray-200 p-4 rounded-lg space-y-2 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <p>
-                        <strong className="text-gray-700">Type:</strong> {detail.type}
-                      </p>
-                      <p>
-                        <strong className="text-gray-700">Phone:</strong> {detail.phoneNumber}
-                      </p>
-                      <p>
-                        <strong className="text-gray-700">Address:</strong> {detail.address}
-                      </p>
-                      <p>
-                        <strong className="text-gray-700">City:</strong> {detail.city}
-                      </p>
-                      <p>
-                        <strong className="text-gray-700">Country:</strong> {detail.country}
-                      </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {currentUser.shippingDetails.length === 0 && (
+                  <p>No saved addresses.</p>
+                )}
+                {currentUser.shippingDetails.map((d) => (
+                  <Card key={d.type} className="p-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <p><strong>Type:</strong> {d.type}</p>
+                        <p><strong>Phone:</strong> {d.phoneNumber}</p>
+                        <p><strong>Address:</strong> {d.address}</p>
+                        <p><strong>City:</strong> {d.city}</p>
+                        <p><strong>Country:</strong> {d.country}</p>
+                      </div>
+                      <div className="space-x-2">
+                        <Button size="sm" onClick={() => onEdit(d)}>
+                          <Pencil size={16} />
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => onDelete(d.type)}>
+                          <Trash size={16} />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex space-x-4 mt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                        onClick={() => onEditShipping(detail.type)}
-                        aria-label={`Edit ${detail.type} address`}
-                      >
-                        <Pencil size={16} className="mr-2" /> Edit
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="bg-red-600 hover:bg-red-700"
-                        onClick={() => onDeleteShipping(detail.type)}
-                        aria-label={`Delete ${detail.type} address`}
-                      >
-                        <Trash size={16} className="mr-2" /> Delete
-                      </Button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        )}
+                  </Card>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
         </div>
+
+        <ShippingFormDialog
+          open={shippingDialogOpen}
+          existingTypes={currentUser.shippingDetails.map((d) => d.type)}
+          initialData={editingShipping}
+          onClose={() => {
+            setShippingDialogOpen(false);
+            setEditingShipping(null);
+          }}
+          onSave={handleShippingSave}
+        />
       </main>
     </div>
   );
