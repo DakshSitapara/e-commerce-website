@@ -42,6 +42,7 @@ interface UserState {
 
   login: (email: string, password: string) => boolean;
   logout: () => void;
+  deleteUser: (email: string) => void;
 
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
@@ -100,6 +101,12 @@ export const useUserStore = create<UserState>()(
       logout: () => {
         set({ currentUser: null });
         document.cookie = `authenticated=; Max-Age=0; path=/`;
+      },
+
+      deleteUser: (email) => {
+        const { users } = get();
+        const updatedUsers = users.filter((u) => u.email !== email);
+        set({ users: updatedUsers });
       },
 
       isAuthenticated: () => {

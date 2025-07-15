@@ -20,20 +20,22 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const userStore = useUserStore()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const { login } = useUserStore()
   const router = useRouter()
-  const handleSubmit = async (event: React.FormEvent) => {
+  
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      await userStore.login(email, password);
+    const success = login(email, password);
+    
+    if (success) {
       router.push("/shop");
       toast.success("Login successful");
-    } catch {
-      toast.error("Login failed");
+    } else {
+      toast.error("Login failed. Please check your credentials.");
     }
-  }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

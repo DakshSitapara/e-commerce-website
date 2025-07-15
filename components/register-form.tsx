@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export function RegisterForm({
@@ -23,9 +24,10 @@ export function RegisterForm({
     event.preventDefault();
     const success = register(name, email, password);
     if (success) {
+      toast.success("Registration successful");
       router.push("/shop");
     } else {
-      alert("Email already exists");
+      toast.error("Registration failed. Please try again.");
     }
   };
 

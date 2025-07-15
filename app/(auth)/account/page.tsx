@@ -9,7 +9,8 @@ import {
   Heart,
   ShoppingCart,
   Pencil,
-  Trash,
+  User,
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import {
@@ -44,11 +46,17 @@ export default function AccountPage() {
   const updateUser = useUserStore((s) => s.updateUser);
   const logout = useUserStore((s) => s.logout);
   const users = useUserStore((s) => s.users);
+  
   const deleteShippingDetails = useUserStore((s) => s.deleteShippingDetails);
+  const addShippingDetails = useUserStore((s) => s.addShippingDetails);
+  const updateShippingDetails = useUserStore((s) => s.updateShippingDetails);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
   const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
 
   const {
     register: regUser,
@@ -60,6 +68,14 @@ export default function AccountPage() {
   const handleLogout = () => {
     logout();
     toast.success("Logged out!");
+    router.push("/login");
+  };
+
+  const handleDeleteAccout = () => {
+    if (!currentUser) return;
+    useUserStore.getState().deleteUser(currentUser.email);
+    logout();
+    toast.success("Account deleted!");
     router.push("/login");
   };
 
@@ -96,32 +112,30 @@ export default function AccountPage() {
     if (!currentUser) return;
 
     const typeExists = currentUser.shippingDetails.some(
-      (d) =>
-        d.type.toLowerCase() === data.type.toLowerCase() &&
-        (!editingShipping || editingShipping.type.toLowerCase() !== data.type.toLowerCase())
-    );
-    if (typeExists) {
-      toast.error("Address type already exists.");
-      return;
-    }
+        (d) =>
+          d.type.toLowerCase() === data.type.toLowerCase() &&
+          (!editingShipping || editingShipping.type.toLowerCase() !== data.type.toLowerCase())
+      );
+      if (typeExists) {
+        toast.error("Address type already exists.");
+        return;
+      }
 
-    const updated = editingShipping
-      ? currentUser.shippingDetails.map((d) =>
-          d.type === editingShipping.type
-            ? { ...data, type: editingShipping.type }
-            : d
-        )
-      : [...(currentUser.shippingDetails || []), data];
+      try {
+        if (editingShipping) {
+          updateShippingDetails({ ...data, type: editingShipping.type });
+          toast.success("Address updated!");
+        } else {
+          addShippingDetails(data);
+          toast.success("Address added!");
+        }
+      } catch {
+        toast.error("Failed to update address.");
+      }
 
-    try {
-      await updateUser({ ...currentUser, shippingDetails: updated });
-      toast.success(editingShipping ? "Address updated!" : "Address added!");
-    } catch {
-      toast.error("Failed to update address.");
-    }
-
-    setEditingShipping(null);
-  };
+      setEditingShipping(null);
+      setShippingDialogOpen(false);
+    };
 
   const onEdit = useCallback((detail: ShippingFormData) => {
     setEditingShipping(detail);
@@ -143,50 +157,104 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
+    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">  
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={() => router.push("/shop")}>
-                <ShoppingBagIcon size={20} className="mr-2" />
-                Shop
+            <h1 className="text-xl font-semibold text-gray-800">My Account</h1>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                onClick={() => router.push("/shop")}
+              >
+                <ShoppingBagIcon size={18} />
+                <span className="hidden sm:inline">Shop</span>
               </Button>
-              <Button variant="outline" onClick={() => router.push("/wishlist")}>
-                <Heart size={20} className="mr-2" />
-                Wishlist ({currentUser.wishlist.length})
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                onClick={() => router.push("/wishlist")}
+              >
+                <Heart size={18} />
+                <span className="hidden sm:inline">
+                  Wishlist ({currentUser.wishlist.length})
+                </span>
               </Button>
-              <Button variant="outline" onClick={() => router.push("/cart")}>
-                <ShoppingCart size={20} className="mr-2" />
-                Cart ({currentUser.cart.length})
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                onClick={() => router.push("/cart")}
+              >
+                <ShoppingCart size={18} />
+                <span className="hidden sm:inline">
+                  Cart ({currentUser.cart.length})
+                </span>
               </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
-                    <LogOut size={20} className="mr-2" />
-                    Logout
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button title="User Menu" variant="ghost" className="p-2">
+                    <User size={20} />
                   </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to log out?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogout}>
-                      Logout
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="text-red-600 cursor-pointer"
+                    onClick={() => setShowLogoutDialog(true)}
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    className="text-red-600 cursor-pointer"
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 size={16} className="mr-2" />
+                    Delete Account
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+                <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to log out?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirm Delete Account</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action is permanent. Are you sure you want to delete your account?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteAccout}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
             </div>
           </div>
         </div>
       </nav>
+
 
       <main className="mt-24">
         <div className="flex flex-col lg:flex-row gap-6">
@@ -269,7 +337,7 @@ export default function AccountPage() {
                           <Pencil size={16} />
                         </Button>
                         <Button size="sm" variant="destructive" onClick={() => onDelete(d.type)}>
-                          <Trash size={16} />
+                          <Trash2 size={16} />
                         </Button>
                       </div>
                     </div>
