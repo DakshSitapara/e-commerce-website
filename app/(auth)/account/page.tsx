@@ -43,6 +43,8 @@ export default function AccountPage() {
   const currentUser = useUserStore((s) => s.currentUser);
   const updateUser = useUserStore((s) => s.updateUser);
   const logout = useUserStore((s) => s.logout);
+  const users = useUserStore((s) => s.users);
+  const deleteShippingDetails = useUserStore((s) => s.deleteShippingDetails);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
@@ -55,21 +57,30 @@ export default function AccountPage() {
     formState: { errors: errUser, isSubmitting: submittingUser },
   } = useForm<UserInfoFormData>();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast.success("Logged out!");
-      router.push("/login");
-    } catch {
-      toast.error("Logout failed");
-    }
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out!");
+    router.push("/login");
   };
 
   const onSubmitUser = async (data: UserInfoFormData) => {
     if (!currentUser) return;
-    await updateUser({ ...currentUser, ...data });
-    toast.success("Profile updated!");
-    setShowUserInfoForm(false);
+
+    const duplicate = users.find(
+      (u) => u.email === data.email && u.email !== currentUser.email
+    );
+    if (duplicate) {
+      toast.error("This email is already in use.");
+      return;
+    }
+
+    try {
+      await updateUser({ ...currentUser, ...data });
+      toast.success("Profile updated!");
+      setShowUserInfoForm(false);
+    } catch {
+      toast.error("Update failed.");
+    }
   };
 
   useEffect(() => {
@@ -83,6 +94,17 @@ export default function AccountPage() {
 
   const handleShippingSave = async (data: ShippingFormData) => {
     if (!currentUser) return;
+
+    const typeExists = currentUser.shippingDetails.some(
+      (d) =>
+        d.type.toLowerCase() === data.type.toLowerCase() &&
+        (!editingShipping || editingShipping.type.toLowerCase() !== data.type.toLowerCase())
+    );
+    if (typeExists) {
+      toast.error("Address type already exists.");
+      return;
+    }
+
     const updated = editingShipping
       ? currentUser.shippingDetails.map((d) =>
           d.type === editingShipping.type
@@ -91,24 +113,24 @@ export default function AccountPage() {
         )
       : [...(currentUser.shippingDetails || []), data];
 
-    await updateUser({ ...currentUser, shippingDetails: updated });
+    try {
+      await updateUser({ ...currentUser, shippingDetails: updated });
+      toast.success(editingShipping ? "Address updated!" : "Address added!");
+    } catch {
+      toast.error("Failed to update address.");
+    }
+
     setEditingShipping(null);
   };
 
-  const onEdit = useCallback(
-    (detail: ShippingFormData) => {
-      setEditingShipping(detail);
-      setShippingDialogOpen(true);
-    },
-    []
-  );
+  const onEdit = useCallback((detail: ShippingFormData) => {
+    setEditingShipping(detail);
+    setShippingDialogOpen(true);
+  }, []);
 
-  const onDelete = async (t: string) => {
+  const onDelete = (type: string) => {
     if (!currentUser) return;
-    await updateUser({
-      ...currentUser,
-      shippingDetails: currentUser.shippingDetails.filter((d) => d.type !== t),
-    });
+    deleteShippingDetails(type);
     toast.success("Deleted!");
   };
 
@@ -127,59 +149,35 @@ export default function AccountPage() {
           <div className="flex h-16 items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
             <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                onClick={() => router.push("/shop")}
-                aria-label="Go to Shop"
-              >
+              <Button variant="outline" onClick={() => router.push("/shop")}>
                 <ShoppingBagIcon size={20} className="mr-2" />
-                <span>Shop</span>
+                Shop
               </Button>
-              <Button
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                onClick={() => router.push("/wishlist")}
-                aria-label={`Wishlist with ${currentUser?.wishlist.length ?? 0} items`}
-              >
+              <Button variant="outline" onClick={() => router.push("/wishlist")}>
                 <Heart size={20} className="mr-2" />
-                <span>Wishlist ({currentUser?.wishlist.length ?? 0})</span>
+                Wishlist ({currentUser.wishlist.length})
               </Button>
-              <Button
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                onClick={() => router.push("/cart")}
-                aria-label={`Cart with ${currentUser?.cart.length ?? 0} items`}
-              >
+              <Button variant="outline" onClick={() => router.push("/cart")}>
                 <ShoppingCart size={20} className="mr-2" />
-                <span>Cart ({currentUser?.cart.length ?? 0})</span>
+                Cart ({currentUser.cart.length})
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    className="bg-red-600 hover:bg-red-700"
-                    aria-label="Log out"
-                  >
+                  <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
                     <LogOut size={20} className="mr-2" />
-                    <span>Logout</span>
+                    Logout
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+                <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
-                    <AlertDialogDescription className="text-gray-600">
-                      Are you sure you want to log out? Your data will remain saved.
+                    <AlertDialogDescription>
+                      Are you sure you want to log out?
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="border-gray-300 text-gray-700 hover:bg-gray-100">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-red-600 hover:bg-red-700"
-                      onClick={handleLogout}
-                    >
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleLogout}>
                       Logout
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -255,9 +253,7 @@ export default function AccountPage() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
-                {currentUser.shippingDetails.length === 0 && (
-                  <p>No saved addresses.</p>
-                )}
+                {currentUser.shippingDetails.length === 0 && <p>No saved addresses.</p>}
                 {currentUser.shippingDetails.map((d) => (
                   <Card key={d.type} className="p-4 hover:bg-accent">
                     <div className="flex justify-between">

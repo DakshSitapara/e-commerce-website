@@ -37,6 +37,7 @@ export function ShippingFormDialog({
   onSave,
 }: Props) {
   const isEdit = Boolean(initialData);
+
   const {
     register,
     reset,
@@ -46,7 +47,7 @@ export function ShippingFormDialog({
 
   useEffect(() => {
     reset(
-      initialData || {
+      initialData ?? {
         type: "",
         address: "",
         city: "",
@@ -57,7 +58,10 @@ export function ShippingFormDialog({
   }, [initialData, reset]);
 
   const submit = async (data: ShippingFormData) => {
-    await onSave(data);
+    await onSave({
+      ...data,
+      type: isEdit ? initialData!.type : data.type, 
+    });
     onClose();
   };
 
@@ -67,11 +71,12 @@ export function ShippingFormDialog({
         <form onSubmit={handleSubmit(submit)} className="space-y-4">
           <DialogHeader>
             <DialogTitle className="text-lg text-center">
-            {isEdit
+              {isEdit
                 ? `Edit Address${initialData?.type ? ` - ${initialData.type}` : ""}`
                 : "Add New Address"}
             </DialogTitle>
           </DialogHeader>
+
           {!isEdit && (
             <div className="space-y-2">
               <Label>Type</Label>
@@ -79,67 +84,56 @@ export function ShippingFormDialog({
                 {...register("type", {
                   required: "Type is required",
                   validate: (val) =>
-                    !existingTypes.includes(val) ||
-                    "Type already exists",
+                    !existingTypes.map((t) => t.toLowerCase()).includes(val.toLowerCase()) ||
+                    "This type already exists.",
                 })}
               />
               {errors.type && (
-                <p className="text-sm text-red-600">
-                  {errors.type.message}
-                </p>
+                <p className="text-sm text-red-600">{errors.type.message}</p>
               )}
             </div>
           )}
+
           <div className="space-y-1">
             <Label>Phone</Label>
             <Input
-              {...register("phoneNumber", {
-                required: "Phone is required",
-              })}
+              {...register("phoneNumber", { required: "Phone is required" })}
             />
             {errors.phoneNumber && (
-              <p className="text-sm text-red-600">
-                {errors.phoneNumber.message}
-              </p>
+              <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>
             )}
           </div>
+
           <div className="space-y-1">
             <Label>Address</Label>
             <Input
-              {...register("address", {
-                required: "Address is required",
-              })}
+              {...register("address", { required: "Address is required" })}
             />
             {errors.address && (
-              <p className="text-sm text-red-600">
-                {errors.address.message}
-              </p>
+              <p className="text-sm text-red-600">{errors.address.message}</p>
             )}
           </div>
+
           <div className="space-y-1">
             <Label>City</Label>
             <Input
               {...register("city", { required: "City is required" })}
             />
             {errors.city && (
-              <p className="text-sm text-red-600">
-                {errors.city.message}
-              </p>
+              <p className="text-sm text-red-600">{errors.city.message}</p>
             )}
           </div>
+
           <div className="space-y-1">
             <Label>Country</Label>
             <Input
-              {...register("country", {
-                required: "Country is required",
-              })}
+              {...register("country", { required: "Country is required" })}
             />
             {errors.country && (
-              <p className="text-sm text-red-600">
-                {errors.country.message}
-              </p>
+              <p className="text-sm text-red-600">{errors.country.message}</p>
             )}
           </div>
+
           <DialogFooter className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel

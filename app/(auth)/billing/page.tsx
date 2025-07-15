@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -10,11 +10,17 @@ import { useUserStore } from "@/lib/userStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ShippingFormDialog, ShippingFormData } from "@/components/ShippingFormDialog";
-import { ShoppingBagIcon, ShoppingCart, Heart, ShoppingBag} from "lucide-react";
+import { ShoppingBagIcon, ShoppingCart, Heart, ShoppingBag } from "lucide-react";
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 
 type BillingFormData = {
@@ -30,13 +36,14 @@ export default function BillingPage() {
   const wishlistCount = currentUser?.wishlist?.length || 0;
 
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
-  const [selectedShippingType, setSelectedShippingType] = useState(shippingDetails[0]?.type || "");
+  const [selectedShippingType, setSelectedShippingType] = useState<string>(shippingDetails[0]?.type || "");
   const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<BillingFormData>({
     defaultValues: {
@@ -44,6 +51,14 @@ export default function BillingPage() {
       paymentMethod: "card",
     },
   });
+
+  useEffect(() => {
+    if (shippingDetails.length > 0) {
+      const defaultType = shippingDetails[0].type;
+      setSelectedShippingType(defaultType);
+      setValue("shippingAddressType", defaultType);
+    }
+  }, [shippingDetails, setValue]);
 
   const handlePlaceOrder = async (data: BillingFormData) => {
     if (!currentUser) {
@@ -65,6 +80,7 @@ export default function BillingPage() {
 
   const handleShippingSave = async (data: ShippingFormData) => {
     if (!currentUser) return;
+
     const updated = editingShipping
       ? currentUser.shippingDetails.map((d) =>
           d.type === editingShipping.type ? { ...data, type: editingShipping.type } : d
@@ -72,23 +88,15 @@ export default function BillingPage() {
       : [...(currentUser.shippingDetails || []), data];
 
     await updateUser({ ...currentUser, shippingDetails: updated });
+
+    const newType = editingShipping ? editingShipping.type : data.type;
+    setSelectedShippingType(newType);
+    setValue("shippingAddressType", newType);
+
     setEditingShipping(null);
   };
 
-  const onEdit = (detail: ShippingFormData) => {
-    setEditingShipping(detail);
-    setShippingDialogOpen(true);
-  };
-
-  const onDelete = async (t: string) => {
-    if (!currentUser) return;
-    await updateUser({
-      ...currentUser,
-      shippingDetails: currentUser.shippingDetails.filter((d) => d.type !== t),
-    });
-    toast.success("Deleted!");
-  };
-
+  const total = cart.reduce((acc, item) => acc + item.price, 0);
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3 px-4">
@@ -115,13 +123,7 @@ export default function BillingPage() {
                     handleSubmit(handlePlaceOrder)();
                   }
                 }}
-                title={
-                  shippingDetails.length === 0
-                    ? "Add shipping details"
-                    : !selectedShippingType
-                    ? "Select an address"
-                    : "Place the order"
-                }
+                title="Place the order"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Placing Order..." : "Place Order"}
@@ -133,13 +135,11 @@ export default function BillingPage() {
 
       <div className="mt-10 max-w-4xl mx-auto">
         {cart.length === 0 ? (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center pt-40">
             <Link href="/shop">
               <ShoppingBag className="h-24 w-24 text-gray-300 mb-6" />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Your cart is empty
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
             <p className="text-gray-600 mb-8">Add some products to your cart!</p>
           </div>
         ) : (
@@ -161,13 +161,15 @@ export default function BillingPage() {
                     />
                     <div className="flex-1">
                       <h2 className="font-semibold">{product.name}</h2>
-                      <p className="text-sm text-gray-600">₹{product.price.toLocaleString()}</p>
                       <div className="mt-2 flex gap-2">
                         <Badge className={CategoryColor(product.category)}>{product.category}</Badge>
                         <Badge className={TypeColor(product.type)}>{product.type}</Badge>
                       </div>
+                      <p className="mt-2 text-sm text-gray-600">₹ {product.price}</p>
                     </div>
-                    <Button type="button" variant="outline" onClick={() => router.push('/cart')}>Edit</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push("/cart")}>
+                      Edit
+                    </Button>
                   </div>
                 ))}
               </CardContent>
@@ -177,76 +179,69 @@ export default function BillingPage() {
               <CardHeader>
                 <CardTitle>Billing Details</CardTitle>
               </CardHeader>
-
               <CardContent className="space-y-6">
-                            <div className="flex flex-wrap items-center gap-3">
-              <Label className="whitespace-nowrap">Shipping Address :</Label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Label className="whitespace-nowrap">Shipping Address:</Label>
+                  {shippingDetails.length > 0 ? (
+                    <>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedShippingType(value);
+                          setValue("shippingAddressType", value);
+                        }}
+                        value={selectedShippingType}
+                      >
+                        <SelectTrigger className="min-w-[300px] text-left">
+                          <SelectValue placeholder="Select an address" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {shippingDetails.map((detail) => (
+                            <SelectItem key={detail.type} value={detail.type}>
+                              {detail.type}: {detail.address}, {detail.city}, {detail.country}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="shrink-0"
+                        onClick={() => {
+                          const selectedAddress = shippingDetails.find(
+                            (detail) => detail.type === selectedShippingType
+                          );
+                          if (selectedAddress) setEditingShipping(selectedAddress);
+                          setShippingDialogOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="shrink-0"
+                        onClick={() => setShippingDialogOpen(true)}
+                      >
+                        Add Address
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-red-500">No shipping address available.</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="shrink-0"
+                        onClick={() => setShippingDialogOpen(true)}
+                      >
+                        Add Address
+                      </Button>
+                    </>
+                  )}
+                </div>
 
-              {shippingDetails.length > 0 ? (
-                <>
-                  <Select
-                   onValueChange={(value) => {
-                      setSelectedShippingType(value);
-                      setValue("shippingAddressType", value);
-                    }}
-                    value={selectedShippingType}
-                  >
-                    <SelectTrigger className="min-w-[300px] text-left">
-                      <SelectValue placeholder="Select an address" />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      {shippingDetails.map((detail) => (
-                        <SelectItem key={detail.type} value={detail.type}>
-                          {detail.type}: {detail.address}, {detail.city}, {detail.country}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="shrink-0"
-                    onClick={() => {
-                      const selectedAddress = shippingDetails.find(
-                        (detail) => detail.type === selectedShippingType
-                      );
-                      if (selectedAddress) {
-                        setEditingShipping(selectedAddress);
-                      }
-                      setShippingDialogOpen(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="shrink-0"
-                    onClick={() => {
-                      setShippingDialogOpen(true);
-                    }}
-                  >
-                    Add Address
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <p className="text-sm text-red-500">No shipping address available.</p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="shrink-0"
-                    onClick={() => setShippingDialogOpen(true)}
-                  >
-                    Add Address
-                  </Button>
-                </>
-              )}
-            </div>
                 <div className="flex flex-wrap space-x-3">
-                  <Label className="mb-2 block">Payment Method :</Label>
+                  <Label className="mb-2 block">Payment Method:</Label>
                   <RadioGroup
                     defaultValue="card"
                     onValueChange={(value) => setValue("paymentMethod", value)}
@@ -273,11 +268,10 @@ export default function BillingPage() {
                     <p className="text-sm text-red-500">Please select a payment method.</p>
                   )}
                 </div>
+
                 <div className="flex justify-between pt-4 border-t">
                   <span className="font-medium text-gray-700">Total</span>
-                  <span className="text-xl font-bold text-gray-900">
-                    ₹{cart.reduce((acc, item) => acc + item.price, 0).toLocaleString()}
-                  </span>
+                  <span className="text-xl font-bold text-gray-900">₹{total.toLocaleString()}</span>
                 </div>
               </CardContent>
             </Card>
@@ -298,5 +292,3 @@ export default function BillingPage() {
     </div>
   );
 }
-
-

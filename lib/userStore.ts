@@ -53,6 +53,7 @@ interface UserState {
 
   addShippingDetails: (details: ShippingDetails) => void;
   updateShippingDetails: (details: ShippingDetails) => void;
+  deleteShippingDetails: (typeToDelete: string) => void;
 
   updateUser: (user: User) => void;
   isAuthenticated: () => boolean;
@@ -91,16 +92,7 @@ export const useUserStore = create<UserState>()(
         const user = users.find((u) => u.email === email && u.password === password);
         if (!user) return false;
 
-        const normalizedUser = {
-          ...user,
-          shippingDetails: Array.isArray(user.shippingDetails)
-            ? user.shippingDetails
-            : user.shippingDetails
-            ? [user.shippingDetails]
-            : [],
-        };
-
-        set({ currentUser: normalizedUser });
+        set({ currentUser: user });
         document.cookie = `authenticated=true; Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
