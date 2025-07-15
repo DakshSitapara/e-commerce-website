@@ -2,11 +2,18 @@
 
 A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Zustand**, and **ShadCN UI**. This project demonstrates best practices in frontend development with clean architecture, reusable components, and seamless UI/UX design.
 
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-15.x-000000.svg?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC.svg?style=flat-square&logo=tailwind-css)
 ![ShadCN UI](https://img.shields.io/badge/ShadCN_UI-111827?style=for-the-badge)
 ![Zustand](https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=Zustand&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-8.x-4B32C3.svg?style=flat-square&logo=eslint)
+![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E.svg?style=flat-square&logo=prettier)
+![Husky](https://img.shields.io/badge/Husky-8.x-000000.svg?style=flat-square)
+![Lint-Staged](https://img.shields.io/badge/Lint--Staged-13.x-000000.svg?style=flat-square)
+![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000.svg?style=flat-square&logo=vercel)
+![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)
+
 
 ---
 
