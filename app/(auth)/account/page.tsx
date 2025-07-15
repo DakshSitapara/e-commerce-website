@@ -46,8 +46,7 @@ export default function AccountPage() {
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
-  const [editingShipping, setEditingShipping] =
-    useState<ShippingFormData | null>(null);
+  const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
 
   const {
     register: regUser,
@@ -260,7 +259,7 @@ export default function AccountPage() {
                   <p>No saved addresses.</p>
                 )}
                 {currentUser.shippingDetails.map((d) => (
-                  <Card key={d.type} className="p-4">
+                  <Card key={d.type} className="p-4 hover:bg-accent">
                     <div className="flex justify-between">
                       <div>
                         <p><strong>Type:</strong> {d.type}</p>

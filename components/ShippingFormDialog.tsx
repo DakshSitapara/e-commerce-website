@@ -66,12 +66,14 @@ export function ShippingFormDialog({
       <DialogContent className="sm:max-w-lg">
         <form onSubmit={handleSubmit(submit)} className="space-y-4">
           <DialogHeader>
-            <DialogTitle>
-              {isEdit ? "Edit Address" : "Add New Address"}
+            <DialogTitle className="text-lg text-center">
+            {isEdit
+                ? `Edit Address${initialData?.type ? ` - ${initialData.type}` : ""}`
+                : "Add New Address"}
             </DialogTitle>
           </DialogHeader>
           {!isEdit && (
-            <div>
+            <div className="space-y-2">
               <Label>Type</Label>
               <Input
                 {...register("type", {
@@ -88,7 +90,7 @@ export function ShippingFormDialog({
               )}
             </div>
           )}
-          <div>
+          <div className="space-y-1">
             <Label>Phone</Label>
             <Input
               {...register("phoneNumber", {
@@ -101,7 +103,7 @@ export function ShippingFormDialog({
               </p>
             )}
           </div>
-          <div>
+          <div className="space-y-1">
             <Label>Address</Label>
             <Input
               {...register("address", {
@@ -114,7 +116,7 @@ export function ShippingFormDialog({
               </p>
             )}
           </div>
-          <div>
+          <div className="space-y-1">
             <Label>City</Label>
             <Input
               {...register("city", { required: "City is required" })}
@@ -125,7 +127,7 @@ export function ShippingFormDialog({
               </p>
             )}
           </div>
-          <div>
+          <div className="space-y-1">
             <Label>Country</Label>
             <Input
               {...register("country", {
