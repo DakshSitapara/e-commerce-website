@@ -10,9 +10,22 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 
 ---
 
+## 📚 Table of Contents
+
+- [📦 Tech Stack](#-tech-stack)
+- [✨ Features](#-features)
+- [🧱 Folder Structure](#-folder-structure)
+- [🚀 Getting Started](#-getting-started)
+- [🏗️ Detailed Project Structure](#-detailed-project-structure)
+- [🚀 Live Demo](#-live-demo)
+- [📄 License](#-license)
+- [👤 Author](#-author)
+
+---
+
 ## 📦 Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/)
+- **Framework**: [Next.js (App Router)](https://nextjs.org/docs/app)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Library**: [ShadCN UI](https://ui.shadcn.com/)
@@ -24,7 +37,7 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 
 ## ✨ Features
 
-- ⚡️ Fast and optimized with Next.js  
+- ⚡️ Fast and optimized with Next.js App Router  
 - 💡 Type-safe components with TypeScript  
 - 💅 Beautiful, responsive design with Tailwind CSS  
 - 🧩 Reusable UI components from ShadCN  
@@ -34,17 +47,19 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 
 ---
 
+
 ## 🧱 Folder Structure
 
 ```
 .
-├── app/              # Application routes and layout
-├── components/       # Reusable UI components
-├── lib/              # Utilities and helpers
-├── types/            # TypeScript types and interfaces
-├── public/           # Static files (images, icons)
-├── styles/           # Global styles and Tailwind setup
-├── tailwind.config.js
+├── app/ # Application routes, layout, pages (App Router)
+├── components/ # Reusable UI components
+├── lib/ # Utilities and helpers
+├── hooks/ # Custom React hooks (e.g., useCart)
+├── types/ # TypeScript types and interfaces
+├── public/ # Static files (images, icons)
+├── styles/ # Global styles and Tailwind setup
+├── tailwind.config.ts
 ├── tsconfig.json
 └── package.json
 ```
@@ -91,18 +106,23 @@ bun dev
 
 ```
 .
-├── public/           # Static assets (images, icons, fonts)
-├── src/
-│   ├── pages/        # Next.js pages (home, products, cart, checkout)
-│   ├── components/   # Reusable UI components (ProductCard, Navbar, CartIcon)
-│   ├── hooks/        # Custom React hooks (e.g., useCart)
-│   ├── styles/       # Global CSS & Tailwind imports
-│   ├── types/        # TypeScript types and interfaces
-│   └── utils/        # Helpers (formatters, API calls, etc.)
-├── tailwind.config.js
-├── tsconfig.json
-└── package.json
+├── public/             # Static assets (images, icons, fonts)
+├── app/                # App Router routes and layout
+│   ├── page.tsx        # Home page
+│   ├── products/       # Product listing and details
+│   ├── cart/           # Shopping cart page
+│   └── checkout/       # Checkout process
+├── components/         # UI components (Navbar, ProductCard, etc.)
+├── hooks/              # Custom React hooks
+├── lib/                # Utilities (API, formatters)
+├── styles/             # Tailwind and global styles
+├── types/              # Custom TypeScript types
+├── tailwind.config.ts  # Tailwind configuration
+├── tsconfig.json       # TypeScript configuration
+└── package.json        # Project metadata and scripts
 ```
+
+---
 
 ## 🚀 Live Demo
 

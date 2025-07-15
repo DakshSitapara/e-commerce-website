@@ -2,13 +2,13 @@
 
 import { useRouter, useParams } from "next/navigation";
 import React from "react";
-import Image from "next/image";
 import { ShoppingBagIcon, Heart, ShoppingCart, User, ArrowRight, ArrowLeft, Star } from "lucide-react";
 import { products, CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
+import ProductImage from "@/components/ProductImage";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -30,9 +30,6 @@ export default function ProductPage() {
       </div>
     );
   }
-
-  const isInCart = cart.some((item) => item.id === product.id);
-  const isInWishlist = wishlist.some((item) => item.id === product.id);
 
   const handleNext = () => {
     const nextIndex = (productIndex + 1) % products.length;
@@ -90,12 +87,8 @@ export default function ProductPage() {
       <main className="flex flex-col lg:flex-row items-center justify-center px-4 py-20 gap-10 mx-auto w-full max-w-6xl">
         <div className="flex flex-col items-center w-full lg:w-1/2 space-y-4">
           <div className="relative w-full aspect-square overflow-hidden rounded-lg shadow">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-            />
+            <ProductImage product={product} />
+
             <Button
               title={
                 wishlist.some((item) => item.id === product.id)

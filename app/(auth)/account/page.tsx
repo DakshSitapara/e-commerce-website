@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -42,14 +41,7 @@ type UserInfoFormData = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const currentUser = useUserStore((s) => s.currentUser);
-  const updateUser = useUserStore((s) => s.updateUser);
-  const logout = useUserStore((s) => s.logout);
-  const users = useUserStore((s) => s.users);
-  
-  const deleteShippingDetails = useUserStore((s) => s.deleteShippingDetails);
-  const addShippingDetails = useUserStore((s) => s.addShippingDetails);
-  const updateShippingDetails = useUserStore((s) => s.updateShippingDetails);
+  const { currentUser, updateUser, logout, users, deleteShippingDetails, addShippingDetails, updateShippingDetails } = useUserStore();
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);

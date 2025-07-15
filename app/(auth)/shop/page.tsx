@@ -140,7 +140,7 @@ export default function ShopPage() {
                 <CardHeader className="p-0">
                   <div className="relative h-full w-full">
                     <Image
-                      src={product.image}
+                      src={product.image || "/fallback.jpg"}
                       alt={product.name}
                       width={500}
                       height={500}
