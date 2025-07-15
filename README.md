@@ -1,11 +1,12 @@
 # 🛒 E-Commerce Website
 
-A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **ShadCN UI**. This project demonstrates best practices in frontend development with clean architecture, reusable components, and seamless UI/UX design.
+A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Zustand**, and **ShadCN UI**. This project demonstrates best practices in frontend development with clean architecture, reusable components, and seamless UI/UX design.
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![ShadCN UI](https://img.shields.io/badge/ShadCN_UI-111827?style=for-the-badge)
+![Zustand](https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=Zustand&logoColor=white)
 
 ---
 
@@ -17,6 +18,7 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 - **UI Library**: [ShadCN UI](https://ui.shadcn.com/)
 - **Icons**: [Lucide Icons](https://lucide.dev/)
 - **Forms**: [React Hook Form](https://react-hook-form.com/)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
 
 ---
 
@@ -102,6 +104,10 @@ bun dev
 └── package.json
 ```
 
+## 🚀 Live Demo
+
+[View Live Site](https://e-commerce-website-theta-rust.vercel.app/)
+
 ---
 
 ## 📄 License
@@ -114,8 +120,8 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 **Daksh Sitapara**  
 - GitHub: [@DakshSitapara](https://github.com/DakshSitapara)  
-- LinkedIn: [Daksh Sitapara](https://www.linkedin.com/in/dakshsitapara)
+- LinkedIn: [Daksh Sitapara](www.linkedin.com/in/daksh-sitapara-02b06b288)
 
 ---
 
-> Built with ❤️ using Next.js, TypeScript, Tailwind CSS, and ShadCN UI.
+> Built with using Next.js, TypeScript, Tailwind CSS, and ShadCN UI.
