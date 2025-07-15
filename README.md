@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 E-Commerce Website
 
-## Getting Started
+A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **ShadCN UI**. This project demonstrates best practices in frontend development with clean architecture, reusable components, and seamless UI/UX design.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![ShadCN UI](https://img.shields.io/badge/ShadCN_UI-111827?style=for-the-badge)
+
+---
+
+## 📦 Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Library**: [ShadCN UI](https://ui.shadcn.com/)
+- **Icons**: [Lucide Icons](https://lucide.dev/)
+- **Forms**: [React Hook Form](https://react-hook-form.com/)
+
+---
+
+## ✨ Features
+
+- ⚡️ Fast and optimized with Next.js  
+- 💡 Type-safe components with TypeScript  
+- 💅 Beautiful, responsive design with Tailwind CSS  
+- 🧩 Reusable UI components from ShadCN  
+- 🔍 Product listing, filtering, and detailed views  
+- 🛍️ Shopping cart (add/remove items)  
+- 📦 Modular structure for scalability  
+
+---
+
+## 🧱 Folder Structure
+
+```
+.
+├── app/              # Application routes and layout
+├── components/       # Reusable UI components
+├── lib/              # Utilities and helpers
+├── types/            # TypeScript types and interfaces
+├── public/           # Static files (images, icons)
+├── styles/           # Global styles and Tailwind setup
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18  
+- pnpm (preferred), npm, yarn, or bun  
+- (Optional) Stripe key or mock payment setup  
+
+### Installation
 
 ```bash
+git clone https://github.com/DakshSitapara/e-commerce-website.git
+cd e-commerce-website
+pnpm install
+# or
+npm install
+# or
+yarn install
+# or
+bun install
+```
+
+### Development
+
+```bash
+pnpm dev
+# or
 npm run dev
 # or
 yarn dev
 # or
-pnpm dev
-# or
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Detailed Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+.
+├── public/           # Static assets (images, icons, fonts)
+├── src/
+│   ├── pages/        # Next.js pages (home, products, cart, checkout)
+│   ├── components/   # Reusable UI components (ProductCard, Navbar, CartIcon)
+│   ├── hooks/        # Custom React hooks (e.g., useCart)
+│   ├── styles/       # Global CSS & Tailwind imports
+│   ├── types/        # TypeScript types and interfaces
+│   └── utils/        # Helpers (formatters, API calls, etc.)
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is open-source and available under the [MIT License](LICENSE).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 👤 Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Daksh Sitapara**  
+- GitHub: [@DakshSitapara](https://github.com/DakshSitapara)  
+- LinkedIn: [Daksh Sitapara](https://www.linkedin.com/in/dakshsitapara)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+> Built with ❤️ using Next.js, TypeScript, Tailwind CSS, and ShadCN UI.
