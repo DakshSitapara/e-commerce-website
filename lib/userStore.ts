@@ -9,7 +9,7 @@ export type Product = {
   rating: number;
   category: string;
   type: string;
-  orders: Order[];
+  orders?: Order[];
 };
 
 type ShippingDetails = {
