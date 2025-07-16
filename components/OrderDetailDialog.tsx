@@ -29,34 +29,60 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-6">
         <DialogHeader>
-          <DialogTitle>Order Details</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold text-gray-800 text-center">
+            Order Details
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div>
-            <p><strong>Date:</strong> {new Date(order.date).toLocaleDateString()}</p>
-            <p><strong>Time:</strong> {new Date(order.date).toLocaleTimeString()}</p>
-            <p><strong>Payment:</strong> {order.paymentMethod}</p>
-          </div>
+        <div className="grid grid-cols-2 gap-4">
+          <section className="bg-white rounded-lg p-4 space-y-4 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800">Billing Information</h3>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
+              <li>
+                <span className="font-medium">Date:</span> {new Date(order.date).toLocaleDateString()}
+              </li>
+              <li>
+                <span className="font-medium">Time:</span> {new Date(order.date).toLocaleTimeString()}
+              </li>
+              <li>
+                <span className="font-medium">Payment Method:</span> {order.paymentMethod}
+              </li>
+            </ul>
+          </section>
 
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2">Shipping Address</h3>
-            <div className="grid grid-cols-1 gap-1 text-sm">
-              <p><span className="font-medium">Type:</span> {order.shippingAddress?.type}</p>
-              <p><span className="font-medium">Address:</span> {order.shippingAddress?.address}</p>
-              <p><span className="font-medium">City:</span> {order.shippingAddress?.city}</p>
-              <p><span className="font-medium">Country:</span> {order.shippingAddress?.country}</p>
-              <p><span className="font-medium">Phone:</span> {order.shippingAddress?.phoneNumber}</p>
-            </div>
-          </div>
+          <section className="bg-white rounded-lg p-4 space-y-4 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800">Shipping Address</h3>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
+              <li>
+                <span className="font-medium">Type:</span> {order.shippingAddress?.type}
+              </li>
+              <li>
+                <span className="font-medium">Address:</span> {order.shippingAddress?.address}
+              </li>
+              <li>
+                <span className="font-medium">City:</span> {order.shippingAddress?.city}
+              </li>
+              <li>
+                <span className="font-medium">Country:</span> {order.shippingAddress?.country}
+              </li>
+              <li>
+                <span className="font-medium">Phone:</span> {order.shippingAddress?.phoneNumber}
+              </li>
+            </ul>
+          </section>
+        </div>
 
-          <div>
-            <h3 className="font-semibold mt-4 mb-2">Items</h3>
-            <ul className="space-y-2">
-              {order.items.map((item: any) => (
-                <li key={item.id} className="flex items-center gap-4 border rounded p-2">
+        <section className="bg-white rounded-lg p-4 border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-800">Items</h3>
+          <ul className="space-y-3">
+            {order.items.map((item: any) => (
+              <li
+                key={item.id}
+                className="flex items-center gap-4 p-3 border-b border-gray-200 last:border-b-0"
+              >
+                <div className="min-w-[60px] min-h-[60px]">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -65,18 +91,20 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
                     className="rounded object-cover"
                     loader={() => item.image}
                   />
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-600">₹{item.price}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+                <div className="flex flex-col">
+                  <p className="font-medium text-gray-800">{item.name}</p>
+                  <p className="text-sm text-gray-600">Type: {item.type}</p>
+                  <p className="text-sm text-gray-600">Category: {item.category}</p>
+                  <p className="text-sm text-gray-600">₹{item.price}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-          <div className="text-right text-lg font-bold">
-            Total: ₹{order.total.toLocaleString()}
-          </div>
+        <div className="bg-gray-50 p-4 border-t border-gray-200 text-right text-xl font-bold text-gray-800">
+          Total: ₹{order.total.toLocaleString()}
         </div>
       </DialogContent>
     </Dialog>

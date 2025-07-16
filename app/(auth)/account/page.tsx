@@ -151,249 +151,203 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b">
-        <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Account</h1>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Button
-                variant="outline"
-                className="flex items-center gap-1"
-                onClick={() => router.push("/shop")}
-              >
-                <ShoppingBagIcon size={18} />
-                <span className="hidden sm:inline">Shop</span>
+  <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b">
+      <div className="max-w-8xl mx-auto px-4 flex h-16 items-center justify-between">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Account</h1>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Button variant="outline" onClick={() => router.push("/shop")}>
+            <ShoppingBagIcon size={18} />
+            <span className="ml-1 hidden sm:inline">Shop</span>
+          </Button>
+          <Button variant="outline" onClick={() => router.push("/wishlist")}>
+            <Heart size={18} />
+            <span className="ml-1 hidden sm:inline">Wishlist ({currentUser.wishlist.length})</span>
+          </Button>
+          <Button variant="outline" onClick={() => router.push("/cart")}>
+            <ShoppingCart size={18} />
+            <span className="ml-1 hidden sm:inline">Cart ({currentUser.cart.length})</span>
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="p-2" title="User Menu">
+                <User size={20} />
               </Button>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1"
-                onClick={() => router.push("/wishlist")}
-              >
-                <Heart size={18} />
-                <span className="hidden sm:inline">
-                  Wishlist ({currentUser.wishlist.length})
-                </span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1"
-                onClick={() => router.push("/cart")}
-              >
-                <ShoppingCart size={18} />
-                <span className="hidden sm:inline">Cart ({currentUser.cart.length})</span>
-              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="text-red-600" onClick={() => setConfirmAction("logout")}>
+                <LogOut size={16} className="mr-2" /> Logout
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-red-600" onClick={() => setConfirmAction("delete")}>
+                <Trash2 size={16} className="mr-2" /> Delete Account
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button title="User Menu" variant="ghost" className="p-2">
-                    <User size={20} />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    className="text-red-600 cursor-pointer"
-                    onClick={() => setConfirmAction("logout")}
-                  >
-                    <LogOut size={16} className="mr-2" />
-                    Logout
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    className="text-red-600 cursor-pointer"
-                    onClick={() => setConfirmAction("delete")}
-                  >
-                    <Trash2 size={16} className="mr-2" />
-                    Delete Account
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      {confirmAction === "logout" && "Confirm Logout"}
-                      {confirmAction === "delete" && "Confirm Delete Account"}
-                      {confirmAction === "clearOrders" && "Clear Order History"}
-                      {confirmAction === "deleteOrder" && "Delete Order"}
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {confirmAction === "logout" && "Are you sure you want to log out?"}
-                      {confirmAction === "delete" &&
-                        "This action is permanent. Are you sure you want to delete your account?"}
-                      {confirmAction === "clearOrders" &&
-                        "Are you sure you want to clear your entire order history? This action cannot be undone."}
-                      {confirmAction === "deleteOrder" &&
-                        "Are you sure you want to delete this order? This action cannot be undone."}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        if (confirmAction === "logout") handleLogout();
-                        else if (confirmAction === "delete") handleDeleteAccount();
-                        else if (confirmAction === "clearOrders") handleClearOrders();
-                        else if (confirmAction === "deleteOrder") handleDeleteOrder();
-                      }}
-                    >
-                      {confirmAction === "logout" && "Logout"}
-                      {confirmAction === "delete" && "Delete"}
-                      {confirmAction === "clearOrders" && "Clear History"}
-                      {confirmAction === "deleteOrder" && "Delete"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </div>
+          {/* Confirmation Dialog */}
+          <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {confirmAction === "logout"
+                    ? "Confirm Logout"
+                    : confirmAction === "delete"
+                    ? "Confirm Delete Account"
+                    : confirmAction === "clearOrders"
+                    ? "Clear Order History"
+                    : confirmAction === "deleteOrder"
+                    ? "Delete Order"
+                    : ""}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {confirmAction === "logout"
+                    ? "Are you sure you want to log out?"
+                    : confirmAction === "delete"
+                    ? "This will permanently delete your account. Proceed?"
+                    : confirmAction === "clearOrders"
+                    ? "This will clear your entire order history. This action cannot be undone."
+                    : confirmAction === "deleteOrder"
+                    ? "This will permanently delete this order. Continue?"
+                    : ""}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (confirmAction === "logout") handleLogout();
+                    else if (confirmAction === "delete") handleDeleteAccount();
+                    else if (confirmAction === "clearOrders") handleClearOrders();
+                    else if (confirmAction === "deleteOrder") handleDeleteOrder();
+                  }}
+                >
+                  {confirmAction === "logout"
+                    ? "Logout"
+                    : confirmAction === "delete"
+                    ? "Delete"
+                    : confirmAction === "clearOrders"
+                    ? "Clear History"
+                    : confirmAction === "deleteOrder"
+                    ? "Delete"
+                    : ""}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
-      </nav>
-
-      <div className="mt-20 mb-6 flex flex-wrap justify-center gap-4 border-b border-gray-200">
-        <nav className="flex flex-wrap justify-center gap-6" role="tablist">
-          {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          role="tab"
-          aria-selected={activeTab === tab.id}
-          aria-current={activeTab === tab.id ? "page" : undefined}
-          onClick={() => setActiveTab(tab.id)} 
-          className={`relative pb-2 text-lg font-medium transition-all duration-200 ease-in-out hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black ${
-                      activeTab === tab.id
-                        ? "text-black after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black"
-                        : "text-gray-500 hover:text-black"
-                    }`}
-        >
-          {tab.label}
-        </button>
-      ))}
-        </nav>
       </div>
+    </nav>
 
-      <main>
-        {activeTab === "user" && (
-          <Card className="max-w-3xl mx-auto">
-            <CardHeader>
-              <CardTitle>User Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {showUserInfoForm ? (
-                <form onSubmit={subUser(onSubmitUser)} className="space-y-4">
-                  <div>
-                    <Label>Name</Label>
-                    <Input {...regUser("name", { required: "Name is required" })} />
-                    {errUser.name && (
-                      <p className="text-sm text-red-600">{errUser.name.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>Email</Label>
-                    <Input
-                      {...regUser("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value: /^[^@]+@[^@]+\.[^@]+$/,
-                          message: "Invalid email",
-                        },
-                      })}
-                    />
-                    {errUser.email && (
-                      <p className="text-sm text-red-600">{errUser.email.message}</p>
-                    )}
-                  </div>
-                  <div className="flex justify-end space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowUserInfoForm(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={submittingUser}>
-                      Save
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <div className="space-y-2">
-                  <p>
-                    <strong>Name:</strong> {currentUser.name}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {currentUser.email}
-                  </p>
-                  <Button onClick={() => setShowUserInfoForm(true)} className="mt-4">
-                    Edit
+    <div className="mt-20 mb-6 border-b border-gray-200 flex justify-center">
+      <div className="flex space-x-8">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`pb-2 transition-all text-base font-medium border-b-2 ${
+              activeTab === tab.id
+                ? "text-primary border-primary"
+                : "text-gray-500 border-transparent hover:text-primary"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <main className="space-y-10">
+      {activeTab === "user" && (
+        <Card className="shadow-sm border max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle>User Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {showUserInfoForm ? (
+              <form onSubmit={subUser(onSubmitUser)} className="space-y-4">
+                <div>
+                  <Label>Name</Label>
+                  <Input {...regUser("name", { required: "Name is required" })} />
+                  {errUser.name && <p className="text-sm text-red-600">{errUser.name.message}</p>}
+                </div>
+                <div>
+                  <Label>Email</Label>
+                  <Input
+                    {...regUser("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^@]+@[^@]+\.[^@]+$/,
+                        message: "Invalid email format",
+                      },
+                    })}
+                  />
+                  {errUser.email && <p className="text-sm text-red-600">{errUser.email.message}</p>}
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setShowUserInfoForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={submittingUser}>
+                    Save
                   </Button>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+              </form>
+            ) : (
+              <div className="space-y-2 text-sm text-gray-700">
+                <p>
+                  <strong>Name:</strong> {currentUser.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {currentUser.email}
+                </p>
+                <Button onClick={() => setShowUserInfoForm(true)} className="mt-4">
+                  Edit
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
-        {activeTab === "address" && (
-          <Card className="max-w-3xl mx-auto">
-            <CardHeader className="flex justify-between items-center">
-              <CardTitle>Shipping Addresses</CardTitle>
-              <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
-                Add Address
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {currentUser.shippingDetails.length === 0 ? (
-                <p>No shipping addresses added yet.</p>
-              ) : (
-                <div className="space-y-4">
-                  {currentUser.shippingDetails.map((detail) => (
-                    <div
-                      key={detail.type}
-                      className="border rounded p-4 flex justify-between items-start"
-                    >
-                      <div>
-                        <p>
-                          <strong>Type:</strong> {detail.type}
-                        </p>
-                        <p>
-                          <strong>Address:</strong> {detail.address}
-                        </p>
-                        <p>
-                          <strong>City:</strong> {detail.city}
-                        </p>
-                        <p>
-                          <strong>Phone Number:</strong> {detail.phoneNumber}
-                        </p>
-                        <p>
-                          <strong>Country:</strong> {detail.country}
-                        </p>
-                      </div>
-                      <div className="flex flex-col space-y-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onEdit(detail)}
-                          className="flex items-center gap-1"
-                        >
-                          <Pencil size={16} /> Edit
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => onDelete(detail.type)}
-                          className="flex items-center gap-1"
-                        >
-                          <Trash2 size={16} /> Delete
-                        </Button>
-                      </div>
+      {activeTab === "address" && (
+        <Card className="shadow-sm border max-w-3xl mx-auto">
+          <CardHeader className="flex justify-between items-center">
+            <CardTitle>Shipping Addresses</CardTitle>
+            <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
+              Add Address
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {currentUser.shippingDetails.length === 0 ? (
+              <p className="text-gray-500 italic text-center py-4">No shipping addresses added yet.</p>
+            ) : (
+              <div className="space-y-4">
+                {currentUser.shippingDetails.map((detail) => (
+                  <div
+                    key={detail.type}
+                    className="p-4 border rounded-md flex justify-between items-start bg-white shadow-sm"
+                  >
+                    <div className="text-sm space-y-1 text-gray-700">
+                      <p><strong>Type:</strong> {detail.type}</p>
+                      <p><strong>Address:</strong> {detail.address}</p>
+                      <p><strong>City:</strong> {detail.city}</p>
+                      <p><strong>Phone Number:</strong> {detail.phoneNumber}</p>
+                      <p><strong>Country:</strong> {detail.country}</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
+                    <div className="flex flex-col gap-2">
+                      <Button variant="outline" size="sm" onClick={() => onEdit(detail)}>
+                        <Pencil size={14} className="mr-1" /> Edit
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => onDelete(detail.type)}>
+                        <Trash2 size={14} className="mr-1" /> Delete
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             <ShippingFormDialog
               open={shippingDialogOpen}
               onClose={() => setShippingDialogOpen(false)}
@@ -401,91 +355,69 @@ export default function AccountPage() {
               onSave={handleShippingSave}
               initialData={editingShipping || undefined}
             />
-          </Card>
-        )}
+          </CardContent>
+        </Card>
+      )}
 
-        {activeTab === "orders" && (
-          <Card className="max-w-3xl mx-auto">
-            <CardHeader className="flex justify-between items-center">
-              <CardTitle>Order History</CardTitle>
-              <Button
-                variant="destructive"
-                disabled={currentUser.orders.length === 0}
-                onClick={() => setConfirmAction("clearOrders")}
-              >
-                Clear History
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {currentUser.orders.length === 0 ? (
-                <p>You have no past orders.</p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full table-auto border-collapse border border-gray-200 rounded-lg overflow-hidden">
-                    <thead>
-                      <tr className="bg-gray-100 text-gray-800 text-sm">
-                        <th className="border border-gray-300 px-4 py-2 text-left">#</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Items</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Total</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+      {activeTab === "orders" && (
+        <Card className="shadow-sm border max-w-3xl mx-auto">
+          <CardHeader className="flex justify-between items-center">
+            <CardTitle>Order History</CardTitle>
+            <Button
+              variant="destructive"
+              disabled={currentUser.orders.length === 0}
+              onClick={() => setConfirmAction("clearOrders")}
+            >
+              Clear History
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {currentUser.orders.length === 0 ? (
+              <p className="text-gray-500 italic text-center py-4">You have no past orders.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full table-auto text-sm border rounded overflow-hidden">
+                  <thead className="bg-gray-100 text-gray-800">
+                    <tr>
+                      <th className="px-4 py-2 text-left">#</th>
+                      <th className="px-4 py-2 text-left">Date</th>
+                      <th className="px-4 py-2 text-left">Time</th>
+                      <th className="px-4 py-2 text-left">Items</th>
+                      <th className="px-4 py-2 text-left">Total</th>
+                      <th className="px-4 py-2 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...currentUser.orders].reverse().map((order, index) => (
+                      <tr key={order.id} className="hover:bg-gray-50 border-t">
+                        <td className="px-4 py-2">{index + 1}</td>
+                        <td className="px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
+                        <td className="px-4 py-2">{new Date(order.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
+                        <td className="px-4 py-2">{order.items.length}</td>
+                        <td className="px-4 py-2 font-semibold">₹{order.total.toFixed(2)}</td>
+                        <td className="px-4 py-2 space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
+                            View
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder"); }}>
+                            Delete
+                          </Button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {[...currentUser.orders].reverse().map((order, index) => (
-                        <tr key={order.id} className="hover:bg-gray-50 text-sm">
-                          <td className="border border-gray-300 px-4 py-2 font-medium">{index + 1}</td>
-                          <td className="border border-gray-300 px-4 py-2">
-                            {new Date(order.date).toLocaleDateString()}
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2">
-                            {new Date(order.date).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2">
-                            {order.items.length}
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2 font-semibold">
-                            ₹{order.total.toFixed(2)}
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2 space-x-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                setSelectedOrderId(order.id);
-                                setViewDialogOpen(true);
-                              }}
-                            >
-                              View
-                            </Button>
-
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder");}}
-                            >
-                              Delete
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </CardContent>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
             <OrderDetailDialog
               open={viewDialogOpen}
               onClose={() => setViewDialogOpen(false)}
               orderId={selectedOrderId}
             />
-          </Card>
-        )}
-      </main>
-    </div>
-  );
+          </CardContent>
+        </Card>
+      )}
+    </main>
+  </div>
+);
 }
