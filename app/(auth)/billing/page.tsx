@@ -97,6 +97,7 @@ export default function BillingPage() {
     await useUserStore.getState().addOrder(newOrder);
 
     localStorage.setItem("lastCart", JSON.stringify(cart));
+    document.cookie = "hasRecentOrder=true; path=/";
     clearCart();
 
     toast.success("Order placed!");
@@ -206,6 +207,11 @@ export default function BillingPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Billing Details</CardTitle>
+                {total <= 1000 ? (
+                    <span className="text-sm text-red-500">Get 10% discount on total greater than 1000!</span>
+                  ) : (
+                    <span className="text-sm text-green-500">You got 10% discount!</span>
+                  )}
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex flex-wrap items-center gap-3">
@@ -296,12 +302,13 @@ export default function BillingPage() {
                     <p className="text-sm text-red-500">Please select a payment method.</p>
                   )}
                 </div>
-
+                
                 <div className="flex justify-between pt-4 border-t">
+                  <span className="font-medium text-gray-700">Subtotal</span>
+                  <span className="text-xl font-bold text-gray-900">₹{total.toFixed(0)}</span>
+                </div>
+                <div className="flex justify-between pt-2">
                   <span className="font-medium text-gray-700">Total</span>
-                  {total < 1000 && (
-                    <span className="text-sm text-red-500">Get 10% discount on total greater than 1000!</span>
-                  )}
                   <span className="text-xl font-bold text-gray-900">₹{finalTotal.toFixed(0)}</span>
                 </div>
               </CardContent>

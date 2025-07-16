@@ -2,9 +2,14 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const privateRoutes = ["/shop", "/account", "/cart","/wishlist", "/checkout", "/billing"];
+  const privateRoutes = ["/shop", "/account", "/cart", "/wishlist", "/checkout", "/billing"];
   const isAuthenticated = request.cookies.get('authenticated')?.value === 'true';
+  const hasRecentOrder = request.cookies.get('hasRecentOrder')?.value === 'true';
   const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/checkout" && !hasRecentOrder) {
+    return NextResponse.redirect(new URL('/shop', request.url));
+  }
 
   if (isAuthenticated && privateRoutes.includes(pathname)) {
     const response = NextResponse.next();
@@ -12,7 +17,7 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  if (privateRoutes.includes(pathname) && !isAuthenticated) {
+  if (!isAuthenticated && privateRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -25,5 +30,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/shop', '/account', '/cart','/wishlist', '/checkout', '/billing', '/login', '/register'],
+  matcher: ['/shop', '/account', '/cart', '/wishlist', '/checkout', '/billing', '/login', '/register'],
 };

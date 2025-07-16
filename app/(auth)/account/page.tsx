@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { LogOut, ShoppingBagIcon, Heart, ShoppingCart, Pencil, User,Trash2 } from "lucide-react";
+import { LogOut, ShoppingBagIcon, Heart, ShoppingCart, User,Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,9 @@ import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import { ShippingFormDialog, ShippingFormData } from "@/components/ShippingFormDialog";
 import { OrderDetailDialog } from "@/components/OrderDetailDialog";
+import { FcViewDetails } from "react-icons/fc";
+import { FaEdit } from "react-icons/fa";
+import { AiFillDelete } from "react-icons/ai";
 
 type UserInfoFormData = {
   name: string;
@@ -186,7 +189,6 @@ export default function AccountPage() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Confirmation Dialog */}
           <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -337,11 +339,11 @@ export default function AccountPage() {
                       <p><strong>Country:</strong> {detail.country}</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <Button variant="outline" size="sm" onClick={() => onEdit(detail)}>
-                        <Pencil size={14} className="mr-1" /> Edit
+                      <Button title="Edit" variant="outline" size="sm" onClick={() => onEdit(detail)}>
+                        <FaEdit size={14} /> 
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => onDelete(detail.type)}>
-                        <Trash2 size={14} className="mr-1" /> Delete
+                      <Button title="Delete" variant="outline" size="sm" onClick={() => onDelete(detail.type)}>
+                        <AiFillDelete size={14} />
                       </Button>
                     </div>
                   </div>
@@ -396,11 +398,11 @@ export default function AccountPage() {
                         <td className="px-4 py-2">{order.items.length}</td>
                         <td className="px-4 py-2 font-semibold">₹{order.total.toFixed(0)}</td>
                         <td className="px-4 py-2 space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
-                            View
+                          <Button title="View Details" size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
+                            <FcViewDetails size={14} /> 
                           </Button>
-                          <Button size="sm" variant="destructive" onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder"); }}>
-                            Delete
+                          <Button title="Delete" size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder"); }}>
+                            <AiFillDelete size={14} />
                           </Button>
                         </td>
                       </tr>

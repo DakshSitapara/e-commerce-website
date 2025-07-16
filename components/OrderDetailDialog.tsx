@@ -104,14 +104,17 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
         </section>
 
         <div className="bg-gray-50 p-4 border-t border-gray-200 text-right text-xl font-bold text-gray-800">
-        <div className="flex flex-col">
-          {order.total/0.9 > 1000 && (
-            <span className="text-green-600 text-sm">
-              You got 10% discount
-            </span>
-          )}
-          Total: ₹{order.total.toFixed()}
-        </div>
+          <div className="flex flex-col">
+            {order.total / 0.9 > 1000 && (
+              <>
+                <span className=" text-sm text-gray-700">Subtotal :₹{(order.total / 0.9).toFixed(0)}</span>
+                <span className="text-green-600 text-sm">
+                  You got 10% discount
+                </span>
+              </>
+            )}
+            <span>Total: ₹{order.total.toFixed()}</span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
