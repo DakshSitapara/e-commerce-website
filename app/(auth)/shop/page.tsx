@@ -161,7 +161,7 @@ export default function ShopPage() {
                             `${product.name} removed from wishlist!`
                           );
                         } else {
-                          addToWishlist(product);
+                          addToWishlist({...product, orders: [] });
                           toast.success(
                             `${product.name} added to wishlist!`
                           );
@@ -213,7 +213,7 @@ export default function ShopPage() {
                     onClick={() => {
                       if (wishlist.some((item) => item.id === product.id)) {
                         removeFromWishlist(product.id);
-                        addToCart(product);
+                        addToCart({ ...product, orders: [] });
                         toast.success(`${product.name} added to cart!`);
                         return;
                       } else if (cart.some((item) => item.id === product.id)) {
@@ -221,7 +221,7 @@ export default function ShopPage() {
                         toast.success(`${product.name} removed from cart!`);
                         return;
                       }
-                      addToCart(product);
+                      addToCart({ ...product, orders: [] });
                       toast.success(`${product.name} added to cart!`);
                     }}
                     aria-label="Add to Cart"

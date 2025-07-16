@@ -55,7 +55,7 @@ export function ShippingFormDialog({
         phoneNumber: "",
       }
     );
-  }, [initialData, reset]);
+  }, [initialData, open, reset]);
 
   const submit = async (data: ShippingFormData) => {
     await onSave({
@@ -72,32 +72,37 @@ export function ShippingFormDialog({
           <DialogHeader>
             <DialogTitle className="text-lg text-center">
               {isEdit
-                ? `Edit Address${initialData?.type ? ` - ${initialData.type}` : ""}`
+                ? `Edit Address - ${initialData?.type}`
                 : "Add New Address"}
             </DialogTitle>
           </DialogHeader>
 
-          {!isEdit && (
-            <div className="space-y-2">
-              <Label>Type</Label>
-              <Input
-                {...register("type", {
-                  required: "Type is required",
-                  validate: (val) =>
-                    !existingTypes.map((t) => t.toLowerCase()).includes(val.toLowerCase()) ||
-                    "This type already exists.",
-                })}
-              />
-              {errors.type && (
-                <p className="text-sm text-red-600">{errors.type.message}</p>
-              )}
-            </div>
-          )}
+           
+          <div className="space-y-2">
+            <Label>Type</Label>
+            <Input
+              {...register("type", {
+                required: "Type is required",
+                validate: (val) =>
+                  !existingTypes.map((t) => t.toLowerCase()).includes(val.toLowerCase()) ||
+                  "This type already exists.",
+              })}
+            />
+            {errors.type && (
+              <p className="text-sm text-red-600">{errors.type.message}</p>
+            )}
+          </div>
 
           <div className="space-y-1">
             <Label>Phone</Label>
             <Input
-              {...register("phoneNumber", { required: "Phone is required" })}
+              {...register("phoneNumber", {
+                required: "Phone is required",
+                pattern: {
+                  value: /^\d{10}$/,
+                  message: "Phone number must be exactly 10 digits",
+                },
+              })}
             />
             {errors.phoneNumber && (
               <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>

@@ -30,7 +30,7 @@ type BillingFormData = {
 
 export default function BillingPage() {
   const router = useRouter();
-  const { currentUser, clearCart, updateUser } = useUserStore();
+  const { currentUser, clearCart, updateUser} = useUserStore();
   const cart = currentUser?.cart || [];
   const shippingDetails = currentUser?.shippingDetails || [];
   const wishlistCount = currentUser?.wishlist?.length || 0;
@@ -43,7 +43,6 @@ export default function BillingPage() {
     register,
     handleSubmit,
     setValue,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<BillingFormData>({
     defaultValues: {
@@ -60,23 +59,49 @@ export default function BillingPage() {
     }
   }, [shippingDetails, setValue]);
 
-  const handlePlaceOrder = async (data: BillingFormData) => {
-    if (!currentUser) {
-      toast.error("Please log in to place an order.");
-      router.push("/login");
+ const handlePlaceOrder = async (data: BillingFormData) => {
+  if (!currentUser) {
+    toast.error("Please log in to place an order.");
+    router.push("/login");
+    return;
+  }
+
+  if (!selectedShippingType) {
+    toast.error("Please select a shipping address.");
+    return;
+  }
+
+  try {
+    const selectedShippingAddress = currentUser.shippingDetails.find(
+      (d) => d.type === selectedShippingType
+    );
+    if (!selectedShippingAddress) {
+      toast.error("Selected shipping address not found.");
       return;
     }
 
-    try {
-      localStorage.setItem("lastCart", JSON.stringify(cart));
-      await clearCart();
-      toast.success("Order placed!");
-      router.push("/checkout");
-    } catch (error) {
-      toast.error("Error placing order.");
-      console.error(error);
-    }
-  };
+    const newOrder = {
+      id: crypto.randomUUID(),
+      date: new Date().toISOString(),
+      time: new Date().toLocaleTimeString(),
+      items: cart,
+      total: cart.reduce((acc, item) => acc + item.price, 0),
+      shippingAddress: selectedShippingAddress,
+      paymentMethod: data.paymentMethod,
+    };
+
+    await useUserStore.getState().addOrder(newOrder);
+
+    localStorage.setItem("lastCart", JSON.stringify(cart));
+    clearCart();
+
+    toast.success("Order placed!");
+    router.push("/checkout");
+  } catch (error) {
+    toast.error("Error placing order.");
+    console.error(error);
+  }
+};
 
   const handleShippingSave = async (data: ShippingFormData) => {
     if (!currentUser) return;

@@ -9,6 +9,7 @@ export type Product = {
   rating: number;
   category: string;
   type: string;
+  orders: Order[];
 };
 
 type ShippingDetails = {
@@ -19,6 +20,15 @@ type ShippingDetails = {
   phoneNumber: string;
 };
 
+export type Order = {
+  id: string;
+  date: string;
+  items: Product[];       
+  total: number;
+  shippingAddress: ShippingDetails;
+  paymentMethod: string;
+};
+
 type User = {
   name: string;
   email: string;
@@ -26,8 +36,8 @@ type User = {
   cart: Product[];
   wishlist: Product[];
   shippingDetails: ShippingDetails[];
+  orders: Order[];          
 };
-
 
 interface UserState {
   currentUser: User | null;
@@ -56,6 +66,10 @@ interface UserState {
   updateShippingDetails: (details: ShippingDetails) => void;
   deleteShippingDetails: (typeToDelete: string) => void;
 
+  addOrder: (order: Order) => void;
+  deleteOrder: (orderId: string) => void;
+  clearOrders: () => void; 
+
   updateUser: (user: User) => void;
   isAuthenticated: () => boolean;
 }
@@ -77,6 +91,7 @@ export const useUserStore = create<UserState>()(
           cart: [],
           wishlist: [],
           shippingDetails: shippingDetails ? [shippingDetails] : [],
+          orders: [],
         };
 
         set({
@@ -237,6 +252,51 @@ export const useUserStore = create<UserState>()(
 
         const updatedUser = { ...currentUser, shippingDetails: updatedShippingDetails };
         const updatedUsers = users.map((u) =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      addOrder: (order: Order) => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedUser = {
+          ...currentUser,
+          orders: [...(currentUser.orders || []), order],
+        };
+
+        const updatedUsers = users.map(u =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      deleteOrder: (id: string) => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedUser = {
+          ...currentUser,
+          orders: currentUser.orders.filter((order) => order.id !== id),
+        };
+
+        const updatedUsers = users.map(u =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
+      clearOrders: () => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedUser = { ...currentUser, orders: [] };
+
+        const updatedUsers = users.map(u =>
           u.email === currentUser.email ? updatedUser : u
         );
 

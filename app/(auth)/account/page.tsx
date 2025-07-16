@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
@@ -10,7 +10,7 @@ import {
   ShoppingCart,
   Pencil,
   User,
-  Trash2
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,13 +26,20 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import {
   ShippingFormDialog,
   ShippingFormData,
 } from "@/components/ShippingFormDialog";
+import { OrderDetailDialog } from "@/components/OrderDetailDialog";
 
 type UserInfoFormData = {
   name: string;
@@ -41,14 +48,26 @@ type UserInfoFormData = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const { currentUser, updateUser, logout, users, deleteShippingDetails, addShippingDetails, updateShippingDetails } = useUserStore();
+  const {
+    currentUser,
+    updateUser,
+    logout,
+    users,
+    deleteShippingDetails,
+    addShippingDetails,
+    updateShippingDetails,
+    deleteOrder,
+    clearOrders,
+  } = useUserStore();
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
   const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
+  const [confirmAction, setConfirmAction] = useState<"logout" | "delete" | "clearOrders" | "deleteOrder" | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  
+  const [activeTab, setActiveTab] = useState<"user" | "address" | "orders">("user");
 
   const {
     register: regUser,
@@ -63,12 +82,26 @@ export default function AccountPage() {
     router.push("/login");
   };
 
-  const handleDeleteAccout = () => {
+  const handleDeleteAccount = () => {
     if (!currentUser) return;
     useUserStore.getState().deleteUser(currentUser.email);
     logout();
     toast.success("Account deleted!");
     router.push("/login");
+  };
+
+  const handleDeleteOrder = () => {
+    if (!currentUser) return;
+    deleteOrder(selectedOrderId!);
+    toast.success("Order deleted!");
+    setConfirmAction(null);
+  };
+
+  const handleClearOrders = () => {
+    if (!currentUser) return;
+    clearOrders();
+    toast.success("Order history cleared!");
+    setConfirmAction(null);
   };
 
   const onSubmitUser = async (data: UserInfoFormData) => {
@@ -104,35 +137,33 @@ export default function AccountPage() {
     if (!currentUser) return;
 
     const typeExists = currentUser.shippingDetails.some(
-        (d) =>
-          d.type.toLowerCase() === data.type.toLowerCase() &&
-          (!editingShipping || editingShipping.type.toLowerCase() !== data.type.toLowerCase())
-      );
-      if (typeExists) {
-        toast.error("Address type already exists.");
-        return;
+      (d) => d.type.toLowerCase() === data.type.toLowerCase()
+    );
+    if (typeExists && (!editingShipping || editingShipping.type !== data.type)) {
+      toast.error("Address type already exists.");
+      return;
+    }
+
+    try {
+      if (editingShipping) {
+        updateShippingDetails({ ...data, type: editingShipping.type });
+        toast.success("Address updated!");
+      } else {
+        addShippingDetails(data);
+        toast.success("Address added!");
       }
+    } catch {
+      toast.error("Failed to update address.");
+    }
 
-      try {
-        if (editingShipping) {
-          updateShippingDetails({ ...data, type: editingShipping.type });
-          toast.success("Address updated!");
-        } else {
-          addShippingDetails(data);
-          toast.success("Address added!");
-        }
-      } catch {
-        toast.error("Failed to update address.");
-      }
+    setEditingShipping(null);
+    setShippingDialogOpen(false);
+  };
 
-      setEditingShipping(null);
-      setShippingDialogOpen(false);
-    };
-
-  const onEdit = useCallback((detail: ShippingFormData) => {
+  const onEdit = (detail: ShippingFormData) => {
     setEditingShipping(detail);
     setShippingDialogOpen(true);
-  }, []);
+  };
 
   const onDelete = (type: string) => {
     if (!currentUser) return;
@@ -149,11 +180,11 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">  
+    <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-800">My Account</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Account</h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <Button
                 variant="outline"
@@ -179,9 +210,7 @@ export default function AccountPage() {
                 onClick={() => router.push("/cart")}
               >
                 <ShoppingCart size={18} />
-                <span className="hidden sm:inline">
-                  Cart ({currentUser.cart.length})
-                </span>
+                <span className="hidden sm:inline">Cart ({currentUser.cart.length})</span>
               </Button>
 
               <DropdownMenu>
@@ -194,7 +223,7 @@ export default function AccountPage() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     className="text-red-600 cursor-pointer"
-                    onClick={() => setShowLogoutDialog(true)}
+                    onClick={() => setConfirmAction("logout")}
                   >
                     <LogOut size={16} className="mr-2" />
                     Logout
@@ -204,7 +233,7 @@ export default function AccountPage() {
 
                   <DropdownMenuItem
                     className="text-red-600 cursor-pointer"
-                    onClick={() => setShowDeleteDialog(true)}
+                    onClick={() => setConfirmAction("delete")}
                   >
                     <Trash2 size={16} className="mr-2" />
                     Delete Account
@@ -212,144 +241,294 @@ export default function AccountPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-                <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to log out?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Confirm Delete Account</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action is permanent. Are you sure you want to delete your account?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDeleteAccout}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
+              <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>
+        {confirmAction === "logout" && "Confirm Logout"}
+        {confirmAction === "delete" && "Confirm Delete Account"}
+        {confirmAction === "clearOrders" && "Clear Order History"}
+        {confirmAction === "deleteOrder" && "Delete Order"}
+      </AlertDialogTitle>
+      <AlertDialogDescription>
+        {confirmAction === "logout" && "Are you sure you want to log out?"}
+        {confirmAction === "delete" &&
+          "This action is permanent. Are you sure you want to delete your account?"}
+        {confirmAction === "clearOrders" &&
+          "Are you sure you want to clear your entire order history? This action cannot be undone."}
+        {confirmAction === "deleteOrder" &&
+          "Are you sure you want to delete this order? This action cannot be undone."}
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction
+        onClick={() => {
+          if (confirmAction === "logout") handleLogout();
+          else if (confirmAction === "delete") handleDeleteAccount();
+          else if (confirmAction === "clearOrders") handleClearOrders();
+          else if (confirmAction === "deleteOrder") handleDeleteOrder();
+        }}
+      >
+        {confirmAction === "logout" && "Logout"}
+        {confirmAction === "delete" && "Delete"}
+        {confirmAction === "clearOrders" && "Clear History"}
+        {confirmAction === "deleteOrder" && "Delete"}
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
             </div>
           </div>
         </div>
       </nav>
 
+      <div className="mt-20 mb-6 flex justify-center gap-4 border-b border-gray-300">
+        <button
+          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
+            activeTab === "user"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-gray-600 hover:text-blue-600"
+          }`}
+          onClick={() => setActiveTab("user")}
+          aria-current={activeTab === "user" ? "page" : undefined}
+        >
+          User Info
+        </button>
+        <button
+          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
+            activeTab === "address"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-gray-600 hover:text-blue-600"
+          }`}
+          onClick={() => setActiveTab("address")}
+          aria-current={activeTab === "address" ? "page" : undefined}
+        >
+          Addresses
+        </button>
+        <button
+          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
+            activeTab === "orders"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-gray-600 hover:text-blue-600"
+          }`}
+          onClick={() => setActiveTab("orders")}
+          aria-current={activeTab === "orders" ? "page" : undefined}
+        >
+          Order History
+        </button>
+      </div>
 
-      <main className="mt-24">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:w-1/2">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {showUserInfoForm ? (
-                  <form onSubmit={subUser(onSubmitUser)} className="space-y-4">
-                    <div>
-                      <Label>Name</Label>
-                      <Input {...regUser("name", { required: "Name is required" })} />
-                      {errUser.name && (
-                        <p className="text-sm text-red-600">{errUser.name.message}</p>
-                      )}
-                    </div>
-                    <div>
-                      <Label>Email</Label>
-                      <Input
-                        {...regUser("email", {
-                          required: "Email is required",
-                          pattern: {
-                            value: /^[^@]+@[^@]+\.[^@]+$/,
-                            message: "Invalid email",
-                          },
-                        })}
-                      />
-                      {errUser.email && (
-                        <p className="text-sm text-red-600">{errUser.email.message}</p>
-                      )}
-                    </div>
-                    <div className="flex justify-end space-x-2">
-                      <Button type="button" variant="outline" onClick={() => setShowUserInfoForm(false)}>
-                        Cancel
-                      </Button>
-                      <Button type="submit" disabled={submittingUser}>
-                        {submittingUser ? "Updating..." : "Update Profile"}
-                      </Button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="space-y-2">
-                    <p>
-                      <strong>Name:</strong> {currentUser.name}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {currentUser.email}
-                    </p>
-                    <Button onClick={() => setShowUserInfoForm(true)}>Edit Profile</Button>
+      <main>
+        {activeTab === "user" && (
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>User Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {showUserInfoForm ? (
+                <form onSubmit={subUser(onSubmitUser)} className="space-y-4">
+                  <div>
+                    <Label>Name</Label>
+                    <Input {...regUser("name", { required: "Name is required" })} />
+                    {errUser.name && (
+                      <p className="text-sm text-red-600">{errUser.name.message}</p>
+                    )}
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                  <div>
+                    <Label>Email</Label>
+                    <Input
+                      {...regUser("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[^@]+@[^@]+\.[^@]+$/,
+                          message: "Invalid email",
+                        },
+                      })}
+                    />
+                    {errUser.email && (
+                      <p className="text-sm text-red-600">{errUser.email.message}</p>
+                    )}
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowUserInfoForm(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={submittingUser}>
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-2">
+                  <p>
+                    <strong>Name:</strong> {currentUser.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {currentUser.email}
+                  </p>
+                  <Button onClick={() => setShowUserInfoForm(true)} className="mt-4">
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
-          <div className="lg:w-1/2">
-            <Card>
-              <CardHeader className="flex justify-between items-center">
-                <CardTitle>My Addresses</CardTitle>
-                <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
-                  Add New Address
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {currentUser.shippingDetails.length === 0 && <p>No saved addresses.</p>}
-                {currentUser.shippingDetails.map((d) => (
-                  <Card key={d.type} className="p-4 hover:bg-accent">
-                    <div className="flex justify-between">
+        {activeTab === "address" && (
+          <Card className="max-w-3xl mx-auto">
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Shipping Addresses</CardTitle>
+              <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
+                Add Address
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {currentUser.shippingDetails.length === 0 ? (
+                <p>No shipping addresses added yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {currentUser.shippingDetails.map((detail) => (
+                    <div
+                      key={detail.type}
+                      className="border rounded p-4 flex justify-between items-start"
+                    >
                       <div>
-                        <p><strong>Type:</strong> {d.type}</p>
-                        <p><strong>Phone:</strong> {d.phoneNumber}</p>
-                        <p><strong>Address:</strong> {d.address}</p>
-                        <p><strong>City:</strong> {d.city}</p>
-                        <p><strong>Country:</strong> {d.country}</p>
+                        <p>
+                          <strong>Type:</strong> {detail.type}
+                        </p>
+                        <p>
+                          <strong>Address:</strong> {detail.address}
+                        </p>
+                        <p>
+                          <strong>City:</strong> {detail.city}
+                        </p>
+                        <p>
+                          <strong>Phone Number:</strong> {detail.phoneNumber}                        
+                        </p>
+                        <p>
+                          <strong>Country:</strong> {detail.country}
+                        </p>
                       </div>
-                      <div className="space-x-2">
-                        <Button size="sm" onClick={() => onEdit(d)}>
-                          <Pencil size={16} />
+                      <div className="flex flex-col space-y-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onEdit(detail)}
+                          className="flex items-center gap-1"
+                        >
+                          <Pencil size={16} /> Edit
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => onDelete(d.type)}>
-                          <Trash2 size={16} />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => onDelete(detail.type)}
+                          className="flex items-center gap-1"
+                        >
+                          <Trash2 size={16} /> Delete
                         </Button>
                       </div>
                     </div>
-                  </Card>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+            <ShippingFormDialog
+              open={shippingDialogOpen}
+              onClose={() => setShippingDialogOpen(false)}
+              existingTypes={currentUser.shippingDetails.map((d) => d.type)}
+              onSave={handleShippingSave}
+              initialData={editingShipping || undefined}
+            />
+          </Card>
+        )}
 
-        <ShippingFormDialog
-          open={shippingDialogOpen}
-          existingTypes={currentUser.shippingDetails.map((d) => d.type)}
-          initialData={editingShipping}
-          onClose={() => {
-            setShippingDialogOpen(false);
-            setEditingShipping(null);
-          }}
-          onSave={handleShippingSave}
-        />
+        {activeTab === "orders" && (
+          <Card className="max-w-4xl mx-auto">
+            <CardHeader className="flex justify-between items-center">
+              <CardTitle>Order History</CardTitle>
+              <Button
+                variant="destructive"
+                disabled={currentUser.orders.length === 0}
+                onClick={() => setConfirmAction("clearOrders")}
+              >
+                Clear History
+              </Button>
+            </CardHeader>
+            <CardContent>
+  {currentUser.orders.length === 0 ? (
+    <p>You have no past orders.</p>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="w-full table-auto border-collapse border border-gray-200 rounded-lg overflow-hidden">
+        <thead>
+          <tr className="bg-gray-100 text-gray-800 text-sm">
+            <th className="border border-gray-300 px-4 py-2 text-left">#</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Items</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Total</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentUser.orders.map((order, index) => (
+            <tr key={order.id} className="hover:bg-gray-50 text-sm">
+              <td className="border border-gray-300 px-4 py-2 font-medium">{index + 1}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {new Date(order.date).toLocaleDateString()}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {new Date(order.date).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {order.items.length}
+              </td>
+              <td className="border border-gray-300 px-4 py-2 font-semibold">
+                ₹{order.total.toFixed(2)}
+              </td>
+              <td className="border border-gray-300 px-4 py-2 space-x-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setSelectedOrderId(order.id);
+                    setViewDialogOpen(true);
+                  }}
+                >
+                  View
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder");}}
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</CardContent>
+<OrderDetailDialog
+  open={viewDialogOpen}
+  onClose={() => setViewDialogOpen(false)}
+  orderId={selectedOrderId}
+/>
+          </Card>
+        )}
       </main>
     </div>
   );
