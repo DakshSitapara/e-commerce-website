@@ -8,8 +8,9 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (pathname === "/checkout" && !hasRecentOrder) {
-    return NextResponse.redirect(new URL('/shop', request.url));
-  }
+    const lastPrivateRoute = request.cookies.get('lastPrivateRoute')?.value || '/shop';
+    return NextResponse.redirect(new URL(lastPrivateRoute, request.url)); 
+   }
 
   if (isAuthenticated && privateRoutes.includes(pathname)) {
     const response = NextResponse.next();
