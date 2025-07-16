@@ -39,6 +39,10 @@ export default function BillingPage() {
   const [selectedShippingType, setSelectedShippingType] = useState<string>(shippingDetails[0]?.type || "");
   const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
 
+  const total = cart.reduce((acc, item) => acc + item.price, 0);
+  const discount = total > 1000 ? total * 0.1 : 0;
+  const finalTotal = total - discount;
+
   const {
     register,
     handleSubmit,
@@ -85,7 +89,7 @@ export default function BillingPage() {
       date: new Date().toISOString(),
       time: new Date().toLocaleTimeString(),
       items: cart,
-      total: cart.reduce((acc, item) => acc + item.price, 0),
+      total: finalTotal,
       shippingAddress: selectedShippingAddress,
       paymentMethod: data.paymentMethod,
     };
@@ -121,7 +125,6 @@ export default function BillingPage() {
     setEditingShipping(null);
   };
 
-  const total = cart.reduce((acc, item) => acc + item.price, 0);
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3 px-4">
@@ -296,7 +299,10 @@ export default function BillingPage() {
 
                 <div className="flex justify-between pt-4 border-t">
                   <span className="font-medium text-gray-700">Total</span>
-                  <span className="text-xl font-bold text-gray-900">₹{total.toLocaleString()}</span>
+                  {total < 1000 && (
+                    <span className="text-sm text-red-500">Get 10% discount on total greater than 1000!</span>
+                  )}
+                  <span className="text-xl font-bold text-gray-900">₹{finalTotal.toFixed(0)}</span>
                 </div>
               </CardContent>
             </Card>

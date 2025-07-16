@@ -92,15 +92,14 @@ export default function ShopPage() {
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-        <div className="mb-4 p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex flex-wrap gap-6">
-        <h2 className="text-xl font-bold text-gray-900">Filters :</h2>
-          <div className="flex items-center">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2 mr-2">
-              Category
+        <div className="flex flex-row gap-6 mb-4">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 col-span-full">Filters :</h2>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <label htmlFor="category" className="text-sm font-medium text-gray-700">
+              Category:
             </label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger id="category">
+              <SelectTrigger id="category" className="w-full sm:w-auto">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
@@ -111,12 +110,12 @@ export default function ShopPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2 mr-2">
-              Type
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <label htmlFor="type" className="text-sm font-medium text-gray-700">
+              Type:
             </label>
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger id="type">
+              <SelectTrigger id="type" className="w-full sm:w-auto">
                 <SelectValue placeholder="Select Type" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
@@ -127,11 +126,11 @@ export default function ShopPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center">
-            <label className="block text-sm font-medium text-gray-700 mb-2 mr-2">
-              Price Range
+          <div className="flex flex-col sm:flex-row items-center gap-2 col-span-full sm:col-span-2">
+            <label className="text-sm font-medium text-gray-700">
+              Price Range:
             </label>
-            <div className="flex gap-4">
+            <div className="flex items-center gap-2">
               <Input
                 id="min-price"
                 type="number"
@@ -139,18 +138,20 @@ export default function ShopPage() {
                 min="0"
                 value={minPrice}
                 onChange={(e) => setMinPrice(parseInt(e.target.value) || 0)}
+                className="w-full sm:w-auto"
               />
-              -
+              <span className="text-gray-500">to</span>
               <Input
                 id="max-price"
                 type="number"
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(parseInt(e.target.value) || "")}
+                className="w-full sm:w-auto"
               />
             </div>
           </div>
-          <div className="flex items-end">
+          <div className="flex justify-end col-span-full">
             <Button
               variant="ghost"
               title="Reset Filters"
@@ -161,12 +162,12 @@ export default function ShopPage() {
                 setMinPrice(0);
                 setMaxPrice("");
               }}
+              className="flex items-center gap-2"
             >
-              <RotateCw className="h-5 w-5 mr-2" />
+              <RotateCw className="h-5 w-5" />
             </Button>
           </div>
         </div>
-      </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (

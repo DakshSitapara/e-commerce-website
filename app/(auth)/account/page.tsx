@@ -394,7 +394,7 @@ export default function AccountPage() {
                         <td className="px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
                         <td className="px-4 py-2">{new Date(order.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
                         <td className="px-4 py-2">{order.items.length}</td>
-                        <td className="px-4 py-2 font-semibold">₹{order.total.toFixed(2)}</td>
+                        <td className="px-4 py-2 font-semibold">₹{order.total.toFixed(0)}</td>
                         <td className="px-4 py-2 space-x-2">
                           <Button size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
                             View
