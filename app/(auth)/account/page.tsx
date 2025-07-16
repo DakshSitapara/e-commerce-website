@@ -3,42 +3,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import {
-  LogOut,
-  ShoppingBagIcon,
-  Heart,
-  ShoppingCart,
-  Pencil,
-  User,
-  Trash2,
-} from "lucide-react";
+import { LogOut, ShoppingBagIcon, Heart, ShoppingCart, Pencil, User,Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
-import {
-  ShippingFormDialog,
-  ShippingFormData,
-} from "@/components/ShippingFormDialog";
+import { ShippingFormDialog, ShippingFormData } from "@/components/ShippingFormDialog";
 import { OrderDetailDialog } from "@/components/OrderDetailDialog";
 
 type UserInfoFormData = {
@@ -48,17 +22,7 @@ type UserInfoFormData = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const {
-    currentUser,
-    updateUser,
-    logout,
-    users,
-    deleteShippingDetails,
-    addShippingDetails,
-    updateShippingDetails,
-    deleteOrder,
-    clearOrders,
-  } = useUserStore();
+  const { currentUser, updateUser, logout, users, deleteShippingDetails, addShippingDetails, updateShippingDetails, deleteOrder, clearOrders, } = useUserStore();
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
@@ -67,7 +31,14 @@ export default function AccountPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   
-  const [activeTab, setActiveTab] = useState<"user" | "address" | "orders">("user");
+  type Tab = "user" | "address" | "orders";
+  const [activeTab, setActiveTab] = useState<Tab>("user");
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "user", label: "User Info" },
+    { id: "address", label: "Addresses" },
+    { id: "orders", label: "Order History" },
+  ];
 
   const {
     register: regUser,
@@ -242,86 +213,71 @@ export default function AccountPage() {
               </DropdownMenu>
 
               <AlertDialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>
-        {confirmAction === "logout" && "Confirm Logout"}
-        {confirmAction === "delete" && "Confirm Delete Account"}
-        {confirmAction === "clearOrders" && "Clear Order History"}
-        {confirmAction === "deleteOrder" && "Delete Order"}
-      </AlertDialogTitle>
-      <AlertDialogDescription>
-        {confirmAction === "logout" && "Are you sure you want to log out?"}
-        {confirmAction === "delete" &&
-          "This action is permanent. Are you sure you want to delete your account?"}
-        {confirmAction === "clearOrders" &&
-          "Are you sure you want to clear your entire order history? This action cannot be undone."}
-        {confirmAction === "deleteOrder" &&
-          "Are you sure you want to delete this order? This action cannot be undone."}
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction
-        onClick={() => {
-          if (confirmAction === "logout") handleLogout();
-          else if (confirmAction === "delete") handleDeleteAccount();
-          else if (confirmAction === "clearOrders") handleClearOrders();
-          else if (confirmAction === "deleteOrder") handleDeleteOrder();
-        }}
-      >
-        {confirmAction === "logout" && "Logout"}
-        {confirmAction === "delete" && "Delete"}
-        {confirmAction === "clearOrders" && "Clear History"}
-        {confirmAction === "deleteOrder" && "Delete"}
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {confirmAction === "logout" && "Confirm Logout"}
+                      {confirmAction === "delete" && "Confirm Delete Account"}
+                      {confirmAction === "clearOrders" && "Clear Order History"}
+                      {confirmAction === "deleteOrder" && "Delete Order"}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {confirmAction === "logout" && "Are you sure you want to log out?"}
+                      {confirmAction === "delete" &&
+                        "This action is permanent. Are you sure you want to delete your account?"}
+                      {confirmAction === "clearOrders" &&
+                        "Are you sure you want to clear your entire order history? This action cannot be undone."}
+                      {confirmAction === "deleteOrder" &&
+                        "Are you sure you want to delete this order? This action cannot be undone."}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        if (confirmAction === "logout") handleLogout();
+                        else if (confirmAction === "delete") handleDeleteAccount();
+                        else if (confirmAction === "clearOrders") handleClearOrders();
+                        else if (confirmAction === "deleteOrder") handleDeleteOrder();
+                      }}
+                    >
+                      {confirmAction === "logout" && "Logout"}
+                      {confirmAction === "delete" && "Delete"}
+                      {confirmAction === "clearOrders" && "Clear History"}
+                      {confirmAction === "deleteOrder" && "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="mt-20 mb-6 flex justify-center gap-4 border-b border-gray-300">
+      <div className="mt-20 mb-6 flex flex-wrap justify-center gap-4 border-b border-gray-200">
+        <nav className="flex flex-wrap justify-center gap-6" role="tablist">
+          {tabs.map((tab) => (
         <button
-          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
-            activeTab === "user"
-              ? "border-blue-600 text-blue-600"
-              : "border-transparent text-gray-600 hover:text-blue-600"
-          }`}
-          onClick={() => setActiveTab("user")}
-          aria-current={activeTab === "user" ? "page" : undefined}
+          key={tab.id}
+          role="tab"
+          aria-selected={activeTab === tab.id}
+          aria-current={activeTab === tab.id ? "page" : undefined}
+          onClick={() => setActiveTab(tab.id)} 
+          className={`relative pb-2 text-lg font-medium transition-all duration-200 ease-in-out hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+                      activeTab === tab.id
+                        ? "text-black after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black"
+                        : "text-gray-500 hover:text-black"
+                    }`}
         >
-          User Info
+          {tab.label}
         </button>
-        <button
-          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
-            activeTab === "address"
-              ? "border-blue-600 text-blue-600"
-              : "border-transparent text-gray-600 hover:text-blue-600"
-          }`}
-          onClick={() => setActiveTab("address")}
-          aria-current={activeTab === "address" ? "page" : undefined}
-        >
-          Addresses
-        </button>
-        <button
-          className={`px-4 py-2 text-lg font-semibold border-b-2 ${
-            activeTab === "orders"
-              ? "border-blue-600 text-blue-600"
-              : "border-transparent text-gray-600 hover:text-blue-600"
-          }`}
-          onClick={() => setActiveTab("orders")}
-          aria-current={activeTab === "orders" ? "page" : undefined}
-        >
-          Order History
-        </button>
+      ))}
+        </nav>
       </div>
 
       <main>
         {activeTab === "user" && (
-          <Card className="max-w-2xl mx-auto">
+          <Card className="max-w-3xl mx-auto">
             <CardHeader>
               <CardTitle>User Information</CardTitle>
             </CardHeader>
@@ -409,7 +365,7 @@ export default function AccountPage() {
                           <strong>City:</strong> {detail.city}
                         </p>
                         <p>
-                          <strong>Phone Number:</strong> {detail.phoneNumber}                        
+                          <strong>Phone Number:</strong> {detail.phoneNumber}
                         </p>
                         <p>
                           <strong>Country:</strong> {detail.country}
@@ -449,7 +405,7 @@ export default function AccountPage() {
         )}
 
         {activeTab === "orders" && (
-          <Card className="max-w-4xl mx-auto">
+          <Card className="max-w-3xl mx-auto">
             <CardHeader className="flex justify-between items-center">
               <CardTitle>Order History</CardTitle>
               <Button
@@ -461,72 +417,72 @@ export default function AccountPage() {
               </Button>
             </CardHeader>
             <CardContent>
-  {currentUser.orders.length === 0 ? (
-    <p>You have no past orders.</p>
-  ) : (
-    <div className="overflow-x-auto">
-      <table className="w-full table-auto border-collapse border border-gray-200 rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-gray-100 text-gray-800 text-sm">
-            <th className="border border-gray-300 px-4 py-2 text-left">#</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Items</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Total</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentUser.orders.map((order, index) => (
-            <tr key={order.id} className="hover:bg-gray-50 text-sm">
-              <td className="border border-gray-300 px-4 py-2 font-medium">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {new Date(order.date).toLocaleDateString()}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {new Date(order.date).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {order.items.length}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 font-semibold">
-                ₹{order.total.toFixed(2)}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 space-x-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedOrderId(order.id);
-                    setViewDialogOpen(true);
-                  }}
-                >
-                  View
-                </Button>
+              {currentUser.orders.length === 0 ? (
+                <p>You have no past orders.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full table-auto border-collapse border border-gray-200 rounded-lg overflow-hidden">
+                    <thead>
+                      <tr className="bg-gray-100 text-gray-800 text-sm">
+                        <th className="border border-gray-300 px-4 py-2 text-left">#</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Items</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Total</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...currentUser.orders].reverse().map((order, index) => (
+                        <tr key={order.id} className="hover:bg-gray-50 text-sm">
+                          <td className="border border-gray-300 px-4 py-2 font-medium">{index + 1}</td>
+                          <td className="border border-gray-300 px-4 py-2">
+                            {new Date(order.date).toLocaleDateString()}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2">
+                            {new Date(order.date).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2">
+                            {order.items.length}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 font-semibold">
+                            ₹{order.total.toFixed(2)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setSelectedOrderId(order.id);
+                                setViewDialogOpen(true);
+                              }}
+                            >
+                              View
+                            </Button>
 
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder");}}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )}
-</CardContent>
-<OrderDetailDialog
-  open={viewDialogOpen}
-  onClose={() => setViewDialogOpen(false)}
-  orderId={selectedOrderId}
-/>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder");}}
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+            <OrderDetailDialog
+              open={viewDialogOpen}
+              onClose={() => setViewDialogOpen(false)}
+              orderId={selectedOrderId}
+            />
           </Card>
         )}
       </main>

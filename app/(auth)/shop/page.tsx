@@ -23,12 +23,18 @@ export default function ShopPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) &&
-      (category === "all" || product.category === category) &&
-      (type === "all" || product.type === type)
-  );
+  const [minPrice, setMinPrice] = useState<number | "">(0);
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = category === "all" || product.category === category;
+    const matchesType = type === "all" || product.type === type;
+    const matchesMinPrice = minPrice === "" || product.price >= minPrice;
+    const matchesMaxPrice = maxPrice === "" || product.price <= maxPrice;
+
+    return matchesSearch && matchesCategory && matchesType && matchesMinPrice && matchesMaxPrice;
+  });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -86,50 +92,81 @@ export default function ShopPage() {
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-        <div className="flex flex-col sm:flex-row gap-4 items-center mb-4">
-          <h2 className="text-sm sm:text-lg">Filter:</h2>
-          <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
+        <div className="mb-4 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex flex-wrap gap-6">
+        <h2 className="text-xl font-bold text-gray-900">Filters :</h2>
+          <div className="flex items-center">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2 mr-2">
+              Category
+            </label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="flex items-center space-x-2 w-full sm:w-auto">
-                <span className="text-sm font-medium">Category:</span>
-                <SelectValue />
+              <SelectTrigger id="category">
+                <SelectValue placeholder="Select Category" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {Object.values(Category).map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
+              <SelectContent className="bg-white rounded-md shadow-lg">
+                <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
+                {Object.values(Category).map((cat) => (
+                  <SelectItem key={cat} value={cat} className="hover:bg-gray-100">{cat}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2 mr-2">
+              Type
+            </label>
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="flex items-center space-x-2 w-full sm:w-auto">
-                <span className="text-sm font-medium">Type:</span>
-                <SelectValue />
+              <SelectTrigger id="type">
+                <SelectValue placeholder="Select Type" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {Object.values(Type).map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
+              <SelectContent className="bg-white rounded-md shadow-lg">
+                <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
+                {Object.values(Type).map((t) => (
+                  <SelectItem key={t} value={t} className="hover:bg-gray-100">{t}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="flex items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-2 mr-2">
+              Price Range
+            </label>
+            <div className="flex gap-4">
+              <Input
+                id="min-price"
+                type="number"
+                placeholder="Min"
+                min="0"
+                value={minPrice}
+                onChange={(e) => setMinPrice(parseInt(e.target.value) || 0)}
+              />
+              -
+              <Input
+                id="max-price"
+                type="number"
+                placeholder="Max"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(parseInt(e.target.value) || "")}
+              />
+            </div>
+          </div>
+          <div className="flex items-end">
             <Button
               variant="ghost"
-              className="flex items-center w-full sm:w-auto"
+              title="Reset Filters"
               onClick={() => {
                 setSearch("");
                 setCategory("all");
                 setType("all");
+                setMinPrice(0);
+                setMaxPrice("");
               }}
             >
-              <RotateCw className="h-5 w-5" />
+              <RotateCw className="h-5 w-5 mr-2" />
             </Button>
           </div>
         </div>
+      </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
