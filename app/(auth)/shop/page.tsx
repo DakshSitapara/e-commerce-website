@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, Star, Heart, Search, RotateCw } from "lucide-react";
+import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus } from "lucide-react";
 import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -12,12 +12,12 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Link from "next/link";
+import ShopNav from "@/components/ShopNav";
 
 export default function ShopPage() {
   const router = useRouter();
 
-  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
+  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser, quantity, updateQuantity } = useUserStore();
   const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
 
   const [search, setSearch] = useState("");
@@ -44,51 +44,7 @@ export default function ShopPage() {
     <div className="flex min-h-screen w-full flex-col bg-gray-50">
       <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Shop
-            </h1>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative flex-1">
-                <Input
-                  type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={handleSearch}
-                  className="rounded-md border border-gray-300 pr-4 py-2"
-                />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-              </div>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={() => router.push("/wishlist")}
-                aria-label="Wishlist"
-              >
-                <Heart className="h-5 w-5" />
-                <span className="hidden sm:inline">
-                  Wishlist ({wishlist.length})
-                </span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={() => router.push("/cart")}
-                aria-label="Cart"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="hidden sm:inline">Cart ({cart.length})</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={() => router.push("/account")}
-              >
-                <User className="h-5 w-5" />
-                <span className="hidden sm:inline">Account</span>
-              </Button>
-            </div>
-          </div>
+          <ShopNav />
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
@@ -104,8 +60,8 @@ export default function ShopPage() {
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
                 <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
-                {Object.values(Category).map((cat) => (
-                  <SelectItem key={cat} value={cat} className="hover:bg-gray-100">{cat}</SelectItem>
+                {Object.values(Category).map((category) => (
+                  <SelectItem key={category} value={category} className="hover:bg-gray-100">{category}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -120,8 +76,8 @@ export default function ShopPage() {
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
                 <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
-                {Object.values(Type).map((t) => (
-                  <SelectItem key={t} value={t} className="hover:bg-gray-100">{t}</SelectItem>
+                {Object.values(Type).map((type) => (
+                  <SelectItem key={type} value={type} className="hover:bg-gray-100">{type}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -149,6 +105,21 @@ export default function ShopPage() {
                 onChange={(e) => setMaxPrice(parseInt(e.target.value) || "")}
                 className="w-full sm:w-auto"
               />
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <label htmlFor="search" className="text-sm font-medium text-gray-700">
+              Search:
+            </label>
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearch}
+                className="rounded-md border border-gray-300 pr-4 py-2"
+              />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             </div>
           </div>
           <div className="flex justify-end col-span-full">
@@ -182,7 +153,8 @@ export default function ShopPage() {
                       alt={product.name}
                       width={500}
                       height={500}
-                      className="h-80 w-full transition-transform group-hover:scale-105"
+                      className="h-80 w-full transition-transform group-hover:scale-105 cursor-pointer"
+                      onClick={() => router.push(`/shop/${product.id}`)}
                     />
                     <Button
                       title={
@@ -199,7 +171,7 @@ export default function ShopPage() {
                             `${product.name} removed from wishlist!`
                           );
                         } else {
-                          addToWishlist(product);
+                          addToWishlist({...product, quantity: 1});
                           toast.success(
                             `${product.name} added to wishlist!`
                           );
@@ -218,9 +190,7 @@ export default function ShopPage() {
                 </CardHeader>
                 <CardContent className="p-4 py-0 space-y-2">
                   <CardTitle className="text-sm sm:text-lg font-semibold">
-                    <Link href={`/shop/${product.id}`}>
                     {product.name}
-                    </Link>
                   </CardTitle>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">₹{product.price}</p>
@@ -241,33 +211,62 @@ export default function ShopPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center p-4 pt-0">
-                  <Button
-                    variant={
-                      cart.some((item) => item.id === product.id)
-                        ? "destructive"
-                        : "outline"
-                    }
-                    className="w-full"
-                    onClick={() => {
-                      if (wishlist.some((item) => item.id === product.id)) {
-                        removeFromWishlist(product.id);
-                        addToCart(product);
-                        toast.success(`${product.name} added to cart!`);
-                        return;
-                      } else if (cart.some((item) => item.id === product.id)) {
-                        removeFromCart(product.id);
-                        toast.success(`${product.name} removed from cart!`);
-                        return;
-                      }
-                      addToCart(product);
-                      toast.success(`${product.name} added to cart!`);
-                    }}
-                    aria-label="Add to Cart"
-                  >
-                    {cart.some((item) => item.id === product.id)
-                      ? "Remove from Cart"
-                      : "Add to Cart"}
-                  </Button>
+                  {quantity(product.id) > 0 ? (
+                    <div className="flex items-center justify-between w-full">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeFromCart(product.id)}
+                      >
+                        Remove
+                      </Button>
+                      <div className="flex items-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>{
+                            if(quantity(product.id) > 1){
+                              updateQuantity(product.id, quantity(product.id) - 1)
+                            }else{
+                              removeFromCart(product.id)
+                            }}}
+                        >
+                          <Minus />
+                        </Button>
+                        <span className="mx-2">{quantity(product.id)}</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            updateQuantity(product.id, quantity(product.id) + 1)
+                          }
+                        >
+                          <Plus />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Button
+                      variant={"outline"}
+                      onClick={() => {
+                        if (wishlist.some((item) => item.id === product.id)) {
+                          removeFromWishlist(product.id);
+                          toast.success(
+                            `${product.name} removed from cart!`
+                          );
+                        } else {
+                          addToCart({...product, quantity: 1});
+                          toast.success(
+                            `${product.name} added to cart!`
+                          );
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                  )}
                 </CardFooter>
               </Card>
             ))

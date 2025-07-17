@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ShopNav from "@/components/ShopNav";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,42 +41,7 @@ export default function WishlistPage() {
     <div className="flex flex-col items-center mx-auto max-w-7xl px-4 py-6">
       <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Wishlist</h1>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => router.push("/shop")}
-                className="hidden sm:flex items-center gap-2"
-                aria-label="Shop"
-              >
-                <ShoppingBagIcon size={20} />
-                <span>Shop</span>
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => router.push("/cart")}
-                className="flex items-center gap-2"
-                aria-label="Cart"
-              >
-                <ShoppingCart size={20} />
-                <span>Cart ({cart.length})</span>
-              </Button>
-              {wishlist.length > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    clearWishlist();
-                    toast.success("Wishlist cleared!");
-                  }}
-                  aria-label="Clear Wishlist"
-                >
-                  <RotateCw size={20} />
-                  <span className="hidden sm:inline">Clear Wishlist</span>
-                </Button>
-              )}
-            </div>
-          </div>
+          <ShopNav />
         </div>
       </nav>
 
@@ -90,6 +56,22 @@ export default function WishlistPage() {
           <p className="text-gray-600 mb-8">Add some products to your cart or wishlist!</p>
         </div>
       ) : (
+      <>
+          <div className="fixed top-18 right-4 flex items-center space-x-2 sm:space-x-4">
+                {wishlist.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    clearWishlist();
+                    toast.success("Wishlist cleared!");
+                  }}
+                  aria-label="Clear Wishlist"
+                >
+                  <RotateCw size={20} />
+                  <span className="hidden sm:inline">Clear Wishlist</span>
+                </Button>
+              )}
+              </div>
         <div className="mt-24 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {wishlist.map((product) => (
             <Card key={product.id} className="bg-white shadow-md rounded-lg">
@@ -136,6 +118,7 @@ export default function WishlistPage() {
             </Card>
           ))}
         </div>
+      </>
       )}
     </div>
   );

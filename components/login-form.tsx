@@ -20,10 +20,11 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter()
+  const { login } = useUserStore()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const { login } = useUserStore()
-  const router = useRouter()
   
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

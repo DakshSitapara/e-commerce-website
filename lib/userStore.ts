@@ -9,6 +9,7 @@ export type Product = {
   rating: number;
   category: string;
   type: string;
+  quantity : number;
   orders?: Order[];
 };
 
@@ -23,7 +24,7 @@ type ShippingDetails = {
 export type Order = {
   id: string;
   date: string;
-  items: Product[];       
+  items: Product[];
   total: number;
   shippingAddress: ShippingDetails;
   paymentMethod: string;
@@ -36,7 +37,7 @@ type User = {
   cart: Product[];
   wishlist: Product[];
   shippingDetails: ShippingDetails[];
-  orders: Order[];          
+  orders: Order[];
 };
 
 interface UserState {
@@ -62,13 +63,16 @@ interface UserState {
   removeFromWishlist: (id: number) => void;
   clearWishlist: () => void;
 
+  quantity: (id: number) => number;
+  updateQuantity: (id: number, quantity: number) => void;
+
   addShippingDetails: (details: ShippingDetails) => void;
   updateShippingDetails: (details: ShippingDetails) => void;
   deleteShippingDetails: (typeToDelete: string) => void;
 
   addOrder: (order: Order) => void;
   deleteOrder: (orderId: string) => void;
-  clearOrders: () => void; 
+  clearOrders: () => void;
 
   updateUser: (user: User) => void;
   isAuthenticated: () => boolean;
@@ -132,14 +136,29 @@ export const useUserStore = create<UserState>()(
         const { currentUser, users } = get();
         if (!currentUser) return;
 
-        const updatedCart = [...currentUser.cart, product];
-        const updatedUser = { ...currentUser, cart: updatedCart };
+        const exstingProduct = currentUser.cart.find((item) => item.id === product.id);
+        if (exstingProduct) {
+          const updatedCart = currentUser.cart.map((item) => {
+            if (item.id === product.id) {
+              return { ...item, quantity: item.quantity + 1 };
+            }
+            return item;
+          });
+          const updatedUser = { ...currentUser, cart: updatedCart };
+          const updatedUsers = users.map((u) =>
+            u.email === currentUser.email ? updatedUser : u
+          );
 
-        const updatedUsers = users.map((u) =>
-          u.email === currentUser.email ? updatedUser : u
-        );
+          set({ currentUser: updatedUser, users: updatedUsers });
+        } else {
+          const updatedCart = [...currentUser.cart, { ...product, quantity: 1 }];
+          const updatedUser = { ...currentUser, cart: updatedCart };
+          const updatedUsers = users.map((u) =>
+            u.email === currentUser.email ? updatedUser : u
+          );
 
-        set({ currentUser: updatedUser, users: updatedUsers });
+          set({ currentUser: updatedUser, users: updatedUsers });
+        }
       },
 
       removeFromCart: (id) => {
@@ -204,6 +223,33 @@ export const useUserStore = create<UserState>()(
 
         set({ currentUser: updatedUser, users: updatedUsers });
       },
+
+      quantity: (id) => {
+        const { currentUser } = get();
+        if (!currentUser) return 0;
+
+        const item = currentUser.cart.find((item) => item.id === id);
+        return item?.quantity || 0;
+      },
+
+      updateQuantity: (id, quantity) => {
+        const { currentUser, users } = get();
+        if (!currentUser) return;
+
+        const updatedCart = currentUser.cart.map((item) => {
+          if (item.id === id) {
+            return { ...item, quantity };
+          }
+          return item;
+        });
+        const updatedUser = { ...currentUser, cart: updatedCart };
+        const updatedUsers = users.map((u) =>
+          u.email === currentUser.email ? updatedUser : u
+        );
+
+        set({ currentUser: updatedUser, users: updatedUsers });
+      },
+
 
       addShippingDetails: (details) => {
         const { currentUser, users } = get();
@@ -312,8 +358,7 @@ export const useUserStore = create<UserState>()(
         set({ currentUser: user, users: updatedUsers });
       },
     }),
-    {
-      name: 'user-store',
-    }
+    { name: "user-store" }
   )
 );
+

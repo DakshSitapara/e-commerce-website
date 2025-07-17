@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useUserStore } from "@/lib/userStore";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +25,7 @@ export function RegisterForm({
   const [password, setPassword] = useState("");
   const { register } = useUserStore();
   const router = useRouter();
+
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,4 +102,3 @@ export function RegisterForm({
     </div>
   );
 }
-

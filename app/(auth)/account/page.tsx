@@ -17,6 +17,7 @@ import { OrderDetailDialog } from "@/components/OrderDetailDialog";
 import { FcViewDetails } from "react-icons/fc";
 import { FaEdit } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
+import ShopNav from "@/components/ShopNav";
 
 type UserInfoFormData = {
   name: string;
