@@ -78,7 +78,7 @@ export function ShippingFormDialog({
           </DialogHeader>
 
            
-          <div className="space-y-2">
+          {!isEdit && <div className="space-y-2">
             <Label>Type</Label>
             <Input
               {...register("type", {
@@ -92,6 +92,7 @@ export function ShippingFormDialog({
               <p className="text-sm text-red-600">{errors.type.message}</p>
             )}
           </div>
+        }
 
           <div className="space-y-1">
             <Label>Phone</Label>

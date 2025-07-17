@@ -161,12 +161,14 @@ export default function BillingPage() {
                   loader={() => product.image}
                 />
                 <div className="flex-1">
-                  <h2 className="font-semibold">{product.name}</h2>
+                  <h2 className="font-semibold">{product.name} x{product.quantity}</h2>
                   <div className="mt-2 flex gap-2">
                     <Badge className={CategoryColor(product.category)}>{product.category}</Badge>
                     <Badge className={TypeColor(product.type)}>{product.type}</Badge>
                   </div>
                   <p className="mt-2 text-sm text-gray-600">₹ {product.price}</p>
+                  <p className="mt-2 text-sm text-gray-600">Total: ₹ {product.price * product.quantity}</p>
+
                 </div>
                 <Button type="button" variant="outline" onClick={() => router.push("/cart")}>
                   Edit
