@@ -10,6 +10,7 @@ export interface Product {
   image: string;
   price: number;
   rating: number;
+  description: string;
   category: Category;
   type: Type;
 }
@@ -23,6 +24,8 @@ export const products: Product[] = [
     rating: 4.5,
     category: "Men",
     type: "T-Shirt",
+    description:
+      "This is a comfortable and stylish T-shirt made from high-quality cotton. It has a classic design and is suitable for casual wear.",
   },
   {
     id: 2,
@@ -32,6 +35,8 @@ export const products: Product[] = [
     rating: 4.2,
     category: "Women",
     type: "Shirt",
+    description:
+      "This is a high-quality women's shirt with a modern design. It is made from soft and breathable fabric and is suitable for formal wear.",
   },
   {
     id: 3,
@@ -41,6 +46,8 @@ export const products: Product[] = [
     rating: 4.7,
     category: "Kids",
     type: "Jeans",
+    description:
+      "These are high-quality jeans for kids made from durable and comfortable fabric. They have a classic design and are suitable for casual wear.",
   },
   {
     id: 4,
@@ -50,6 +57,8 @@ export const products: Product[] = [
     rating: 4.8,
     category: "Men",
     type: "Jeans",
+    description:
+      "These are high-quality jeans for men made from durable and comfortable fabric. They have a modern design and are suitable for formal wear.",
   },
   {
     id: 5,
@@ -59,6 +68,8 @@ export const products: Product[] = [
     rating: 4.3,
     category: "Men",
     type: "T-Shirt",
+    description:
+      "This is a high-quality T-shirt for men made from soft and breathable fabric. It has a classic design and is suitable for casual wear.",
   },
   {
     id: 6,
@@ -68,6 +79,8 @@ export const products: Product[] = [
     rating: 4.1,
     category: "Kids",
     type: "T-Shirt",
+    description:
+      "This is a high-quality T-shirt for kids made from soft and breathable fabric. It has a fun design and is suitable for casual wear.",
   },
   {
     id: 7,
@@ -77,6 +90,8 @@ export const products: Product[] = [
     rating: 4.0,
     category: "Men",
     type: "Shirt",
+    description:
+      "This is a high-quality shirt for men made from soft and breathable fabric. It has a modern design and is suitable for formal wear.",
   },
   {
     id: 8,
@@ -86,6 +101,8 @@ export const products: Product[] = [
     rating: 4.6,
     category: "Women",
     type: "Jeans",
+    description:
+      "These are high-quality jeans for women made from durable and comfortable fabric. They have a modern design and are suitable for formal wear.",
   },
 ];
 

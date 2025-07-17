@@ -17,6 +17,8 @@ import {
   RotateCw,
   CreditCardIcon,
   Heart,
+  Minus,
+  Plus,
 } from "lucide-react";
 
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
@@ -25,12 +27,7 @@ import { useUserStore } from "@/lib/userStore";
 export default function CartPage() {
   const router = useRouter();
   const { removeFromCart, clearCart, currentUser, quantity, updateQuantity } = useUserStore();
-  const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
-
-  const handleRemoveFromCart = (product: any) => {
-    removeFromCart(product.id);
-    toast.success(`${product.name} removed from cart!`);
-  };
+  const { cart } = currentUser ?? { cart: [] }; 
 
   const handleClearCart = () => {
     clearCart();
@@ -105,51 +102,49 @@ export default function CartPage() {
               <CardFooter className="flex justify-between items-center">
                 <p className="text-sm text-gray-600">₹{product.price}</p>
                 {quantity(product.id) > 0 ? (
-                                    <div className="flex items-center justify-between w-1/2">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => removeFromCart(product.id)}
-                                      >
-                                        Remove
-                                      </Button>
-                                      <div className="flex items-center">
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() =>{
-                                            if(quantity(product.id) > 1){
-                                              updateQuantity(product.id, quantity(product.id) - 1)
-                                            }else{
-                                              removeFromCart(product.id)
-                                            }
-                                          }
-                                          }
-                                        >
-                                          -
-                                        </Button>
-                                        <span className="mx-2">{quantity(product.id)}</span>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() =>
-                                            updateQuantity(product.id, quantity(product.id) + 1)
-                                          }
-                                        >
-                                          +
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  ) :(
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => removeFromCart(product.id)}
-                                    >
-                                      Remove
-                                    </Button>
-                                  )
-                                }
+                    <div className="flex items-center justify-between w-1/2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeFromCart(product.id)}
+                      >
+                        Remove
+                      </Button>
+                      <div className="flex items-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>{
+                            if(quantity(product.id) > 1){
+                              updateQuantity(product.id, quantity(product.id) - 1)
+                            }else{
+                              removeFromCart(product.id)
+                            }}}
+                        >
+                          <Minus />
+                        </Button>
+                        <span className="mx-2">{quantity(product.id)}</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            updateQuantity(product.id, quantity(product.id) + 1)
+                          }
+                        >
+                          <Plus />
+                        </Button>
+                      </div>
+                    </div>
+                  ) :(
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeFromCart(product.id)}
+                    >
+                      Remove
+                    </Button>
+                  )
+                }
               </CardFooter>
             </Card>
           ))}

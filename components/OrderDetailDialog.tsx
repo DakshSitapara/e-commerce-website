@@ -3,6 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useUserStore } from "@/lib/userStore";
 import Image from "next/image";
+import { it } from "node:test";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -105,7 +106,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
 
         <div className="bg-gray-50 p-4 border-t border-gray-200 text-right text-xl font-bold text-gray-800">
           <div className="flex flex-col">
-            {order.total / 0.9 > 1000 && (
+            {order.items.map((item: any) => item.price).reduce((a: number, b: number) => a + b, 0) >1000 && (
               <>
                 <span className=" text-sm text-gray-700">Subtotal :₹{(order.total / 0.9).toFixed(0)}</span>
                 <span className="text-green-600 text-sm">

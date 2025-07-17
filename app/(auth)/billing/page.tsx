@@ -34,7 +34,6 @@ export default function BillingPage() {
   const { currentUser, clearCart, updateUser} = useUserStore();
   const cart = currentUser?.cart || [];
   const shippingDetails = currentUser?.shippingDetails || [];
-  const wishlistCount = currentUser?.wishlist?.length || 0;
 
   const [shippingDialogOpen, setShippingDialogOpen] = useState(false);
   const [selectedShippingType, setSelectedShippingType] = useState<string>(shippingDetails[0]?.type || "");

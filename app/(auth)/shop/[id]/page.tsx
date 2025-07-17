@@ -90,6 +90,7 @@ export default function ProductPage() {
             </Badge>
           </div>
           <p className="text-lg text-gray-600 flex items-center">{product.rating}<Star className="h-4 w-4 text-yellow-400 ml-1" /></p>
+          <p className="text-lg text-gray-600">{product.description}</p>
 
           <div className="flex flex-wrap gap-4">
                   {quantity(product.id) > 0 ? (

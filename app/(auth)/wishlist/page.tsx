@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import ShopNav from "@/components/ShopNav";
 
 import { Button } from "@/components/ui/button";
@@ -22,9 +21,8 @@ import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 
 export default function WishlistPage() {
-  const router = useRouter();
   const { removeFromWishlist, clearWishlist, currentUser, addToCart } = useUserStore();
-  const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
+  const { wishlist } = currentUser ?? { wishlist: [] };
 
   const handleAddToCart = (product: any) => {
     addToCart(product);

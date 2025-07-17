@@ -251,15 +251,10 @@ export default function ShopPage() {
                       onClick={() => {
                         if (wishlist.some((item) => item.id === product.id)) {
                           removeFromWishlist(product.id);
-                          toast.success(
-                            `${product.name} removed from cart!`
-                          );
-                        } else {
-                          addToCart({...product, quantity: 1});
-                          toast.success(
-                            `${product.name} added to cart!`
-                          );
+                          toast.success(`${product.name} removed from wishlist!`);
                         }
+                        addToCart({ ...product, quantity: 1 });
+                        toast.success(`${product.name} added to cart!`);
                       }}
                       className="w-full"
                     >
