@@ -56,7 +56,7 @@ export default function ShopPage() {
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
         <div className="flex flex-row gap-6 mb-4">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 col-span-full">Filters :</h2>
+          <h2 className="text-xl font-bold text-gray-900 col-span-full">Filters :</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2">
             <label htmlFor="category" className="text-sm font-medium text-gray-700">
               Category:
@@ -94,16 +94,16 @@ export default function ShopPage() {
               Price Range : 
             </label>
             <div className="flex flex-col sm:flex-row items-center gap-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
                 <span className="flex items-center">
                   ₹
                   <Input
-                    type="number"
+                    type="price"
                     min={0}
                     max={1500}
                     value= {priceRange[0]}
                     onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                    className="w-[80px] border-none shadow-none pr-4 py-2"
+                    className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
                   />  
                 </span>
               <Slider
@@ -115,15 +115,15 @@ export default function ShopPage() {
                 onValueChange={(value: [number, number]) => setPriceRange(value)}
                 className="w-[250px] cursor-pointer"
               />
-              <span className="flex items-center"> 
+              <span className="flex items-center px-2"> 
                 ₹
                 <Input
-                  type="number"
+                  type="price"
                   min={0}
                   max={1500}
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                  className="w-[80px] border-none shadow-none pr-4 py-2"
+                  className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
                 />
               </span>
             </div>

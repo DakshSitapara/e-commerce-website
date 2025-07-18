@@ -19,6 +19,7 @@ import {
   Heart,
   Minus,
   Plus,
+  Trash2,
 } from "lucide-react";
 
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
@@ -52,28 +53,28 @@ export default function CartPage() {
         </div>
       ) : (
         <>
-        <div className="fixed top-18 right-4 flex items-center space-x-2 sm:space-x-4">
-        {cart.length > 0 && (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={handleClearCart}
-                    className="hidden sm:flex items-center gap-2"
-                    aria-label="Clear Cart"
-                  >
-                    <RotateCw size={20} />
-                    <span className="hidden sm:inline">Clear Cart</span>
-                  </Button>
-                  <Button
-                    onClick={() => router.push("/billing")}
-                    className="flex items-center gap-2"
-                    aria-label="Billing"
-                  >
-                    <CreditCardIcon size={20} />
-                    <span className="hidden sm:inline">Billing</span>
-                  </Button>
-                </>
-              )}
+        <div className="fixed top-18 right-8 flex items-center space-x-2 sm:space-x-4">
+          {cart.length > 0 && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleClearCart}
+                  className="hidden sm:flex items-center gap-2"
+                  aria-label="Clear Cart"
+                >
+                  <RotateCw size={20} />
+                  <span className="hidden sm:inline">Clear Cart</span>
+                </Button>
+                <Button
+                  onClick={() => router.push("/billing")}
+                  className="flex items-center gap-2"
+                  aria-label="Billing"
+                >
+                  <CreditCardIcon size={20} />
+                  <span className="hidden sm:inline">Billing</span>
+                </Button>
+              </>
+            )}
         </div>
         <div className="mt-24 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cart.map((product) => (
@@ -101,50 +102,51 @@ export default function CartPage() {
 
               <CardFooter className="flex justify-between items-center">
                 <p className="text-sm text-gray-600">₹{product.price}</p>
+                <div className="flex items-center">
                 {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-1/2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeFromCart(product.id)}
-                      >
-                        Remove
-                      </Button>
-                      <div className="flex items-center">
+                    <div className="flex items-center justify-between w-full border border-gray-300 rounded-2xl">
+                      {quantity(product.id) > 1 ? (
+                        <div className="flex items-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
+                            className="flex items-center justify-center hover:bg-transparent"
+                          >
+                            <Minus />
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() =>{
-                            if(quantity(product.id) > 1){
-                              updateQuantity(product.id, quantity(product.id) - 1)
-                            }else{
-                              removeFromCart(product.id)
-                            }}}
+                          onClick={() => removeFromCart(product.id)}
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
-                          <Minus />
+                          <Trash2 />
                         </Button>
+                      )}
                         <span className="mx-2">{quantity(product.id)}</span>
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity(product.id) + 1)
-                          }
+                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
                           <Plus />
                         </Button>
                       </div>
-                    </div>
-                  ) :(
+                  ) : (
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       onClick={() => removeFromCart(product.id)}
+                      className="flex items-center justify-center hover:bg-transparent"
                     >
-                      Remove
+                      <Trash2 />
                     </Button>
-                  )
-                }
+                  )}
+                </div>
               </CardFooter>
             </Card>
           ))}

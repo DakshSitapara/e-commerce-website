@@ -15,6 +15,7 @@ import {
   ShoppingCart,
   ShoppingBag,
   RotateCw,
+  Trash2,
 } from "lucide-react";
 
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
@@ -55,21 +56,21 @@ export default function WishlistPage() {
         </div>
       ) : (
       <>
-          <div className="fixed top-18 right-4 flex items-center space-x-2 sm:space-x-4">
-                {wishlist.length > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    clearWishlist();
-                    toast.success("Wishlist cleared!");
-                  }}
-                  aria-label="Clear Wishlist"
-                >
-                  <RotateCw size={20} />
-                  <span className="hidden sm:inline">Clear Wishlist</span>
-                </Button>
+          <div className="fixed top-18 right-8 flex items-center space-x-2 sm:space-x-4">
+              {wishlist.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  clearWishlist();
+                  toast.success("Wishlist cleared!");
+                }}
+                aria-label="Clear Wishlist"
+              >
+                <RotateCw size={20} />
+                <span className="hidden sm:inline">Clear Wishlist</span>
+              </Button>
               )}
-              </div>
+          </div>
         <div className="mt-24 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {wishlist.map((product) => (
             <Card key={product.id} className="bg-white shadow-md rounded-lg">
@@ -94,7 +95,7 @@ export default function WishlistPage() {
                 />
               </CardContent>
 
-              <CardFooter className="flex flex-col items-start gap-2">
+              <CardFooter className="flex justify-between items-center">
                 <p className="text-sm text-gray-600">₹{product.price}</p>
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -102,6 +103,7 @@ export default function WishlistPage() {
                     onClick={() => handleAddToCart(product)}
                     className="text-sm"
                   >
+                    <ShoppingCart size={20} />
                     Add to Cart
                   </Button>
                   <Button
@@ -109,7 +111,7 @@ export default function WishlistPage() {
                     onClick={() => handleRemove(product)}
                     className="text-sm"
                   >
-                    Remove
+                    <Trash2 size={20} />
                   </Button>
                 </div>
               </CardFooter>

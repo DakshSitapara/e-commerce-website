@@ -30,7 +30,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-6 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-gray-800 text-center">
             Order Details
@@ -38,7 +38,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-4">
-          <section className="bg-white rounded-lg p-4 space-y-4 border border-gray-200">
+          <section className=" rounded-lg p-4 space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Billing Information</h3>
             <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
               <li>
@@ -53,7 +53,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
             </ul>
           </section>
 
-          <section className="bg-white rounded-lg p-4 space-y-4 border border-gray-200">
+          <section className="rounded-lg p-4 space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Shipping Address</h3>
             <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
               <li>
@@ -75,7 +75,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
           </section>
         </div>
 
-        <section className="bg-white rounded-lg p-4 border border-gray-200">
+        <section className="p-4 border-t border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800">Items</h3>
           <ul className="space-y-3">
             {order.items.map((item: any) => (
@@ -94,7 +94,7 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-medium text-gray-800">{item.name}</p>
+                  <p className="font-medium text-gray-800">{item.name} x {item.quantity || 1}</p>
                   <p className="text-sm text-gray-600">Type: {item.type}</p>
                   <p className="text-sm text-gray-600">Category: {item.category}</p>
                   <p className="text-sm text-gray-600">₹{item.price}</p>
@@ -104,11 +104,13 @@ export function OrderDetailDialog({ open, onClose, orderId }: Props) {
           </ul>
         </section>
 
-        <div className="bg-gray-50 p-4 border-t border-gray-200 text-right text-xl font-bold text-gray-800">
+        <div className=" p-4 border-t border-gray-200 text-right text-xl font-bold text-gray-800">
           <div className="flex flex-col">
-            {order.items.map((item: any) => item.price).reduce((a: number, b: number) => a + b, 0) >1000 && (
+            {order.items.reduce((a: number, b: any) => a + (b.price * b.quantity), 0).toFixed() > 1000 && (
               <>
-                <span className=" text-sm text-gray-700">Subtotal :₹{(order.total / 0.9).toFixed(0)}</span>
+                <span className=" text-sm text-gray-700">
+                  Subtotal :₹{order.items.reduce((a: number, b: any) => a + (b.price * b.quantity), 0).toFixed()}
+                </span>
                 <span className="text-green-600 text-sm">
                   You got 10% discount
                 </span>

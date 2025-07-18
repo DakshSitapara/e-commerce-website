@@ -39,7 +39,7 @@ export default function BillingPage() {
   const [selectedShippingType, setSelectedShippingType] = useState<string>(shippingDetails[0]?.type || "");
   const [editingShipping, setEditingShipping] = useState<ShippingFormData | null>(null);
 
-  const total = cart.reduce((acc, item) => acc + item.price, 0);
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const discount = total > 1000 ? total * 0.1 : 0;
   const finalTotal = total - discount;
 
