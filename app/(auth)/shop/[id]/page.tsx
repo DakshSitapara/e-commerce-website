@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import React from "react";
-import { ShoppingBagIcon, Heart, ShoppingCart, User, ArrowRight, ArrowLeft, Star } from "lucide-react";
+import { ShoppingBagIcon, Heart, ShoppingCart, User, ArrowRight, ArrowLeft, Star, Minus, Plus, Trash2 } from "lucide-react";
 import { products, CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 import { Button } from "@/components/ui/button";
@@ -94,52 +94,52 @@ export default function ProductPage() {
 
           <div className="flex flex-wrap gap-4">
                   {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-auto gap-4">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeFromCart(product.id)}
-                      >
-                        Remove
-                      </Button>
-                      <div className="flex items-center">
+                    <div className="flex items-center justify-between w-auto border border-gray-300 rounded-md">
+                      {quantity(product.id) > 1 ? (
+                        <div className="flex items-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
+                            className="flex items-center justify-center hover:bg-transparent"
+                          >
+                            <Minus />
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            if (quantity(product.id) > 1)
-                              updateQuantity(product.id, quantity(product.id) - 1)
-                            else removeFromCart(product.id)
-                          }}
+                          onClick={() => removeFromCart(product.id)}
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
-                          -
+                          <Trash2 />
                         </Button>
+                      )}
                         <span className="mx-2">{quantity(product.id)}</span>
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity(product.id) + 1)
-                          }
+                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
-                          +
+                          <Plus />
                         </Button>
                       </div>
-                    </div>
                   ) : (
                     <Button
-                    variant={"outline"}
+                      variant="outline"
                       onClick={() => {
-                        addToCart({ ...product, quantity: 1 });
                         if (wishlist.some((item) => item.id === product.id)) {
                           removeFromWishlist(product.id);
-                          toast.success(`${product.name} moved to cart!`);
-                        } else {
-                          toast.success(`${product.name} added to cart!`);
+                          toast.success(`${product.name} removed from wishlist!`);
                         }
+                        addToCart({ ...product, quantity: 1 });
+                        toast.success(`${product.name} added to cart!`);
                       }}
-                      className="w-auto"
+                      className="bg-transparent"
                     >
+                      <ShoppingCart className="mr-2 h-4 w-4" />
                       Add to Cart
                     </Button>
                   )}

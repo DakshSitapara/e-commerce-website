@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus } from "lucide-react";
+import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus, Trash2 } from "lucide-react";
 import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import { useUserStore } from "@/lib/userStore";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShopNav from "@/components/ShopNav";
+import { Slider } from "@/components/ui/slider";
 
 export default function ShopPage() {
   const router = useRouter();
@@ -23,18 +24,24 @@ export default function ShopPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
-  const [minPrice, setMinPrice] = useState<number | "">(0);
-  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
+
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === "all" || product.category === category;
     const matchesType = type === "all" || product.type === type;
-    const matchesMinPrice = minPrice === "" || product.price >= minPrice;
-    const matchesMaxPrice = maxPrice === "" || product.price <= maxPrice;
+    const matchesMinPrice = product.price >= priceRange[0];
+    const matchesMaxPrice = product.price <= priceRange[1];
 
     return matchesSearch && matchesCategory && matchesType && matchesMinPrice && matchesMaxPrice;
   });
+
+  const handleResetFilters = () => {
+    setCategory("all");
+    setType("all");
+    setPriceRange([0, 1500]);
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -55,7 +62,7 @@ export default function ShopPage() {
               Category:
             </label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger id="category" className="w-full sm:w-auto">
+              <SelectTrigger id="category">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
@@ -71,7 +78,7 @@ export default function ShopPage() {
               Type:
             </label>
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger id="type" className="w-full sm:w-auto">
+              <SelectTrigger id="type">
                 <SelectValue placeholder="Select Type" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
@@ -82,30 +89,45 @@ export default function ShopPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2 col-span-full sm:col-span-2">
-            <label className="text-sm font-medium text-gray-700">
-              Price Range:
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <label htmlFor="price-range" className="text-sm font-medium text-gray-700">
+              Price Range : 
             </label>
+            <div className="flex flex-col sm:flex-row items-center gap-2">
             <div className="flex items-center gap-2">
-              <Input
-                id="min-price"
-                type="number"
-                placeholder="Min"
-                min="0"
-                value={minPrice}
-                onChange={(e) => setMinPrice(parseInt(e.target.value) || 0)}
-                className="w-full sm:w-auto"
+                <span className="flex items-center">
+                  ₹
+                  <Input
+                    type="number"
+                    min={0}
+                    max={1500}
+                    value= {priceRange[0]}
+                    onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
+                    className="w-[80px] border-none shadow-none pr-4 py-2"
+                  />  
+                </span>
+              <Slider
+                title={`Price Range: ₹ ${priceRange[0]} - ₹ ${priceRange[1]}`}
+                min={0}
+                max={1500}
+                step={10}
+                value={priceRange}
+                onValueChange={(value: [number, number]) => setPriceRange(value)}
+                className="w-[250px] cursor-pointer"
               />
-              <span className="text-gray-500">to</span>
-              <Input
-                id="max-price"
-                type="number"
-                placeholder="Max"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(parseInt(e.target.value) || "")}
-                className="w-full sm:w-auto"
-              />
+              <span className="flex items-center"> 
+                ₹
+                <Input
+                  type="number"
+                  min={0}
+                  max={1500}
+                  value={priceRange[1]}
+                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                  className="w-[80px] border-none shadow-none pr-4 py-2"
+                />
+              </span>
             </div>
+          </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-2">
             <label htmlFor="search" className="text-sm font-medium text-gray-700">
@@ -126,13 +148,7 @@ export default function ShopPage() {
             <Button
               variant="ghost"
               title="Reset Filters"
-              onClick={() => {
-                setSearch("");
-                setCategory("all");
-                setType("all");
-                setMinPrice(0);
-                setMaxPrice("");
-              }}
+              onClick={handleResetFilters}
               className="flex items-center gap-2"
             >
               <RotateCw className="h-5 w-5" />
@@ -211,40 +227,40 @@ export default function ShopPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center p-4 pt-0">
+                  <div className="flex items-center justify-between w-full">
                   {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-full">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeFromCart(product.id)}
-                      >
-                        Remove
-                      </Button>
-                      <div className="flex items-center">
+                    <div className="flex items-center justify-between w-full border border-gray-300 rounded-2xl">
+                      {quantity(product.id) > 1 ? (
+                        <div className="flex items-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
+                            className="flex items-center justify-center hover:bg-transparent"
+                          >
+                            <Minus />
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() =>{
-                            if(quantity(product.id) > 1){
-                              updateQuantity(product.id, quantity(product.id) - 1)
-                            }else{
-                              removeFromCart(product.id)
-                            }}}
+                          onClick={() => removeFromCart(product.id)}
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
-                          <Minus />
+                          <Trash2 />
                         </Button>
+                      )}
                         <span className="mx-2">{quantity(product.id)}</span>
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity(product.id) + 1)
-                          }
+                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
+                          className="flex items-center justify-center hover:bg-transparent"
                         >
                           <Plus />
                         </Button>
                       </div>
-                    </div>
                   ) : (
                     <Button
                       variant={"outline"}
@@ -262,6 +278,7 @@ export default function ShopPage() {
                       Add to Cart
                     </Button>
                   )}
+                  </div>
                 </CardFooter>
               </Card>
             ))
@@ -275,4 +292,5 @@ export default function ShopPage() {
     </div>
   );
 }
+
 
