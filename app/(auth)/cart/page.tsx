@@ -5,23 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import ShopNav from "@/components/ShopNav";
-
-import {
-  ShoppingBagIcon,
-  ShoppingBag,
-  RotateCw,
-  CreditCardIcon,
-  Heart,
-  Minus,
-  Plus,
-  Trash2,
-} from "lucide-react";
-
+import { ShoppingBagIcon, ShoppingBag, RotateCw, CreditCardIcon, Heart, Minus, Plus, Trash2, } from "lucide-react";
 import { CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 
@@ -76,80 +64,65 @@ export default function CartPage() {
               </>
             )}
         </div>
-        <div className="mt-24 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cart.map((product) => (
-            <Card key={product.id} className="bg-white shadow-md rounded-lg">
+        <div className="mt-24 w-full grid grid-cols-1 gap-6">
+            <Card className="bg-white shadow-md rounded-lg">
               <CardHeader className="relative">
-                <CardTitle className="text-lg font-semibold">{product.name}   x {product.quantity}</CardTitle>
-                <Badge className={`absolute top-2 right-2 ${CategoryColor(product.category)}`}>
-                  {product.category}
-                </Badge>
-                <Badge className={`absolute top-10 right-2 ${TypeColor(product.type)}`}>
-                  {product.type}
-                </Badge>
+                <CardTitle className="flex justify-between gap-2 text-lg font-semibold border-b border-gray-300 pb-4">
+                    Shopping Cart <h2 className="text-sm text-gray-600 px-6 ">Price</h2>
+                </CardTitle>
               </CardHeader>
-
-              <CardContent className="flex justify-center py-4">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={120}
-                  height={120}
-                  loader={() => product.image}
-                  className="w-32 h-32 object-cover rounded-md shadow"
-                />
-              </CardContent>
-
-              <CardFooter className="flex justify-between items-center">
-                <p className="text-sm text-gray-600">₹{product.price}</p>
-                <div className="flex items-center">
-                {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-full border border-gray-300 rounded-2xl">
-                      {quantity(product.id) > 1 ? (
-                        <div className="flex items-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
-                            className="flex items-center justify-center hover:bg-transparent"
-                          >
-                            <Minus />
-                          </Button>
-                        </div>
-                      ) : (
+              <CardContent className="space-y-6">
+                {cart.map((product) => (
+                  <div key={product.id} className="flex gap-4 border-b pb-4 last:border-b-0">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={100}
+                      height={100}
+                      className="rounded-lg object-cover shadow-md"
+                      loader={() => product.image}
+                    />
+                    <div className="flex-1">
+                      <h2 className="font-semibold">{product.name} x{product.quantity}</h2>
+                      <div className="mt-2 flex gap-2">
+                        <Badge className={CategoryColor(product.category)}>{product.category}</Badge>
+                        <Badge className={TypeColor(product.type)}>{product.type}</Badge>
+                      </div>
+                      <p className="mt-2 text-sm text-gray-600">{product.description}</p>
+                      <div className="relative flex items-center justify-between w-[100px] border border-gray-300 mt-1 rounded-2xl">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeFromCart(product.id)}
+                          onClick={() => quantity(product.id) > 1 ? updateQuantity(product.id, quantity(product.id) - 1) : removeFromCart(product.id)}
                           className="flex items-center justify-center hover:bg-transparent"
                         >
-                          <Trash2 />
+                          {quantity(product.id) > 1 ? <Minus /> : <Trash2 />}
                         </Button>
-                      )}
                         <span className="mx-2">{quantity(product.id)}</span>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
+                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1)}
                           className="flex items-center justify-center hover:bg-transparent"
                         >
                           <Plus />
                         </Button>
                       </div>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFromCart(product.id)}
-                      className="flex items-center justify-center hover:bg-transparent"
-                    >
-                      <Trash2 />
-                    </Button>
-                  )}
-                </div>
-              </CardFooter>
+                    </div>
+                    <CardFooter className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <span className="text-lg font-semibold">₹ {product.price}</span>
+                      </div>
+                    </CardFooter>
+                  </div>
+                ))}
+              </CardContent>    
+              <CardFooter className="flex justify-end items-center border-t border-gray-300">
+                  <span className="text-lg font-semibold px-5">
+                    Total {`(${cart.reduce((total, product) => total + product.quantity, 0)} items)`}: ₹ {cart.reduce((total, product) => total + product.price * product.quantity, 0)}
+                  </span>
+              </CardFooter>          
             </Card>
-          ))}
         </div>
         </>
       )}

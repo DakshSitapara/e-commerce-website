@@ -9,6 +9,7 @@ export type Product = {
   rating: number;
   category: string;
   type: string;
+  description: string;
   quantity : number;
   orders?: Order[];
 };

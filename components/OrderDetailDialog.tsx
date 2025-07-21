@@ -3,7 +3,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useUserStore } from "@/lib/userStore";
 import Image from "next/image";
-import { it } from "node:test";
 import { useEffect, useState } from "react";
 
 type Props = {

@@ -84,7 +84,9 @@ export default function CheckoutPage() {
               <li
                 key={index}
                 className="flex flex-col items-center bg-gray-50 rounded-lg p-4 border"
-              >
+              > 
+              <p className="text-base font-medium text-center">{product.name} x { product.quantity}</p>
+              <p className="text-gray-500 text-sm">₹{product.price}</p>
                 <Image
                   src={product.image}
                   alt={product.name}
@@ -93,8 +95,6 @@ export default function CheckoutPage() {
                   className="object-cover rounded-md mb-2 shadow"
                   unoptimized
                 />
-                <p className="text-base font-medium text-center">{product.name}</p>
-                <p className="text-gray-500 text-sm">₹{product.price}</p>
               </li>
             ))}
           </ul>

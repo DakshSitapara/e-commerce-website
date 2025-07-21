@@ -144,6 +144,7 @@ export default function BillingPage() {
         <p className="text-gray-600 mb-8">Add some products to your cart!</p>
       </div>
     ) : (
+      <main className="py-4">
       <form onSubmit={handleSubmit(handlePlaceOrder)} className="space-y-8">
         <Card>
           <CardHeader>
@@ -296,6 +297,7 @@ export default function BillingPage() {
           </CardContent>
         </Card>
       </form>
+      </main>
     )}
   </div>
 
