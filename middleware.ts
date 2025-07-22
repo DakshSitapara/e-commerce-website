@@ -2,11 +2,15 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  const publicRoutes = ["/shop", "/cart", "/register", "/login"];
   const privateRoutes = ["/shop", "/account", "/cart", "/wishlist", "/checkout", "/billing"];
   const isAuthenticated = request.cookies.get('authenticated')?.value === 'true';
   const hasRecentOrder = request.cookies.get('hasRecentOrder')?.value === 'true';
   const pathname = request.nextUrl.pathname;
 
+  if(publicRoutes.includes(pathname) && !isAuthenticated) {
+    return NextResponse.next();
+  }
   if (pathname === "/checkout" && !hasRecentOrder) {
     const lastPrivateRoute = request.cookies.get('lastPrivateRoute')?.value || '/shop';
     return NextResponse.redirect(new URL(lastPrivateRoute, request.url)); 

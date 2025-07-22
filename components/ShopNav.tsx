@@ -12,8 +12,9 @@ export default function ShopNav() {
 
     const router = useRouter();
 
-    const { currentUser } = useUserStore(); 
+    const { currentUser, gusteUser } = useUserStore(); 
 
+    const guestCart = gusteUser?.cart || [];
     const cart = currentUser?.cart || [];
     const wishlist = currentUser?.wishlist || [];
     const { addToCart, removeFromCart, removeFromWishlist } = useUserStore();
@@ -26,12 +27,12 @@ export default function ShopNav() {
                     <HoverCardTrigger asChild>
                         <Button variant={"outline"} onClick={() => router.push("/cart")}>
                             <ShoppingCart size={20} />
-                            Cart ({cart.length})
+                            Cart ({currentUser ? cart.length : guestCart.length})
                         </Button>
                     </HoverCardTrigger>
-                    <HoverCardContent className={cart.length === 0 ? "hidden" : "w-full overflow-y-auto max-h-100"}>
+                    <HoverCardContent className={(currentUser ? cart.length : guestCart.length) === 0 ? "hidden" : "w-full overflow-y-auto max-h-100"}>
                         <div className="flex flex-col gap-4">
-                            {cart.map((product: any) => (
+                            {(currentUser ? cart : guestCart).map((product: any) => (
                                 <div key={product.id} className="flex items-center gap-4">
                                     <div className="relative w-16 h-16 overflow-hidden rounded-md">
                                         <img
@@ -58,7 +59,7 @@ export default function ShopNav() {
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-medium leading-none">Total</p>
                                     <p className="text-sm font-medium leading-none">
-                                        ₹ {cart.reduce((total: number, product: any) => total + product.price * product.quantity, 0)}
+                                        ₹ {(currentUser ? cart : guestCart).reduce((total: number, product: any) => total + product.price * product.quantity, 0)}
                                     </p>
                                 </div>
                             </section>
@@ -71,10 +72,12 @@ export default function ShopNav() {
                 </HoverCard>
                 <HoverCard>
                     <HoverCardTrigger asChild>
-                        <Button variant={"outline"} onClick={() => router.push("/wishlist")}>
-                            <Heart size={20} />
-                            Wishlist ({wishlist.length})
-                        </Button>
+                        {currentUser && (
+                            <Button variant={"outline"} onClick={() => router.push("/wishlist")}>
+                                <Heart size={20} />
+                                Wishlist ({wishlist.length})
+                            </Button>
+                        )}
                     </HoverCardTrigger>
                     <HoverCardContent className={wishlist.length === 0 ? "hidden" : "w-full overflow-y-auto max-h-50"}>
                         <div className="flex flex-col gap-4">
@@ -117,10 +120,17 @@ export default function ShopNav() {
                         </div>
                     </HoverCardContent>
                 </HoverCard>
-                <Button variant={"outline"} onClick={() => router.push("/account")}>
-                    <User size={20} />
-                    Account
-                </Button>
+                {currentUser ? (
+                    <Button variant={"outline"} onClick={() => router.push("/account")}>
+                        <User size={20} />
+                        Account
+                    </Button>
+                ) : (
+                    <Button variant={"outline"} onClick={() => router.push("/login")}>
+                        <User size={20} />
+                        Login/Register
+                    </Button>
+                )}
             </div>
         </div>
     )

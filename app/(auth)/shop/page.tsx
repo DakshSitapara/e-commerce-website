@@ -172,36 +172,38 @@ export default function ShopPage() {
                       className="h-80 w-full transition-transform group-hover:scale-105 cursor-pointer"
                       onClick={() => router.push(`/shop/${product.id}`)}
                     />
-                    <Button
-                      title={
-                        wishlist.some((item) => item.id === product.id)
-                          ? "Remove from wishlist"
-                          : "Add to wishlist"
-                      }
-                      className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
-                      size={"icon"}
-                      onClick={() => {
-                        if (wishlist.some((item) => item.id === product.id)) {
-                          removeFromWishlist(product.id);
-                          toast.success(
-                            `${product.name} removed from wishlist!`
-                          );
-                        } else {
-                          addToWishlist({...product, quantity: 1});
-                          toast.success(
-                            `${product.name} added to wishlist!`
-                          );
+                    {currentUser && (
+                      <Button
+                        title={
+                          wishlist.some((item) => item.id === product.id)
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"
                         }
-                      }}
-                      hidden={cart.some((item) => item.id === product.id)}
-                    >
-                      <Heart
-                        className={`h-6 w-6 ${wishlist.some((item) => item.id === product.id)
-                          ? "fill-red-500 text-red-500"
-                          : " text-red-500"
-                        }`}
-                      />
-                    </Button>
+                        className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
+                        size={"icon"}
+                        onClick={() => {
+                          if (wishlist.some((item) => item.id === product.id)) {
+                            removeFromWishlist(product.id);
+                            toast.success(
+                              `${product.name} removed from wishlist!`
+                            );
+                          } else {
+                            addToWishlist({...product, quantity: 1});
+                            toast.success(
+                              `${product.name} added to wishlist!`
+                            );
+                          }
+                        }}
+                        hidden={cart.some((item) => item.id === product.id)}
+                      >
+                        <Heart
+                          className={`h-6 w-6 ${wishlist.some((item) => item.id === product.id)
+                            ? "fill-red-500 text-red-500"
+                            : " text-red-500"
+                          }`}
+                        />
+                      </Button>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 py-0 space-y-2">

@@ -15,9 +15,9 @@ import { useUserStore } from "@/lib/userStore";
 
 export default function CartPage() {
   const router = useRouter();
-  const { removeFromCart, clearCart, currentUser, quantity, updateQuantity } = useUserStore();
-  const { cart } = currentUser ?? { cart: [] }; 
-
+  const { removeFromCart, clearCart, currentUser, quantity, updateQuantity, gusteUser } = useUserStore();
+  const { cart } = currentUser ? currentUser : gusteUser ?? { cart: [] };
+  
   const handleClearCart = () => {
     clearCart();
     toast.success("Cart cleared!");

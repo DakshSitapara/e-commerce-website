@@ -42,6 +42,7 @@ type User = {
 };
 
 interface UserState {
+  gusteUser: User | null;
   currentUser: User | null;
   users: User[];
 
@@ -82,38 +83,38 @@ interface UserState {
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
+      gusteUser: null,
       currentUser: null,
       users: [],
 
       register: (name, email, password, shippingDetails) => {
-        const { users } = get();
+        const { users, gusteUser } = get();
         if (users.some((u) => u.email === email)) return false;
 
         const newUser: User = {
           name,
           email,
           password,
-          cart: [],
+          cart: gusteUser ? [...gusteUser.cart] : [],
           wishlist: [],
           shippingDetails: shippingDetails ? [shippingDetails] : [],
           orders: [],
         };
-
-        set({
-          users: [...users, newUser],
-          currentUser: newUser,
-        });
-
+        set({ users: [...users, newUser], currentUser: newUser, gusteUser: null });
         document.cookie = `authenticated=true;  Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
 
       login: (email, password) => {
-        const { users } = get();
+        const { users, gusteUser } = get();
         const user = users.find((u) => u.email === email && u.password === password);
         if (!user) return false;
 
-        set({ currentUser: user });
+        if (gusteUser) {
+          set({ currentUser: { ...user, cart: [...gusteUser.cart, ...user.cart] }, gusteUser: null });
+        } else {
+          set({ currentUser: user, gusteUser: null });
+        }
         document.cookie = `authenticated=true; Max-Age=${60 * 60 * 24 * 30}; path=/`;
         return true;
       },
@@ -134,58 +135,68 @@ export const useUserStore = create<UserState>()(
       },
 
       addToCart: (product) => {
-        const { currentUser, users } = get();
-        if (!currentUser) return;
+        const { currentUser, users, gusteUser } = get();
 
-        const exstingProduct = currentUser.cart.find((item) => item.id === product.id);
-        if (exstingProduct) {
-          const updatedCart = currentUser.cart.map((item) => {
-            if (item.id === product.id) {
-              return { ...item, quantity: item.quantity + 1 };
-            }
-            return item;
-          });
+        if (currentUser) {
+          const existingProduct = currentUser.cart.find((item) => item.id === product.id);
+          let updatedCart;
+
+          if (existingProduct) {
+            updatedCart = currentUser.cart.map((item) =>
+              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            );
+          } else {
+            updatedCart = [...currentUser.cart, { ...product, quantity: 1 }];
+          }
+
           const updatedUser = { ...currentUser, cart: updatedCart };
-          const updatedUsers = users.map((u) =>
-            u.email === currentUser.email ? updatedUser : u
-          );
+          const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
 
           set({ currentUser: updatedUser, users: updatedUsers });
         } else {
-          const updatedCart = [...currentUser.cart, { ...product, quantity: 1 }];
-          const updatedUser = { ...currentUser, cart: updatedCart };
-          const updatedUsers = users.map((u) =>
-            u.email === currentUser.email ? updatedUser : u
-          );
+          const existingProduct = gusteUser?.cart.find((item) => item.id === product.id);
+          let updatedCart;
 
-          set({ currentUser: updatedUser, users: updatedUsers });
+          if (existingProduct) {
+            updatedCart = gusteUser!.cart.map((item) =>
+              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            );
+          } else {
+            updatedCart = [...(gusteUser?.cart || []), { ...product, quantity: 1 }];
+          }
+
+          set({ gusteUser: { name: 'Guest', email: '', password: '', cart: updatedCart, wishlist: [], shippingDetails: [], orders: [] } });
         }
       },
 
+
       removeFromCart: (id) => {
-        const { currentUser, users } = get();
-        if (!currentUser) return;
+        const { currentUser, users, gusteUser } = get();
 
-        const updatedCart = currentUser.cart.filter((item) => item.id !== id);
-        const updatedUser = { ...currentUser, cart: updatedCart };
-        const updatedUsers = users.map((u) =>
-          u.email === currentUser.email ? updatedUser : u
-        );
-
-        set({ currentUser: updatedUser, users: updatedUsers });
+        if (currentUser) {
+          const updatedCart = currentUser.cart.filter((item) => item.id !== id);
+          const updatedUser = { ...currentUser, cart: updatedCart };
+          const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
+          set({ currentUser: updatedUser, users: updatedUsers });
+        } else if (gusteUser) {
+          const updatedCart = gusteUser.cart.filter((item) => item.id !== id);
+          set({ gusteUser: { ...gusteUser, cart: updatedCart } });
+        }
       },
+
 
       clearCart: () => {
-        const { currentUser, users } = get();
-        if (!currentUser) return;
+        const { currentUser, users, gusteUser } = get();
 
-        const updatedUser = { ...currentUser, cart: [] };
-        const updatedUsers = users.map((u) =>
-          u.email === currentUser.email ? updatedUser : u
-        );
-
-        set({ currentUser: updatedUser, users: updatedUsers });
+        if (currentUser) {
+          const updatedUser = { ...currentUser, cart: [] };
+          const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
+          set({ currentUser: updatedUser, users: updatedUsers });
+        } else if (gusteUser) {
+          set({ gusteUser: { ...gusteUser, cart: [] } });
+        }
       },
+
 
       addToWishlist: (product) => {
         const { currentUser, users } = get();
@@ -226,31 +237,32 @@ export const useUserStore = create<UserState>()(
       },
 
       quantity: (id) => {
-        const { currentUser } = get();
-        if (!currentUser) return 0;
+        const { currentUser, gusteUser } = get();
+        const user = currentUser || gusteUser;
+        if (!user) return 0;
 
-        const item = currentUser.cart.find((item) => item.id === id);
+        const item = user.cart.find((item) => item.id === id);
         return item?.quantity || 0;
       },
 
+
       updateQuantity: (id, quantity) => {
-        const { currentUser, users } = get();
-        if (!currentUser) return;
+      const { currentUser, users, gusteUser } = get();
 
-        const updatedCart = currentUser.cart.map((item) => {
-          if (item.id === id) {
-            return { ...item, quantity };
-          }
-          return item;
-        });
-        const updatedUser = { ...currentUser, cart: updatedCart };
-        const updatedUsers = users.map((u) =>
-          u.email === currentUser.email ? updatedUser : u
+      if (currentUser) {
+        const updatedCart = currentUser.cart.map((item) =>
+          item.id === id ? { ...item, quantity } : item
         );
-
+        const updatedUser = { ...currentUser, cart: updatedCart };
+        const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
         set({ currentUser: updatedUser, users: updatedUsers });
-      },
-
+      } else if (gusteUser) {
+        const updatedCart = gusteUser.cart.map((item) =>
+          item.id === id ? { ...item, quantity } : item
+        );
+        set({ gusteUser: { ...gusteUser, cart: updatedCart } });
+      }
+    },
 
       addShippingDetails: (details) => {
         const { currentUser, users } = get();
