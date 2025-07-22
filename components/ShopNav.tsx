@@ -20,12 +20,13 @@ export default function ShopNav() {
     const { addToCart, removeFromCart, removeFromWishlist } = useUserStore();
 
     return (
-        <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900"><Link href="/shop">Shop</Link></h1>
+        <div className="bg-zinc-900 flex items-center justify-between h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-white hover:border hover:border-white"><Link href="/shop">Shop</Link></h1>
             <div className="flex items-center gap-2">
                 <HoverCard>
                     <HoverCardTrigger asChild>
-                        <Button variant={"outline"} onClick={() => router.push("/cart")}>
+                        <Button  onClick={() => router.push("/cart")} 
+                        className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
                             <ShoppingCart size={20} />
                             Cart ({currentUser ? cart.length : guestCart.length})
                         </Button>
@@ -73,7 +74,8 @@ export default function ShopNav() {
                 <HoverCard>
                     <HoverCardTrigger asChild>
                         {currentUser && (
-                            <Button variant={"outline"} onClick={() => router.push("/wishlist")}>
+                            <Button onClick={() => router.push("/wishlist")} 
+                            className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
                                 <Heart size={20} />
                                 Wishlist ({wishlist.length})
                             </Button>
@@ -121,12 +123,14 @@ export default function ShopNav() {
                     </HoverCardContent>
                 </HoverCard>
                 {currentUser ? (
-                    <Button variant={"outline"} onClick={() => router.push("/account")}>
+                    <Button onClick={() => router.push("/account")} 
+                    className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
                         <User size={20} />
                         Account
                     </Button>
                 ) : (
-                    <Button variant={"outline"} onClick={() => router.push("/login")}>
+                    <Button onClick={() => router.push("/login")} 
+                    className="bg-transparent border-none text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
                         <User size={20} />
                         Login/Register
                     </Button>

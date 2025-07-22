@@ -49,7 +49,7 @@ export default function ShopPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-50">
-      <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
+      <nav className="fixed top-0 z-10 w-full bg-zinc-900 shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <ShopNav />
         </div>

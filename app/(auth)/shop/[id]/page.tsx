@@ -35,7 +35,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
+      <nav className=" fixed top-0 z-10 w-full bg-zinc-900 shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <ShopNav />
         </div>
@@ -164,7 +164,7 @@ export default function ProductPage() {
                           onClick={() => router.push(`/shop/${similarProduct.id}`)}
                         />
                       </div>
-                  {currentUser && (
+                  {/* {currentUser && (
                     <Button
                       title={
                         wishlist.some((item) => item.id === similarProduct.id)
@@ -195,10 +195,10 @@ export default function ProductPage() {
                         }`}
                       />
                     </Button>
-                  )}
+                  )} */}
                   <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
                   <p className="text-lg font-semibold text-gray-800">₹{similarProduct.price}</p>
-                  {quantity(similarProduct.id) > 0 ? (
+                  {/* {quantity(similarProduct.id) > 0 ? (
                     <div className="flex items-center justify-between w-auto border border-gray-300 rounded-md">
                       {quantity(similarProduct.id) > 1 ? (
                         <div className="flex items-center">
@@ -247,7 +247,7 @@ export default function ProductPage() {
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       Add to Cart
                     </Button>
-                  )}
+                  )} */}
                 </div>
               ))}
           </div>
