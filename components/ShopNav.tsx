@@ -20,7 +20,7 @@ export default function ShopNav() {
     const { addToCart, removeFromCart, removeFromWishlist } = useUserStore();
 
     return (
-        <div className="bg-zinc-900 flex items-center justify-between h-16">
+        <div className="bg-[#131921] flex items-center justify-between h-16">
             <h1 className="text-xl sm:text-2xl font-bold text-white hover:border hover:border-white"><Link href="/shop">Shop</Link></h1>
             <div className="flex items-center gap-2">
                 <HoverCard>

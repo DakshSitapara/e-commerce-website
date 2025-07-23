@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus, Trash2 } from "lucide-react";
+import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus, Trash2, Github, Mail } from "lucide-react";
 import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShopNav from "@/components/ShopNav";
 import { Slider } from "@/components/ui/slider";
+import Footer from "@/components/footer";
 
 export default function ShopPage() {
   const router = useRouter();
@@ -48,8 +49,8 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-gray-50">
-      <nav className="fixed top-0 z-10 w-full bg-zinc-900 shadow-md">
+    <div className="flex min-h-screen w-full flex-col bg-[url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80')] bg-cover bg-center">
+      <nav className="fixed top-0 z-10 w-full bg-[#131921] shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <ShopNav />
         </div>
@@ -62,13 +63,13 @@ export default function ShopPage() {
               Category:
             </label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger id="category">
+              <SelectTrigger id="category" className="shadow-none border-none">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
-              <SelectContent className="bg-white rounded-md shadow-lg">
-                <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
                 {Object.values(Category).map((category) => (
-                  <SelectItem key={category} value={category} className="hover:bg-gray-100">{category}</SelectItem>
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -78,7 +79,7 @@ export default function ShopPage() {
               Type:
             </label>
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger id="type">
+              <SelectTrigger id="type" className="shadow-none border-none">
                 <SelectValue placeholder="Select Type" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-lg">
@@ -162,7 +163,7 @@ export default function ShopPage() {
                 key={product.id}
                 className="relative w-full sm:w-70 group overflow-hidden transition-all hover:shadow-xl py-0"
               >
-                <CardHeader className="p-0">
+                <CardHeader className="p-0 gap-0">
                   <div className="relative h-full w-full">
                     <Image
                       src={product.image || "/fallback.jpg"}
@@ -206,7 +207,7 @@ export default function ShopPage() {
                     )}
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 py-0 space-y-2">
+                {/* <CardContent className="p-4 py-0 space-y-2">
                   <CardTitle className="text-sm sm:text-lg font-semibold">
                     {product.name}
                   </CardTitle>
@@ -281,16 +282,19 @@ export default function ShopPage() {
                     </Button>
                   )}
                   </div>
-                </CardFooter>
+                </CardFooter> */}
               </Card>
             ))
           ) : (
-            <div className=" font-black text-xl sm:text-2xl text-center">
+            <div className="w-full font-black text-xl sm:text-2xl text-center">
               No products found.
             </div>
           )}
         </div>
       </main>
+      <footer className="w-full border-t items-center justify-center">
+        <Footer />
+      </footer>
     </div>
   );
 }
