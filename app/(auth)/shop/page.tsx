@@ -15,6 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ShopNav from "@/components/ShopNav";
 import { Slider } from "@/components/ui/slider";
 import Footer from "@/components/footer";
+import ProductCarousel from "@/components/SlidingProduct";
+import ShopFilters from "@/components/filtere";
 
 export default function ShopPage() {
   const router = useRouter();
@@ -56,112 +58,27 @@ export default function ShopPage() {
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-        <div className="flex flex-row gap-6 mb-4">
-          <h2 className="text-xl font-bold text-gray-900 col-span-full">Filters :</h2>
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <label htmlFor="category" className="text-sm font-medium text-gray-700">
-              Category:
-            </label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger id="category" className="shadow-none border-none">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {Object.values(Category).map((category) => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <ShopFilters
+          category={category}
+          setCategory={setCategory}
+          type={type}
+          setType={setType}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          search={search}
+          setSearch={setSearch}
+          onReset={handleResetFilters}
+        />
+        <div className="flex justify-between items-center mb-4 shadow-none border-none">
+          <ProductCarousel />
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <label htmlFor="type" className="text-sm font-medium text-gray-700">
-              Type:
-            </label>
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger id="type" className="shadow-none border-none">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white rounded-md shadow-lg">
-                <SelectItem value="all" className="hover:bg-gray-100">All</SelectItem>
-                {Object.values(Type).map((type) => (
-                  <SelectItem key={type} value={type} className="hover:bg-gray-100">{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <label htmlFor="price-range" className="text-sm font-medium text-gray-700">
-              Price Range : 
-            </label>
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-            <div className="flex items-center">
-                <span className="flex items-center">
-                  ₹
-                  <Input
-                    type="price"
-                    min={0}
-                    max={1500}
-                    value= {priceRange[0]}
-                    onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                    className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-                  />  
-                </span>
-              <Slider
-                title={`Price Range: ₹ ${priceRange[0]} - ₹ ${priceRange[1]}`}
-                min={0}
-                max={1500}
-                step={10}
-                value={priceRange}
-                onValueChange={(value: [number, number]) => setPriceRange(value)}
-                className="w-[250px] cursor-pointer"
-              />
-              <span className="flex items-center px-2"> 
-                ₹
-                <Input
-                  type="price"
-                  min={0}
-                  max={1500}
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                  className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-                />
-              </span>
-            </div>
-          </div>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <label htmlFor="search" className="text-sm font-medium text-gray-700">
-              Search:
-            </label>
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={handleSearch}
-                className="rounded-md border border-gray-300 pr-4 py-2"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-            </div>
-          </div>
-          <div className="flex justify-end col-span-full">
-            <Button
-              variant="ghost"
-              title="Reset Filters"
-              onClick={handleResetFilters}
-              className="flex items-center gap-2"
-            >
-              <RotateCw className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="">
+        <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <Card
                 key={product.id}
-                className="relative w-full sm:w-70 group overflow-hidden transition-all hover:shadow-xl py-0"
+                className="min-w-[250px] max-w-[250px] flex-shrink-0 group overflow-hidden transition-all hover:shadow-xl py-0"
               >
                 <CardHeader className="p-0 gap-0">
                   <div className="relative h-full w-full">
@@ -291,10 +208,9 @@ export default function ShopPage() {
             </div>
           )}
         </div>
+        </div>
       </main>
-      <footer className="w-full border-t items-center justify-center">
         <Footer />
-      </footer>
     </div>
   );
 }

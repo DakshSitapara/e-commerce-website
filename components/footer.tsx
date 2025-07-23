@@ -19,7 +19,7 @@ const Footer = () => {
     setEmail("");
   };
   return (
-    <div className="py-10 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-gray-100 text-sm mt-24">
+    <div className="py-10 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-gray-100 text-sm mt-5">
       <div className="flex flex-col md:flex-row justify-between gap-24">
         <div className="hidden lg:flex justify-between w-1/2">
           <div className="flex flex-col">
