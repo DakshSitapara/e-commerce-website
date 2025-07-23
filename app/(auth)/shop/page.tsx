@@ -46,10 +46,6 @@ export default function ShopPage() {
     setPriceRange([0, 1500]);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-
   return (
     <div className="flex min-h-screen w-full flex-col bg-[url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80')] bg-cover bg-center">
       <nav className="fixed top-0 z-10 w-full bg-[#131921] shadow-md">
@@ -73,7 +69,7 @@ export default function ShopPage() {
           <ProductCarousel />
           </div>
         <div className="">
-        <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+        <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <Card

@@ -10,6 +10,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Star } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export default function ProductCarousel() {
 
@@ -36,17 +38,17 @@ export default function ProductCarousel() {
                 <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">{product.name}</h2>
                   <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
-                  <div className="flex items-center gap-4 mb-2">
+                  <div className="flex items-center justify-between gap-4 mb-2">
                     <span className="text-xl font-semibold text-gray-800">₹{product.price}</span>
-                    <span className="text-yellow-500 text-sm">⭐ {product.rating}</span>
+                    <p className="text-lg text-gray-600 flex items-center">{product.rating}<Star className="h-4 w-4 text-yellow-400 ml-1" /></p>
                   </div>
-                  <div className="flex gap-2 mt-auto">
-                    <span className={`text-white text-xs px-2 py-1 rounded ${CategoryColor(product.category)}`}>
+                  <div className="flex flex-wrap space-x-2">
+                    <Badge className={`${CategoryColor(product.category)} inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2`}>
                       {product.category}
-                    </span>
-                    <span className={`text-white text-xs px-2 py-1 rounded ${TypeColor(product.type)}`}>
+                    </Badge>
+                    <Badge className={`${TypeColor(product.type)} inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2`}>
                       {product.type}
-                    </span>
+                    </Badge>
                   </div>
                 </div>
               </div>
