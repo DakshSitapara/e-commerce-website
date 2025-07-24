@@ -14,8 +14,9 @@ import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import { ShippingFormDialog, ShippingFormData } from "@/components/ShippingFormDialog";
 import { OrderDetailDialog } from "@/components/OrderDetailDialog";
-import { FcViewDetails } from "react-icons/fc";
-import { FaEdit } from "react-icons/fa";
+import { FcAddColumn, FcViewDetails } from "react-icons/fc";
+import { FaEdit, FaPlus } from "react-icons/fa";
+import { MdAddHomeWork } from "react-icons/md";
 import { AiFillDelete } from "react-icons/ai";
 import ShopNav from "@/components/ShopNav";
 
@@ -155,27 +156,36 @@ export default function AccountPage() {
   }
 
   return (
+    <div className="bg-[url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80')] bg-cover bg-center">
   <div className="min-h-screen max-w-4xl mx-auto py-8 px-4">
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#131921] shadow-sm border-b">
       <div className="max-w-8xl mx-auto px-4 flex h-16 items-center justify-between">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Account</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">My Account</h1>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Button variant="outline" onClick={() => router.push("/shop")}>
+          <Button
+           onClick={() => router.push("/shop")}
+           className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
             <ShoppingBagIcon size={18} />
             <span className="ml-1 hidden sm:inline">Shop</span>
           </Button>
-          <Button variant="outline" onClick={() => router.push("/wishlist")}>
-            <Heart size={18} />
-            <span className="ml-1 hidden sm:inline">Wishlist ({currentUser.wishlist.length})</span>
-          </Button>
-          <Button variant="outline" onClick={() => router.push("/cart")}>
+          <Button 
+          onClick={() => router.push("/cart")}
+          className ="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
             <ShoppingCart size={18} />
             <span className="ml-1 hidden sm:inline">Cart ({currentUser.cart.length})</span>
+          </Button>
+          <Button  
+          onClick={() => router.push("/wishlist")}
+          className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
+            <Heart size={18} />
+            <span className="ml-1 hidden sm:inline">Wishlist ({currentUser.wishlist.length})</span>
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="p-2" title="User Menu">
+              <Button
+               className="p-2 bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
+              title="User Menu">
                 <User size={20} />
               </Button>
             </DropdownMenuTrigger>
@@ -243,7 +253,7 @@ export default function AccountPage() {
       </div>
     </nav>
 
-    <div className="mt-20 mb-6 border-b border-gray-200 flex justify-center">
+    <div className="mt-20 mb-6  flex justify-center">
       <div className="flex space-x-8">
         {tabs.map((tab) => (
           <button
@@ -263,9 +273,21 @@ export default function AccountPage() {
 
     <main className="space-y-10">
       {activeTab === "user" && (
-        <Card className="shadow-sm border max-w-3xl mx-auto">
+        <Card className="max-w-2xl mx-auto bg-transparent border-none shadow-none">
           <CardHeader>
-            <CardTitle>User Information</CardTitle>
+            <CardTitle className="flex justify-between items-center border-b border-gray-300 pb-1">
+              User Information
+              {showUserInfoForm ? (
+                      <></>
+              ) : ( 
+               <Button 
+               title="Edit User Information"
+               onClick={() => setShowUserInfoForm(true)}
+                className="bg-transparent text-primary shadow-none hover:bg-gray-100 hover:text-primary">
+                  <FaEdit size={16} />
+                </Button>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {showUserInfoForm ? (
@@ -305,9 +327,6 @@ export default function AccountPage() {
                 <p>
                   <strong>Email:</strong> {currentUser.email}
                 </p>
-                <Button onClick={() => setShowUserInfoForm(true)} className="mt-4">
-                  Edit
-                </Button>
               </div>
             )}
           </CardContent>
@@ -315,11 +334,15 @@ export default function AccountPage() {
       )}
 
       {activeTab === "address" && (
-        <Card className="shadow-sm border max-w-3xl mx-auto">
+        <Card className="max-w-2xl mx-auto bg-transparent border-none shadow-none">
           <CardHeader className="flex justify-between items-center">
             <CardTitle>Shipping Addresses</CardTitle>
-            <Button onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}>
-              Add Address
+            <Button 
+            title="Add Shipping Address"
+            onClick={() => { setEditingShipping(null); setShippingDialogOpen(true); }}
+            className="bg-transparent text-primary shadow-none hover:bg-gray-100 hover:text-primary"
+            >
+              <MdAddHomeWork />
             </Button>
           </CardHeader>
           <CardContent>
@@ -330,7 +353,7 @@ export default function AccountPage() {
                 {currentUser.shippingDetails.map((detail) => (
                   <div
                     key={detail.type}
-                    className="p-4 border rounded-md flex justify-between items-start bg-white shadow-sm"
+                    className="p-4 border rounded-md flex justify-between items-start shadow-sm hover:bg-accent transition-all duration-300"
                   >
                     <div className="text-sm space-y-1 text-gray-700">
                       <p><strong>Type:</strong> {detail.type}</p>
@@ -363,49 +386,49 @@ export default function AccountPage() {
       )}
 
       {activeTab === "orders" && (
-        <Card className="shadow-sm border max-w-3xl mx-auto">
+        <Card className="max-w-3xl mx-auto bg-transparent border-none shadow-none">
           <CardHeader className="flex justify-between items-center">
             <CardTitle>Order History</CardTitle>
-            <Button
+            {/* <Button
               variant="destructive"
               disabled={currentUser.orders.length === 0}
               onClick={() => setConfirmAction("clearOrders")}
             >
               Clear History
-            </Button>
+            </Button> */}
           </CardHeader>
-          <CardContent>
+          <CardContent className="max-h-[400px] overflow-auto">
             {currentUser.orders.length === 0 ? (
               <p className="text-gray-500 italic text-center py-4">You have no past orders.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full table-auto text-sm border rounded overflow-hidden">
-                  <thead className="bg-gray-100 text-gray-800">
+                  <thead>
                     <tr>
                       <th className="px-4 py-2 text-left">#</th>
                       <th className="px-4 py-2 text-left">Date</th>
                       <th className="px-4 py-2 text-left">Time</th>
                       <th className="px-4 py-2 text-left">Items</th>
                       <th className="px-4 py-2 text-left">Total</th>
-                      <th className="px-4 py-2 text-left">Actions</th>
+                      {/* <th className="px-4 py-2 text-left">Actions</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {[...currentUser.orders].reverse().map((order, index) => (
-                      <tr key={order.id} className="hover:bg-gray-50 border-t">
+                      <tr key={order.id} className="border-t cursor-pointer hover:scale-105 transition-all duration-300" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
                         <td className="px-4 py-2">{index + 1}</td>
                         <td className="px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
                         <td className="px-4 py-2">{new Date(order.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
                         <td className="px-4 py-2">{order.items.length}</td>
                         <td className="px-4 py-2 font-semibold">₹{order.total.toFixed(0)}</td>
-                        <td className="px-4 py-2 space-x-2">
+                        {/* <td className="px-4 py-2 space-x-2">
                           <Button title="View Details" size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
                             <FcViewDetails size={14} /> 
                           </Button>
                           <Button title="Delete" size="sm" variant="outline" onClick={() => { setSelectedOrderId(order.id); setConfirmAction("deleteOrder"); }}>
                             <AiFillDelete size={14} />
                           </Button>
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>
@@ -421,6 +444,7 @@ export default function AccountPage() {
         </Card>
       )}
     </main>
+  </div>
   </div>
 );
 }

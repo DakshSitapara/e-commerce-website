@@ -5,6 +5,9 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { FaGithub,FaLinkedin } from "react-icons/fa";
+import { SiGmail } from "react-icons/si";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -14,14 +17,14 @@ const Footer = () => {
       toast.error("Please enter a valid email.");
       return;
     }
-
     toast.success("Thank you for subscribing!");
     setEmail("");
   };
+  
   return (
     <div className="py-10 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-gray-100 text-sm mt-5">
       <div className="flex flex-col md:flex-row justify-between gap-24">
-        <div className="hidden lg:flex justify-between w-1/2">
+        <div className="hidden lg:flex justify-between w-full">
           <div className="flex flex-col">
             <h1 className="font-medium text-lg">COMPANY</h1>
             <div className="flex flex-col gap-2">
@@ -50,6 +53,15 @@ const Footer = () => {
               <Link href="" className="hover:scale-105 duration-200 transition-all">Find a Store</Link>
               <Link href="" className="hover:scale-105 duration-200 transition-all">Legal & Privacy</Link>
               <Link href="" className="hover:scale-105 duration-200 transition-all">Gift Card</Link>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="font-medium text-lg">SOCIAL</h1>
+            <div className="flex flex-col gap-2">
+              <Link href="" className="hover:scale-105 duration-200 transition-all flex items-center gap-1"><FaGithub />GitHub</Link>
+              <Link href="" className="hover:scale-105 duration-200 transition-all flex items-center gap-1"><SiGmail />Email</Link>
+              <Link href="" className="hover:scale-105 duration-200 transition-all flex items-center gap-1"><FaLinkedin />Linkedin</Link>
+              <Link href="" className="hover:scale-105 duration-200 transition-all flex items-center gap-1"><FaXTwitter />Twitter</Link>
             </div>
           </div>
         </div>
