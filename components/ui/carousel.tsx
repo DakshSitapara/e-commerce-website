@@ -5,7 +5,8 @@ import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-
+import { BsChevronCompactLeft } from "react-icons/bs";
+import { BsChevronCompactRight } from "react-icons/bs";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -195,7 +196,7 @@ function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft />
+      <BsChevronCompactLeft className="scale-250"/>
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -225,7 +226,7 @@ function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight />
+      <BsChevronCompactRight className="scale-250" />
       <span className="sr-only">Next slide</span>
     </Button>
   )

@@ -39,9 +39,9 @@ const Footer = () => {
             <h1 className="font-medium text-lg">SHOP</h1>
             <div className="flex flex-col gap-2">
               <Link href="" className="hover:scale-105 duration-200 transition-all">New Arrivals</Link>
-              <Link href="" className="hover:scale-105 duration-200 transition-all">Accessories</Link>
               <Link href="" className="hover:scale-105 duration-200 transition-all">Men</Link>
               <Link href="" className="hover:scale-105 duration-200 transition-all">Women</Link>
+              <Link href="" className="hover:scale-105 duration-200 transition-all">Kid</Link>
               <Link href="" className="hover:scale-105 duration-200 transition-all">All Products</Link>
             </div>
           </div>

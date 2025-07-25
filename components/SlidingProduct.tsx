@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Autoplay from "embla-carousel-autoplay"
 import { products, CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useRouter } from "next/navigation";
 import {
@@ -11,19 +12,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Star } from "lucide-react";
-import { Badge } from "./ui/badge";
 
 export default function ProductCarousel() {
 
   const router = useRouter();
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto p-4 shadow-none border-none">
-      <Carousel>
+    <div className="relative w-full max-w-5xl mx-auto p-4 shadow-none border-none">
+      <Carousel plugins={ [Autoplay( {delay: 3000,} ),]} >
         <CarouselContent>
           {products.map((product) => (
             <CarouselItem key={product.id}>
-              <div className="flex flex-col md:flex-row items-center bg-transparent shadow-md rounded-lg overflow-hidden">
+              <div className="flex flex-col md:flex-row items-center bg-transparent shadow-none border-none rounded-lg overflow-hidden">
                 <div className="relative w-full md:w-1/2 aspect-square">
                   <Image
                     src={product.image || "/fallback.jpg"}
@@ -42,21 +42,13 @@ export default function ProductCarousel() {
                     <span className="text-xl font-semibold text-gray-800">₹{product.price}</span>
                     <p className="text-lg text-gray-600 flex items-center">{product.rating}<Star className="h-4 w-4 text-yellow-400 ml-1" /></p>
                   </div>
-                  <div className="flex flex-wrap space-x-2">
-                    <Badge className={`${CategoryColor(product.category)} inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2`}>
-                      {product.category}
-                    </Badge>
-                    <Badge className={`${TypeColor(product.type)} inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2`}>
-                      {product.type}
-                    </Badge>
-                  </div>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="bg-transparent shadow-none border-none" />
-        <CarouselNext className="bg-transparent shadow-none border-none" />
+        <CarouselPrevious className="bg-transparent shadow-none border-none hover:bg-transparent" />
+        <CarouselNext className="bg-transparent shadow-none border-none hover:bg-transparent" />
       </Carousel>
     </div>
   );

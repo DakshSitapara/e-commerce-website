@@ -54,7 +54,7 @@ export default function ShopPage() {
         </div>
       </nav>
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-        <ShopFilters
+        {/* <ShopFilters
           category={category}
           setCategory={setCategory}
           type={type}
@@ -64,7 +64,7 @@ export default function ShopPage() {
           search={search}
           setSearch={setSearch}
           onReset={handleResetFilters}
-        />
+        /> */}
         <div className="flex justify-between items-center mb-4 shadow-none border-none">
           <ProductCarousel />
           </div>
