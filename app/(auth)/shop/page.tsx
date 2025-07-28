@@ -3,17 +3,13 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, Star, Heart, Search, RotateCw, ShoppingCartIcon, Plus, Minus, Trash2, Github, Mail } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShopNav from "@/components/ShopNav";
-import { Slider } from "@/components/ui/slider";
 import Footer from "@/components/footer";
 import ProductCarousel from "@/components/SlidingProduct";
 import ShopFilters from "@/components/filtere";
@@ -28,7 +24,7 @@ export default function ShopPage() {
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
-  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
@@ -53,8 +49,8 @@ export default function ShopPage() {
           <ShopNav />
         </div>
       </nav>
-      <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-        {/* <ShopFilters
+      <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8 items-center">
+        <ShopFilters
           category={category}
           setCategory={setCategory}
           type={type}
@@ -64,9 +60,9 @@ export default function ShopPage() {
           search={search}
           setSearch={setSearch}
           onReset={handleResetFilters}
-        /> */}
+        />
         <div className="flex justify-between items-center mb-4 shadow-none border-none">
-          <ProductCarousel selectedIndex={selectedProductIndex} />
+          <ProductCarousel />
         </div>
         <div className="">
           <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
@@ -88,7 +84,7 @@ export default function ShopPage() {
                             ? "filter blur-sm"
                             : ""
                         }`}
-                        onClick={() => setSelectedProductIndex(products.findIndex(p => p.id === product.id))}
+                        onClick={() => router.push(`/shop/${product.id}`)}
                       />
                       {currentUser &&
                         cart.some((item) => item.id === product.id) && (
