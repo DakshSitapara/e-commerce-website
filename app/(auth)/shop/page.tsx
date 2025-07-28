@@ -28,7 +28,7 @@ export default function ShopPage() {
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
-
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
@@ -66,7 +66,7 @@ export default function ShopPage() {
           onReset={handleResetFilters}
         /> */}
         <div className="flex justify-between items-center mb-4 shadow-none border-none">
-          <ProductCarousel />
+          <ProductCarousel selectedIndex={selectedProductIndex} />
         </div>
         <div className="">
           <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
@@ -88,7 +88,7 @@ export default function ShopPage() {
                             ? "filter blur-sm"
                             : ""
                         }`}
-                        onClick={() => router.push(`/shop/${product.id}`)}
+                        onClick={() => setSelectedProductIndex(products.findIndex(p => p.id === product.id))}
                       />
                       {currentUser &&
                         cart.some((item) => item.id === product.id) && (
