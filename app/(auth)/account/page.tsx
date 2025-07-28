@@ -378,18 +378,18 @@ export default function AccountPage() {
                       </div>
                       <div className="flex flex-row gap-2 absolute bottom-2 right-2">
                         <Button 
-                        title="Edit" 
-                        size="sm"
+                          title="Edit" 
+                          size="sm"
                           onClick={() => onEdit(detail)}
                           className="bg-transparent text-primary shadow-none hover:bg-gray-200 hover:text-primary"
-                          >
+                        >
                           <FaEdit size={14} /> 
                         </Button>
                         <Button 
-                        title="Delete" 
-                        size="sm" 
-                        onClick={() => onDelete(detail.type)}
-                        className="bg-transparent text-primary shadow-none hover:bg-gray-200 hover:text-primary"
+                          title="Delete" 
+                          size="sm" 
+                          onClick={() => onDelete(detail.type)}
+                          className="bg-transparent text-primary shadow-none hover:bg-gray-200 hover:text-primary"
                         >
                           <AiFillDelete size={14} />
                         </Button>
@@ -429,7 +429,7 @@ export default function AccountPage() {
                   <table className="w-full table-auto text-sm border rounded overflow-hidden">
                     <thead>
                       <tr>
-                        <th className="px-4 py-2 text-left">#</th>
+                        <th className="px-4 py-2 text-left"></th>
                         <th className="px-4 py-2 text-left">Date</th>
                         <th className="px-4 py-2 text-left">Time</th>
                         <th className="px-4 py-2 text-left">Items</th>
@@ -439,7 +439,11 @@ export default function AccountPage() {
                     </thead>
                     <tbody>
                       {[...currentUser.orders].reverse().map((order, index) => (
-                        <tr key={order.id} className="border-t cursor-pointer hover:scale-105 transition-all duration-300" onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}>
+                        <tr 
+                          key={order.id} 
+                          className="cursor-pointer transition-all duration-200 hover:text-gray-900 hover:bg-gray-100 ease-in-out"
+                          onClick={() => { setSelectedOrderId(order.id); setViewDialogOpen(true); }}
+                        >
                           <td className="px-4 py-2">{index + 1}</td>
                           <td className="px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
                           <td className="px-4 py-2">{new Date(order.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>

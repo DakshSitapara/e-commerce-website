@@ -19,7 +19,10 @@ export default function ProductCarousel() {
 
   return (
     <div className="relative w-full max-w-5xl mx-auto p-4 shadow-none border-none">
-      <Carousel plugins={ [Autoplay( {delay: 3000,} ),]} >
+      <Carousel
+        opts={ { loop: true, align: "center", } } 
+        plugins={ [Autoplay( {delay: 3000,} ),]} 
+      >
         <CarouselContent>
           {products.map((product) => (
             <CarouselItem key={product.id}>

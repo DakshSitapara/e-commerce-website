@@ -67,60 +67,76 @@ export default function ShopPage() {
         /> */}
         <div className="flex justify-between items-center mb-4 shadow-none border-none">
           <ProductCarousel />
-          </div>
+        </div>
         <div className="">
-        <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <Card
-                key={product.id}
-                className="min-w-[250px] max-w-[250px] flex-shrink-0 group overflow-hidden transition-all hover:shadow-xl py-0"
-              >
-                <CardHeader className="p-0 gap-0">
-                  <div className="relative h-full w-full">
-                    <Image
-                      src={product.image || "/fallback.jpg"}
-                      alt={product.name}
-                      width={500}
-                      height={500}
-                      className="h-80 w-full transition-transform group-hover:scale-105 cursor-pointer"
-                      onClick={() => router.push(`/shop/${product.id}`)}
-                    />
-                    {currentUser && (
-                      <Button
-                        title={
-                          wishlist.some((item) => item.id === product.id)
-                            ? "Remove from wishlist"
-                            : "Add to wishlist"
-                        }
-                        className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
-                        size={"icon"}
-                        onClick={() => {
-                          if (wishlist.some((item) => item.id === product.id)) {
-                            removeFromWishlist(product.id);
-                            toast.success(
-                              `${product.name} removed from wishlist!`
-                            );
-                          } else {
-                            addToWishlist({...product, quantity: 1});
-                            toast.success(
-                              `${product.name} added to wishlist!`
-                            );
+          <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  className="min-w-[250px] max-w-[250px] flex-shrink-0 group overflow-hidden transition-all hover:shadow-xl py-0"
+                >
+                  <CardHeader className="p-0 gap-0">
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={product.image || "/fallback.jpg"}
+                        alt={product.name}
+                        width={500}
+                        height={500}
+                        className={`h-80 w-full transition-transform group-hover:scale-105 cursor-pointer ${
+                          cart.some((item) => item.id === product.id)
+                            ? "filter blur-sm"
+                            : ""
+                        }`}
+                        onClick={() => router.push(`/shop/${product.id}`)}
+                      />
+                      {currentUser &&
+                        cart.some((item) => item.id === product.id) && (
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-4xl font-bold">
+                            <ShoppingCart
+                              className="h-10 w-10 text-2xl cursor-pointer hover:text-gray-500 hover:scale-110 transition-all"
+                              onClick={() => router.push("/cart")}
+                            />
+                          </div>
+                        )}
+                      {currentUser && (
+                        <Button
+                          title={
+                            wishlist.some((item) => item.id === product.id)
+                              ? "Remove from wishlist"
+                              : "Add to wishlist"
                           }
-                        }}
-                        hidden={cart.some((item) => item.id === product.id)}
-                      >
-                        <Heart
-                          className={`h-6 w-6 ${wishlist.some((item) => item.id === product.id)
-                            ? "fill-red-500 text-red-500"
-                            : " text-red-500"
-                          }`}
-                        />
-                      </Button>
-                    )}
-                  </div>
-                </CardHeader>
-                {/* <CardContent className="p-4 py-0 space-y-2">
+                          className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
+                          size={"icon"}
+                          onClick={() => {
+                            if (
+                              wishlist.some((item) => item.id === product.id)
+                            ) {
+                              removeFromWishlist(product.id);
+                              toast.success(
+                                `${product.name} removed from wishlist!`
+                              );
+                            } else {
+                              addToWishlist({ ...product, quantity: 1 });
+                              toast.success(
+                                `${product.name} added to wishlist!`
+                              );
+                            }
+                          }}
+                          hidden={cart.some((item) => item.id === product.id)}
+                        >
+                          <Heart
+                            className={`h-6 w-6 ${
+                              wishlist.some((item) => item.id === product.id)
+                                ? "fill-red-500 text-red-500"
+                                : " text-red-500"
+                            }`}
+                          />
+                        </Button>
+                      )}
+                    </div>
+                  </CardHeader>
+                  {/* <CardContent className="p-4 py-0 space-y-2">
                   <CardTitle className="text-sm sm:text-lg font-semibold">
                     {product.name}
                   </CardTitle>
@@ -196,17 +212,17 @@ export default function ShopPage() {
                   )}
                   </div>
                 </CardFooter> */}
-              </Card>
-            ))
-          ) : (
-            <div className="w-full font-black text-xl sm:text-2xl text-center">
-              No products found.
-            </div>
-          )}
-        </div>
+                </Card>
+              ))
+            ) : (
+              <div className="w-full font-black text-xl sm:text-2xl text-center">
+                No products found.
+              </div>
+            )}
+          </div>
         </div>
       </main>
-        <Footer />
+      <Footer />
     </div>
   );
 }
