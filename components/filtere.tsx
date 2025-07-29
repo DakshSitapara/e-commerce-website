@@ -45,9 +45,9 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            {Object.values(Category).map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
+            {Object.values(Category).map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
               </SelectItem>
             ))}
           </SelectContent>
@@ -64,9 +64,9 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            {Object.values(Type).map((t) => (
-              <SelectItem key={t} value={t}>
-                {t}
+            {Object.values(Type).map((type) => (
+              <SelectItem key={type} value={type}>
+                {type}
               </SelectItem>
             ))}
           </SelectContent>
@@ -78,29 +78,29 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
           Price Range:
         </label>
         <div className="flex items-center gap-2">
-          ₹
-          <Input
+          ₹{`${priceRange[0]}`}
+          {/* <Input
             type="price"
             value={priceRange[0]}
             onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
             className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-          />
+          /> */}
           <Slider
             title={`Price Range: ₹${priceRange[0]} - ₹${priceRange[1]}`}
             min={0}
             max={1500}
             step={10}
             value={priceRange}
-                onValueChange={(value: [number, number]) => setPriceRange(value)}
+            onValueChange={(value: [number, number]) => setPriceRange(value)}
             className="w-[250px] cursor-pointer"
           />
-          ₹
-          <Input
+          ₹{`${priceRange[1]}`}
+          {/* <Input
             type="price"
             value={priceRange[1]}
             onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 0])}
             className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-          />
+          /> */}
         </div>
       </div>
 

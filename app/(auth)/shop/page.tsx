@@ -40,6 +40,7 @@ export default function ShopPage() {
     setCategory("all");
     setType("all");
     setPriceRange([0, 1500]);
+    setSearch("");
   };
 
   return (
@@ -65,7 +66,7 @@ export default function ShopPage() {
           <ProductCarousel />
         </div>
         <div className="">
-          <div className="flex max-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
+          <div className="flex max-w-7xl min-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Card

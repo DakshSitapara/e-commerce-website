@@ -89,10 +89,13 @@ const Footer = () => {
           <span className="font-semibold">Secure Payments</span>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-1 mt-16 text-center text-sm text-muted-foreground *:[a]:hover:text-primary text-balance *:[a]:underline *:[a]:underline-offset-4 *:[a]:text-blue-500">
-        &copy; {`${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`}. All rights reserved. You agree to our <a href="#">Terms of Service</a>{" "} and <a href="#">Privacy Policy</a>.
+      <div className="flex items-center justify-center gap-1 mt-16 text-center text-sm text-muted-foreground">
+        &copy; 2025. All rights reserved. By continuing to use this website, you agree to our 
+        <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Terms of Service</a> 
+        and 
+        <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Privacy Policy</a>.
       </div>
-      </div>
+    </div>
   );
 };
 
