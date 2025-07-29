@@ -56,12 +56,15 @@ export default function BillingPage() {
   });
 
   useEffect(() => {
-    if (shippingDetails.length > 0) {
+    if (
+      shippingDetails.length > 0 &&
+      !selectedShippingType
+    ) {
       const defaultType = shippingDetails[0].type;
       setSelectedShippingType(defaultType);
       setValue("shippingAddressType", defaultType);
     }
-  }, [shippingDetails, setValue]);
+  }, [shippingDetails, selectedShippingType, setValue]);
 
  const handlePlaceOrder = async (data: BillingFormData) => {
   if (!currentUser) {
