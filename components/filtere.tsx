@@ -32,15 +32,27 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
   onReset,
 }) => {
   return (
-    <div className="flex flex-row gap-6 mb-4 flex-wrap">
-      <h2 className="text-xl font-bold text-gray-900 col-span-full">Filters :</h2>
-
-      <div className="flex flex-col sm:flex-row items-center gap-2">
+    <div className="flex flex-col gap-4">
+      <h2 className="text-lg font-bold text-gray-900 flex items-center justify-between">
+        Filters
+        <Button
+          variant="ghost"
+          title="Reset Filters"
+          onClick={onReset}
+          className="mt-2 transition-all duration-200"
+        >
+          <RotateCw className="h-4 w-4" />
+        </Button>
+      </h2>
+      <div className="flex flex-col gap-2">
         <label htmlFor="category" className="text-sm font-medium text-gray-700">
-          Category:
+          Category
         </label>
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger id="category" className="shadow-none border-none">
+          <SelectTrigger
+            id="category"
+            className="w-auto rounded-md border-none shadow-none"
+          >
             <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent>
@@ -54,12 +66,15 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
         </Select>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
+      <div className="flex flex-col gap-2">
         <label htmlFor="type" className="text-sm font-medium text-gray-700">
-          Type:
+          Type
         </label>
         <Select value={type} onValueChange={setType}>
-          <SelectTrigger id="type" className="shadow-none border-none">
+          <SelectTrigger
+            id="type"
+            className="w-auto rounded-md border-none shadow-none"
+          >
             <SelectValue placeholder="Select Type" />
           </SelectTrigger>
           <SelectContent>
@@ -73,18 +88,15 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
         </Select>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
+      <div className="flex flex-col gap-2">
         <label htmlFor="price-range" className="text-sm font-medium text-gray-700">
-          Price Range:
+          Price Range
         </label>
-        <div className="flex items-center gap-2">
-          ₹{`${priceRange[0]}`}
-          {/* <Input
-            type="price"
-            value={priceRange[0]}
-            onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-            className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-          /> */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>₹{priceRange[0]}</span>
+            <span>₹{priceRange[1]}</span>
+          </div>
           <Slider
             title={`Price Range: ₹${priceRange[0]} - ₹${priceRange[1]}`}
             min={0}
@@ -92,44 +104,27 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
             step={10}
             value={priceRange}
             onValueChange={(value: [number, number]) => setPriceRange(value)}
-            className="w-[250px] cursor-pointer"
+            className="w-full cursor-pointer"
           />
-          ₹{`${priceRange[1]}`}
-          {/* <Input
-            type="price"
-            value={priceRange[1]}
-            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 0])}
-            className="w-[30px] border-none shadow-none pr-4 py-2 px-0"
-          /> */}
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
+      {/* <div className="flex flex-col gap-2">
         <label htmlFor="search" className="text-sm font-medium text-gray-700">
-          Search:
+          Search
         </label>
         <div className="relative">
           <Input
+            id="search"
             type="text"
-            placeholder="Search..."
+            placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 pr-4 py-2"
+            className="w-full rounded-md border-gray-200 bg-white/50 pl-3 pr-10 py-2 focus:ring-2 focus:ring-blue-500 shadow-sm"
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
         </div>
-      </div>
-
-      <div className="flex justify-end col-span-full">
-        <Button
-          variant="ghost"
-          title="Reset Filters"
-          onClick={onReset}
-          className="flex items-center gap-2"
-        >
-          <RotateCw className="h-5 w-5" />
-        </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingCart, Heart } from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { ShoppingCart, Heart, Menu } from "lucide-react";
 import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -16,15 +16,14 @@ import ShopFilters from "@/components/filtere";
 
 export default function ShopPage() {
   const router = useRouter();
-
-  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser, quantity, updateQuantity } = useUserStore();
+  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
   const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
@@ -32,7 +31,6 @@ export default function ShopPage() {
     const matchesType = type === "all" || product.type === type;
     const matchesMinPrice = product.price >= priceRange[0];
     const matchesMaxPrice = product.price <= priceRange[1];
-
     return matchesSearch && matchesCategory && matchesType && matchesMinPrice && matchesMaxPrice;
   });
 
@@ -50,23 +48,41 @@ export default function ShopPage() {
           <ShopNav />
         </div>
       </nav>
-      <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 pt-20 pb-8 items-center">
-        <ShopFilters
-          category={category}
-          setCategory={setCategory}
-          type={type}
-          setType={setType}
-          priceRange={priceRange}
-          setPriceRange={setPriceRange}
-          search={search}
-          setSearch={setSearch}
-          onReset={handleResetFilters}
-        />
-        <div className="flex justify-between items-center mb-4 shadow-none border-none">
-          <ProductCarousel />
+
+      <main className="mx-auto max-w-8xl px-4 pt-20 pb-8 items-center">
+        <div
+          className={`fixed top-20 left-0 h-auto bg-transparent border-none shadow-none  z-10 w-64 p-6 transition-transform duration-300 sm:translate-x-0 sm:w-72 lg:w-80`}
+        >
+          <ShopFilters
+            category={category}
+            setCategory={setCategory}
+            type={type}
+            setType={setType}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            search={search}
+            setSearch={setSearch}
+            onReset={handleResetFilters}
+          />
         </div>
-        <div className="">
-          <div className="flex max-w-7xl min-w-7xl overflow-x-auto space-x-4 py-4 transition-all">
+
+        <div className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12 sm:ml-72 lg:ml-80">
+          <div className="flex justify-between items-center mb-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="sm:hidden text-gray-600 hover:text-gray-900"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
+
+          <div className="mb-12">
+            <ProductCarousel />
+          </div>
+
+          <div className="flex flex-wrap justify-center items-center gap-6 sm:justify-between sm:flex-row sm:gap-8">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Card
@@ -80,22 +96,10 @@ export default function ShopPage() {
                         alt={product.name}
                         width={500}
                         height={500}
-                        className={`h-80 w-full transition-transform group-hover:scale-105 cursor-pointer ${
-                          cart.some((item) => item.id === product.id)
-                            ? "filter blur-sm"
-                            : ""
-                        }`}
+                        className={`h-80 w-full transition-transform group-hover:scale-105 cursor-pointer`}
                         onClick={() => router.push(`/shop/${product.id}`)}
                       />
-                      {currentUser &&
-                        cart.some((item) => item.id === product.id) && (
-                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-4xl font-bold">
-                            <ShoppingCart
-                              className="h-10 w-10 text-2xl cursor-pointer hover:text-gray-500 hover:scale-110 transition-all"
-                              onClick={() => router.push("/cart")}
-                            />
-                          </div>
-                        )}
+
                       {currentUser && (
                         <Button
                           title={
@@ -133,82 +137,6 @@ export default function ShopPage() {
                       )}
                     </div>
                   </CardHeader>
-                  {/* <CardContent className="p-4 py-0 space-y-2">
-                  <CardTitle className="text-sm sm:text-lg font-semibold">
-                    {product.name}
-                  </CardTitle>
-                  <div className="flex items-center justify-between">
-                    <p className="text-gray-600">₹{product.price}</p>
-                    <div className="flex space-x-2">
-                      <Badge className={` ${CategoryColor(product.category)}`}>
-                        {product.category}
-                      </Badge>
-                      <Badge className={` ${TypeColor(product.type)}`}>
-                        {product.type}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 text-yellow-400" />
-                    <span className="text-gray-500 ml-1">
-                      {product.rating}
-                    </span>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-col items-center justify-center p-4 pt-0">
-                  <div className="flex items-center justify-between w-full">
-                  {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-full border border-gray-300 rounded-2xl">
-                      {quantity(product.id) > 1 ? (
-                        <div className="flex items-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
-                            className="flex items-center justify-center hover:bg-transparent"
-                          >
-                            <Minus />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFromCart(product.id)}
-                          className="flex items-center justify-center hover:bg-transparent"
-                        >
-                          <Trash2 />
-                        </Button>
-                      )}
-                        <span className="mx-2">{quantity(product.id)}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
-                          className="flex items-center justify-center hover:bg-transparent"
-                        >
-                          <Plus />
-                        </Button>
-                      </div>
-                  ) : (
-                    <Button
-                      variant={"outline"}
-                      onClick={() => {
-                        if (wishlist.some((item) => item.id === product.id)) {
-                          removeFromWishlist(product.id);
-                          toast.success(`${product.name} removed from wishlist!`);
-                        }
-                        addToCart({ ...product, quantity: 1 });
-                        toast.success(`${product.name} added to cart!`);
-                      }}
-                      className="w-full"
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Add to Cart
-                    </Button>
-                  )}
-                  </div>
-                </CardFooter> */}
                 </Card>
               ))
             ) : (
@@ -223,5 +151,3 @@ export default function ShopPage() {
     </div>
   );
 }
-
-
