@@ -25,7 +25,7 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col items-center mx-auto max-w-7xl px-4 py-6">
-          <nav className="fixed top-0 z-10 w-full bg-white shadow-md">
+          <nav className="fixed top-0 z-10 w-full bg-[#131921] shadow-md">
             <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
               <ShopNav />
             </div>
@@ -83,7 +83,10 @@ export default function CartPage() {
                       loader={() => product.image}
                     />
                     <div className="flex-1">
-                      <h2 className="font-semibold">{product.name} x{product.quantity}</h2>
+                      <div className="flex justify-between">
+                        <h2 className="font-semibold">{product.name} x{product.quantity}</h2>
+                        <p className="font-semibold mx-6">₹ {product.price}</p>
+                      </div>
                       <div className="mt-2 flex gap-2">
                         <Badge className={CategoryColor(product.category)}>{product.category}</Badge>
                         <Badge className={TypeColor(product.type)}>{product.type}</Badge>
@@ -107,13 +110,16 @@ export default function CartPage() {
                         >
                           <Plus />
                         </Button>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => removeFromCart(product.id)}
+                          className="flex items-center justify-center hover:bg-transparent text-indigo-800"
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </div>
-                    <CardFooter className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="text-lg font-semibold">₹ {product.price}</span>
-                      </div>
-                    </CardFooter>
                   </div>
                 ))}
               </CardContent>    

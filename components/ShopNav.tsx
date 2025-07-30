@@ -26,7 +26,7 @@ export default function ShopNav() {
           <Link href="/shop">Shop</Link>
         </h1>
         <div className="flex items-center gap-2">
-          <HoverCard>
+          {/* <HoverCard>
             <HoverCardTrigger asChild>
               <Button
                 onClick={() => router.push("/cart")}
@@ -114,7 +114,8 @@ export default function ShopNav() {
                 </div>
               </div>
             </HoverCardContent>
-          </HoverCard>
+          </HoverCard> */}
+          <CartSheet />
           <HoverCard>
             <HoverCardTrigger asChild>
               {currentUser && (

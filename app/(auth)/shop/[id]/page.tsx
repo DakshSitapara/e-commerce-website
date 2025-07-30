@@ -6,6 +6,7 @@ import { ShoppingBagIcon, Heart, ShoppingCart, Star, Minus, Plus, Trash2 } from 
 import { products, CategoryColor, TypeColor } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import ProductImage from "@/components/ProductImage";
@@ -18,6 +19,8 @@ export default function ProductPage() {
   const productId = parseInt(id as string, 10);
   const productIndex = products.findIndex((p) => p.id === productId);
   const product = products[productIndex];
+
+  const [selectedQuantity, setSelectedQuantity] = React.useState(1);
 
   const { addToCart, removeFromCart, addToWishlist, removeFromWishlist, currentUser , updateQuantity, quantity } = useUserStore();
 
@@ -58,22 +61,19 @@ export default function ProductPage() {
                 onClick={() => {
                   if (wishlist.some((item) => item.id === product.id)) {
                     removeFromWishlist(product.id);
-                    toast.success(
-                      `${product.name} removed from wishlist!`
-                    );
+                    toast.success(`${product.name} removed from wishlist!`);
                   } else {
-                    addToWishlist({...product, quantity: 1});
-                    toast.success(
-                      `${product.name} added to wishlist!`
-                    );
+                    addToWishlist({ ...product, quantity: 1 });
+                    toast.success(`${product.name} added to wishlist!`);
                   }
                 }}
                 hidden={cart.some((item) => item.id === product.id)}
               >
                 <Heart
-                  className={`h-10 w-10 ${wishlist.some((item) => item.id === product.id)
-                    ? "fill-red-500 text-red-500"
-                    : " text-red-500"
+                  className={`h-10 w-10 ${
+                    wishlist.some((item) => item.id === product.id)
+                      ? "fill-red-500 text-red-500"
+                      : " text-red-500"
                   }`}
                 />
               </Button>
@@ -83,7 +83,9 @@ export default function ProductPage() {
 
         <div className="w-full lg:w-1/2 space-y-6">
           <h2 className="text-3xl font-bold">{product.name}</h2>
-          <p className="text-2xl font-semibold text-gray-800">₹{product.price}</p>
+          <p className="text-2xl font-semibold text-gray-800">
+            ₹{product.price}
+          </p>
           <div className="flex flex-wrap space-x-2">
             <Badge className={`${CategoryColor(product.category)}`}>
               {product.category}
@@ -92,79 +94,77 @@ export default function ProductPage() {
               {product.type}
             </Badge>
           </div>
-          <p className="text-lg text-gray-600 flex items-center">{product.rating}<Star className="h-4 w-4 text-yellow-400 ml-1" /></p>
+          <p className="text-lg text-gray-600 flex items-center">
+            {product.rating}
+            <Star className="h-4 w-4 text-yellow-400 ml-1" />
+          </p>
           <p className="text-lg text-gray-600">{product.description}</p>
 
           <div className="flex flex-wrap gap-4">
-                  {quantity(product.id) > 0 ? (
-                    <div className="flex items-center justify-between w-auto border border-gray-300 rounded-md">
-                      {quantity(product.id) > 1 ? (
-                        <div className="flex items-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(product.id, quantity(product.id) - 1)}
-                            className="flex items-center justify-center hover:bg-transparent"
-                          >
-                            <Minus />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFromCart(product.id)}
-                          className="flex items-center justify-center hover:bg-transparent"
-                        >
-                          <Trash2 />
-                        </Button>
-                      )}
-                        <span className="mx-2">{quantity(product.id)}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => updateQuantity(product.id, quantity(product.id) + 1) }
-                          className="flex items-center justify-center hover:bg-transparent"
-                        >
-                          <Plus />
-                        </Button>
-                      </div>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        if (wishlist.some((item) => item.id === product.id)) {
-                          removeFromWishlist(product.id);
-                          toast.success(`${product.name} removed from wishlist!`);
-                        }
-                        addToCart({ ...product, quantity: 1 });
-                        toast.success(`${product.name} added to cart!`);
-                      }}
-                      className="bg-transparent"
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Add to Cart
-                    </Button>
-                  )}
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center gap-2">
+                <p className="text-lg">Quantity:</p>
+                <Select
+                  value={selectedQuantity.toString()}
+                  onValueChange={(value) => setSelectedQuantity(Number(value))}
+                >
+                  <SelectTrigger className="w-full border-none shadow-none">
+                    <SelectValue placeholder={selectedQuantity.toString()} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: product.availableQuantity }, (_, i) =>
+                      (i + 1).toString()
+                    ).map((num) => (
+                      <SelectItem key={num} value={num}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (wishlist.some((item) => item.id === product.id)) {
+                    removeFromWishlist(product.id);
+                    toast.success(`${product.name} removed from wishlist!`);
+                  }
+                  addToCart({ ...product, quantity: selectedQuantity });
+                  toast.success(`${product.name} added to cart!`);
+                }}
+                className="bg-transparent"
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Add to Cart
+              </Button>
+            </div>
           </div>
         </div>
       </main>
       <div className="w-full space-y-6 p-6">
-          <h3 className="text-2xl font-bold">Similar Products</h3>
-          <div className="flex flex-wrap gap-6">
-            {products.filter((p) => p.category === product.category && p.id !== product.id).map((similarProduct) => (
-                <div key={similarProduct.id} className="relative flex flex-col items-center w-1/2 lg:w-1/4 space-y-2">
-                  <div className="relative w-full aspect-square overflow-hidden rounded-lg shadow">
-                        <Image
-                          src={similarProduct.image || "/fallback.jpg"}
-                          alt={similarProduct.name}
-                          fill
-                          className="object-cover cursor-pointer"
-                          priority
-                          onClick={() => router.push(`/shop/${similarProduct.id}`)}
-                        />
-                      </div>
-                  {/* {currentUser && (
+        <h3 className="text-2xl font-bold">Similar Products</h3>
+        <div className="flex flex-wrap gap-6">
+          {products
+            .filter(
+              (p) => p.category === product.category && p.id !== product.id
+            )
+            .map((similarProduct) => (
+              <div
+                key={similarProduct.id}
+                className="relative flex flex-col items-center w-1/2 lg:w-1/4 space-y-2"
+              >
+                <div className="relative w-full aspect-square overflow-hidden rounded-lg shadow">
+                  <Image
+                    src={similarProduct.image || "/fallback.jpg"}
+                    alt={similarProduct.name}
+                    fill
+                    className="object-cover cursor-pointer"
+                    priority
+                    onClick={() => router.push(`/shop/${similarProduct.id}`)}
+                  />
+                </div>
+                {/* {currentUser && (
                     <Button
                       title={
                         wishlist.some((item) => item.id === similarProduct.id)
@@ -196,9 +196,11 @@ export default function ProductPage() {
                       />
                     </Button>
                   )} */}
-                  <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
-                  <p className="text-lg font-semibold text-gray-800">₹{similarProduct.price}</p>
-                  {/* {quantity(similarProduct.id) > 0 ? (
+                <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
+                <p className="text-lg font-semibold text-gray-800">
+                  ₹{similarProduct.price}
+                </p>
+                {/* {quantity(similarProduct.id) > 0 ? (
                     <div className="flex items-center justify-between w-auto border border-gray-300 rounded-md">
                       {quantity(similarProduct.id) > 1 ? (
                         <div className="flex items-center">
@@ -248,10 +250,10 @@ export default function ProductPage() {
                       Add to Cart
                     </Button>
                   )} */}
-                </div>
-              ))}
-          </div>
+              </div>
+            ))}
         </div>
+      </div>
     </div>
   );
 }

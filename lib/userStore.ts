@@ -134,41 +134,55 @@ export const useUserStore = create<UserState>()(
         return !!get().currentUser;
       },
 
-      addToCart: (product) => {
-        const { currentUser, users, gusteUser } = get();
+addToCart: (product) => {
+  const { currentUser, users, gusteUser } = get();
+  const quantityToAdd = product.quantity || 1;
 
-        if (currentUser) {
-          const existingProduct = currentUser.cart.find((item) => item.id === product.id);
-          let updatedCart;
+  if (currentUser) {
+    const existingProduct = currentUser.cart.find((item) => item.id === product.id);
+    let updatedCart;
 
-          if (existingProduct) {
-            updatedCart = currentUser.cart.map((item) =>
-              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-            );
-          } else {
-            updatedCart = [...currentUser.cart, { ...product, quantity: 1 }];
-          }
+    if (existingProduct) {
+      updatedCart = currentUser.cart.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + quantityToAdd }
+          : item
+      );
+    } else {
+      updatedCart = [...currentUser.cart, { ...product, quantity: quantityToAdd }];
+    }
 
-          const updatedUser = { ...currentUser, cart: updatedCart };
-          const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
+    const updatedUser = { ...currentUser, cart: updatedCart };
+    const updatedUsers = users.map((u) => u.email === currentUser.email ? updatedUser : u);
 
-          set({ currentUser: updatedUser, users: updatedUsers });
-        } else {
-          const existingProduct = gusteUser?.cart.find((item) => item.id === product.id);
-          let updatedCart;
+    set({ currentUser: updatedUser, users: updatedUsers });
+  } else {
+    const existingProduct = gusteUser?.cart.find((item) => item.id === product.id);
+    let updatedCart;
 
-          if (existingProduct) {
-            updatedCart = gusteUser!.cart.map((item) =>
-              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-            );
-          } else {
-            updatedCart = [...(gusteUser?.cart || []), { ...product, quantity: 1 }];
-          }
+    if (existingProduct) {
+      updatedCart = gusteUser!.cart.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + quantityToAdd }
+          : item
+      );
+    } else {
+      updatedCart = [...(gusteUser?.cart || []), { ...product, quantity: quantityToAdd }];
+    }
 
-          set({ gusteUser: { name: 'Guest', email: '', password: '', cart: updatedCart, wishlist: [], shippingDetails: [], orders: [] } });
-        }
-      },
-
+    set({
+      gusteUser: {
+        name: 'Guest',
+        email: '',
+        password: '',
+        cart: updatedCart,
+        wishlist: [],
+        shippingDetails: [],
+        orders: [],
+      }
+    });
+  }
+},
 
       removeFromCart: (id) => {
         const { currentUser, users, gusteUser } = get();
