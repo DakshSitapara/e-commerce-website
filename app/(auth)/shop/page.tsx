@@ -43,15 +43,17 @@ export default function ShopPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-[url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80')] bg-cover bg-center">
-      <nav className="fixed top-0 z-10 w-full bg-[#131921] shadow-md">
+      <nav className="fixed top-0 z-20 w-full bg-[#131921] shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <ShopNav />
         </div>
       </nav>
 
-      <main className="mx-auto max-w-8xl px-4 pt-20 pb-8 items-center">
+      <main className="mx-auto max-w-8xl px-4 pt-20 pb-8 flex flex-row">
         <div
-          className={`fixed top-20 left-0 h-auto bg-transparent border-none shadow-none  z-10 w-64 p-6 transition-transform duration-300 sm:translate-x-0 sm:w-72 lg:w-80`}
+          className={`w-64 sm:w-72 lg:w-80 p-6 bg-transparent border-none shadow-none transition-transform duration-300 sticky top-20 self-start sm:translate-x-0 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
+          }`}
         >
           <ShopFilters
             category={category}
@@ -66,7 +68,7 @@ export default function ShopPage() {
           />
         </div>
 
-        <div className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12 sm:ml-72 lg:ml-80">
+        <div className="flex-1 px-4 sm:pl-8 lg:pl-12">
           <div className="flex justify-between items-center mb-6">
             <Button
               variant="ghost"
@@ -96,7 +98,7 @@ export default function ShopPage() {
                         alt={product.name}
                         width={500}
                         height={500}
-                        className={`h-80 w-full transition-transform group-hover:scale-105 cursor-pointer`}
+                        className="h-80 w-full transition-transform group-hover:scale-105 cursor-pointer"
                         onClick={() => router.push(`/shop/${product.id}`)}
                       />
 
@@ -108,29 +110,22 @@ export default function ShopPage() {
                               : "Add to wishlist"
                           }
                           className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
-                          size={"icon"}
+                          size="icon"
                           onClick={() => {
-                            if (
-                              wishlist.some((item) => item.id === product.id)
-                            ) {
+                            if (wishlist.some((item) => item.id === product.id)) {
                               removeFromWishlist(product.id);
-                              toast.success(
-                                `${product.name} removed from wishlist!`
-                              );
+                              toast.success(`${product.name} removed from wishlist!`);
                             } else {
                               addToWishlist({ ...product, quantity: 1 });
-                              toast.success(
-                                `${product.name} added to wishlist!`
-                              );
+                              toast.success(`${product.name} added to wishlist!`);
                             }
                           }}
-                          hidden={cart.some((item) => item.id === product.id)}
                         >
                           <Heart
                             className={`h-6 w-6 ${
                               wishlist.some((item) => item.id === product.id)
                                 ? "fill-red-500 text-red-500"
-                                : " text-red-500"
+                                : "text-red-500"
                             }`}
                           />
                         </Button>

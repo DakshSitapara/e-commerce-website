@@ -67,7 +67,6 @@ export default function ProductPage() {
                     toast.success(`${product.name} added to wishlist!`);
                   }
                 }}
-                hidden={cart.some((item) => item.id === product.id)}
               >
                 <Heart
                   className={`h-10 w-10 ${
@@ -126,10 +125,6 @@ export default function ProductPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  if (wishlist.some((item) => item.id === product.id)) {
-                    removeFromWishlist(product.id);
-                    toast.success(`${product.name} removed from wishlist!`);
-                  }
                   addToCart({ ...product, quantity: selectedQuantity });
                   toast.success(`${product.name} added to cart!`);
                 }}
@@ -164,7 +159,7 @@ export default function ProductPage() {
                     onClick={() => router.push(`/shop/${similarProduct.id}`)}
                   />
                 </div>
-                {/* {currentUser && (
+                {currentUser && (
                     <Button
                       title={
                         wishlist.some((item) => item.id === similarProduct.id)
@@ -186,7 +181,6 @@ export default function ProductPage() {
                           );
                         }
                       }}
-                      hidden={cart.some((item) => item.id === similarProduct.id)}
                     >
                       <Heart
                         className={`h-10 w-10 ${wishlist.some((item) => item.id === similarProduct.id)
@@ -195,7 +189,7 @@ export default function ProductPage() {
                         }`}
                       />
                     </Button>
-                  )} */}
+                  )}
                 <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
                 <p className="text-lg font-semibold text-gray-800">
                   ₹{similarProduct.price}
