@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/userStore";
+import EmblaAutoScroll from "@/components/EmblaAutoScroll";
 import ShopNav from "@/components/ShopNav";
 import Footer from "@/components/footer";
 import ProductCarousel from "@/components/SlidingProduct";
@@ -84,56 +85,9 @@ export default function ShopPage() {
             <ProductCarousel />
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-6 sm:justify-between sm:flex-row sm:gap-8">
+          <div className="flex flex-row flex-wrap overflow-auto w-[1100px] gap-4">
             {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <Card
-                  key={product.id}
-                  className="min-w-[250px] max-w-[250px] flex-shrink-0 group overflow-hidden transition-all hover:shadow-xl py-0"
-                >
-                  <CardHeader className="p-0 gap-0">
-                    <div className="relative h-full w-full">
-                      <Image
-                        src={product.image || "/fallback.jpg"}
-                        alt={product.name}
-                        width={500}
-                        height={500}
-                        className="h-80 w-full transition-transform group-hover:scale-105 cursor-pointer"
-                        onClick={() => router.push(`/shop/${product.id}`)}
-                      />
-
-                      {currentUser && (
-                        <Button
-                          title={
-                            wishlist.some((item) => item.id === product.id)
-                              ? "Remove from wishlist"
-                              : "Add to wishlist"
-                          }
-                          className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
-                          size="icon"
-                          onClick={() => {
-                            if (wishlist.some((item) => item.id === product.id)) {
-                              removeFromWishlist(product.id);
-                              toast.success(`${product.name} removed from wishlist!`);
-                            } else {
-                              addToWishlist({ ...product, quantity: 1 });
-                              toast.success(`${product.name} added to wishlist!`);
-                            }
-                          }}
-                        >
-                          <Heart
-                            className={`h-6 w-6 ${
-                              wishlist.some((item) => item.id === product.id)
-                                ? "fill-red-500 text-red-500"
-                                : "text-red-500"
-                            }`}
-                          />
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))
+             <EmblaAutoScroll products={filteredProducts} />
             ) : (
               <div className="w-full font-black text-xl sm:text-2xl text-center">
                 No products found.
