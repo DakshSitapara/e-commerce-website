@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import ProductImage from "@/components/ProductImage";
 import ShopNav from "@/components/ShopNav";
 import Image from "next/image";
+import Footer from "@/components/footer";
+import ProductTabs from "@/components/ProductTabs";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -137,6 +139,7 @@ export default function ProductPage() {
           </div>
         </div>
       </main>
+      <ProductTabs product={product} />
       <div className="w-full space-y-6 p-6">
         <h3 className="text-2xl font-bold">Similar Products</h3>
         <div className="flex flex-wrap gap-6">
@@ -194,60 +197,11 @@ export default function ProductPage() {
                 <p className="text-lg font-semibold text-gray-800">
                   ₹{similarProduct.price}
                 </p>
-                {/* {quantity(similarProduct.id) > 0 ? (
-                    <div className="flex items-center justify-between w-auto border border-gray-300 rounded-md">
-                      {quantity(similarProduct.id) > 1 ? (
-                        <div className="flex items-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(similarProduct.id, quantity(similarProduct.id) - 1)}
-                            className="flex items-center justify-center hover:bg-transparent"
-                          >
-                            <Minus />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFromCart(similarProduct.id)}
-                          className="flex items-center justify-center hover:bg-transparent"
-                        >
-                          <Trash2 />
-                        </Button>
-                      )}
-                      <span className="mx-2">{quantity(similarProduct.id)}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => updateQuantity(similarProduct.id, quantity(similarProduct.id) + 1)}
-                        className="flex items-center justify-center hover:bg-transparent"
-                      >
-                        <Plus />
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        if (wishlist.some((item) => item.id === similarProduct.id)) {
-                          removeFromWishlist(similarProduct.id);
-                          toast.success(`${similarProduct.name} removed from wishlist!`);
-                        }
-                        addToCart({ ...similarProduct, quantity: 1 });
-                        toast.success(`${similarProduct.name} added to cart!`);
-                      }}
-                      className="bg-transparent"
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Add to Cart
-                    </Button>
-                  )} */}
               </div>
             ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
