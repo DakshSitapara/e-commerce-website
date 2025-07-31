@@ -28,11 +28,7 @@ export default function EmblaAutoScroll({ products }: Props) {
                 className="object-cover rounded-lg"
               />
             </div>
-            <div className="mt-2 text-center">
-              <p className="font-semibold">{product.name}</p>
-              <p className="text-sm text-gray-600">₹{product.price}</p>
-            </div>
-          </div>
+        </div>
         ))}
       </div>
     </div>

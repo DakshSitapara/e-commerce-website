@@ -2,42 +2,34 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { ShoppingCart, Heart, Menu } from "lucide-react";
-import { products, CategoryColor, TypeColor, Category, Type } from "@/lib/shop_data";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useUserStore } from "@/lib/userStore";
-import EmblaAutoScroll from "@/components/EmblaAutoScroll";
+import { Menu } from "lucide-react";
+import { products} from "@/lib/shop_data";
 import ShopNav from "@/components/ShopNav";
 import Footer from "@/components/footer";
+import EmblaAutoScroll from "@/components/EmblaAutoScroll";
 import ProductCarousel from "@/components/SlidingProduct";
 import ShopFilters from "@/components/filtere";
 
 export default function ShopPage() {
-  const router = useRouter();
-  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart, currentUser } = useUserStore();
-  const { cart, wishlist } = currentUser ?? { cart: [], wishlist: [] };
 
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const [type, setType] = useState("all");
+  const [category, setCategory] = useState<string[]>([]);
+  const [type, setType] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = category === "all" || product.category === category;
-    const matchesType = type === "all" || product.type === type;
+    const matchesCategory = category.length === 0 || category.includes(product.category);
+    const matchesType = type.length === 0 || type.includes(product.type);
     const matchesMinPrice = product.price >= priceRange[0];
     const matchesMaxPrice = product.price <= priceRange[1];
     return matchesSearch && matchesCategory && matchesType && matchesMinPrice && matchesMaxPrice;
   });
 
   const handleResetFilters = () => {
-    setCategory("all");
-    setType("all");
+    setCategory([]);
+    setType([]);
     setPriceRange([0, 1500]);
     setSearch("");
   };
@@ -52,8 +44,10 @@ export default function ShopPage() {
 
       <main className="mx-auto max-w-8xl px-4 pt-20 pb-8 flex flex-row">
         <div
-          className={`w-64 sm:w-72 lg:w-80 p-6 bg-transparent border-none shadow-none transition-transform duration-300 sticky top-20 self-start sm:translate-x-0 ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
+          className={`w-auto p-6 bg-transparent border-none shadow-none transition-transform duration-300 sticky top-20 self-start sm:translate-x-0 ${
+            isSidebarOpen
+              ? "translate-x-0"
+              : "-translate-x-full sm:translate-x-0"
           }`}
         >
           <ShopFilters
@@ -87,7 +81,7 @@ export default function ShopPage() {
 
           <div className="flex flex-row flex-wrap overflow-auto w-[1100px] gap-4">
             {filteredProducts.length > 0 ? (
-             <EmblaAutoScroll products={filteredProducts} />
+              <EmblaAutoScroll products={filteredProducts} />
             ) : (
               <div className="w-full font-black text-xl sm:text-2xl text-center">
                 No products found.
@@ -96,6 +90,7 @@ export default function ShopPage() {
           </div>
         </div>
       </main>
+
       <Footer />
     </div>
   );

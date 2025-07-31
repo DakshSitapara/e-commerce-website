@@ -2,17 +2,17 @@
 
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { RotateCw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Category, Type } from "@/lib/shop_data";
 
 type ShopFiltersProps = {
-  category: string;
-  setCategory: (value: string) => void;
-  type: string;
-  setType: (value: string) => void;
+  category: string[];
+  setCategory: (value: string[]) => void;
+  type: string[];
+  setType: (value: string[]) => void;
   priceRange: [number, number];
   setPriceRange: (value: [number, number]) => void;
   search: string;
@@ -44,9 +44,10 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
           <RotateCw className="h-4 w-4" />
         </Button>
       </h2>
-        <div className="flex flex-col gap-2">
+
+      <div className="flex flex-col gap-2">
         <label htmlFor="search" className="text-sm font-medium text-gray-700">
-          Search
+          Search :
         </label>
         <div className="relative">
           <Input
@@ -60,54 +61,64 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+
         <div className="flex flex-col gap-2">
           <label htmlFor="category" className="text-sm font-medium text-gray-700">
-            Category
+            Category :
           </label>
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger
-              id="category"
-              className="w-auto rounded-md border-none shadow-none"
-            >
-              <SelectValue placeholder="Select Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              {Object.values(Category).map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols gap-2">
+            {Category.map((cat) => (
+              <div key={cat} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`category-${cat}`}
+                  checked={category.includes(cat)}
+                  onCheckedChange={(checked) =>
+                    setCategory(
+                      checked
+                        ? [...category, cat]
+                        : category.filter((c: string) => c !== cat)
+                    )
+                  }
+                  className="border border-gray-300 bg-gray-50 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out"
+                />
+                <label htmlFor={`category-${cat}`} className="text-sm text-gray-700">
+                  {cat}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
+
         <div className="flex flex-col gap-2">
           <label htmlFor="type" className="text-sm font-medium text-gray-700">
-            Type
+            Type :
           </label>
-          <Select value={type} onValueChange={setType}>
-            <SelectTrigger
-              id="type"
-              className="w-auto rounded-md border-none shadow-none"
-            >
-              <SelectValue placeholder="Select Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              {Object.values(Type).map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols gap-2">
+            {Type.map((ty) => (
+              <div key={ty} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`type-${ty}`}
+                  checked={type.includes(ty)}
+                  onCheckedChange={(checked) =>
+                    setType(
+                      checked
+                        ? [...type, ty]
+                        : type.filter((t: string) => t !== ty)
+                    )
+                  }
+                  className="border border-gray-300 bg-gray-50 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in-out"
+                />
+                <label htmlFor={`type-${ty}`} className="text-sm text-gray-700">
+                  {ty}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
       <div className="flex flex-col gap-2">
         <label htmlFor="price-range" className="text-sm font-medium text-gray-700">
-          Price Range
+          Price Range :
         </label>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between text-sm text-gray-600">
