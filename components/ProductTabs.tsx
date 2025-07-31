@@ -21,7 +21,7 @@ export default function ProductTabs({ product }: { product: Product }) {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="mb-6 flex justify-center">
-        <div className="flex space-x-8 border-b">
+        <div className="flex space-x-8">
           {tabs.map((tab) => (
             <button
               key={tab}
