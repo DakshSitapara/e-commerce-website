@@ -14,9 +14,8 @@ import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 import { ShippingFormDialog, ShippingFormData } from "@/components/ShippingFormDialog";
 import { OrderDetailDialog } from "@/components/OrderDetailDialog";
-import { FcAddColumn, FcViewDetails } from "react-icons/fc";
+import { TiPlus } from "react-icons/ti";
 import { FaEdit, FaPlus } from "react-icons/fa";
-import { MdAddHomeWork } from "react-icons/md";
 import { AiFillDelete } from "react-icons/ai";
 import ShopNav from "@/components/ShopNav";
 
@@ -369,7 +368,7 @@ export default function AccountPage() {
                   }}
                   className="bg-transparent text-primary shadow-none hover:bg-gray-100 hover:text-primary"
                 >
-                  <MdAddHomeWork />
+                  <TiPlus />
                 </Button>
               </CardHeader>
               <CardContent>

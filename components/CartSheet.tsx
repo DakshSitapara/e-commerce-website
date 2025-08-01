@@ -48,10 +48,12 @@ export default function CartSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="relative bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
-          <ShoppingCart size={20} />
+        <Button className="relative bg-transparent border border-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
+          <div className="hover:scale-x-[-1] transition duration-300">
+            <ShoppingCart size={20} />
+          </div>
           {cart.length > 0 || guestCart.length > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 h-4 w-4 text-yellow-700 text-xs rounded-full flex items-center justify-center">
+            <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-amber-50 text-yellow-700 text-xs rounded-full flex items-center justify-center">
               {cart.length > 0 ? cart.length : guestCart.length}
             </span>
           ) : null}
@@ -148,7 +150,7 @@ export default function CartSheet() {
               ))}
             </div>
           )}
-       </div>
+        </div>
 
         {cart.length > 0 && (
           <SheetFooter className="pt-4 border-t mt-4">
@@ -168,7 +170,7 @@ export default function CartSheet() {
                   onClick={() => handleClearCart()}
                   className="flex-1"
                 >
-                <Trash2Icon className="mr-2 h-4 w-4" />
+                  <Trash2Icon className="mr-2 h-4 w-4" />
                   Clear
                 </Button>
                 <Button

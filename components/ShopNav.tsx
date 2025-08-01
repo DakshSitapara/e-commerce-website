@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";    
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, User, Heart } from "lucide-react";
+import Image from "next/image";
 import { useUserStore } from "@/lib/userStore";
 import Link from "next/link";
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
@@ -22,10 +23,10 @@ export default function ShopNav() {
 
     return (
       <div className="bg-[#131921] flex items-center justify-between h-16">
-        <h1 className="text-xl sm:text-2xl font-bold text-white hover:border hover:border-white">
+        <h1 className="text-xl sm:text-2xl font-bold border border-transparent text-white hover:border hover:border-white">
           <Link href="/shop">Shop</Link>
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           {/* <HoverCard>
             <HoverCardTrigger asChild>
               <Button
@@ -121,11 +122,13 @@ export default function ShopNav() {
               {currentUser && (
                 <Button
                   onClick={() => router.push("/wishlist")}
-                  className="relative bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
+                  className="relative bg-transparent border border-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
                 >
-                  <Heart size={20} />
+                  <div className="hover:scale-x-[-1] transition duration-300">
+                    <Heart />
+                  </div>
                   {wishlist.length > 0 ? (
-                    <span className="absolute -top-0.5 -right-0.5 h-4 w-4 text-yellow-700 text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-amber-50 text-yellow-700 text-xs rounded-full flex items-center justify-center">
                       {wishlist.length}
                     </span>
                   ) : (
@@ -145,10 +148,13 @@ export default function ShopNav() {
                 {wishlist.map((product: any) => (
                   <div key={product.id} className="flex items-center gap-4">
                     <div className="relative w-16 h-16 overflow-hidden rounded-md">
-                      <img
+                      <Image
                         src={product.image}
                         alt={product.name}
-                        className="object-cover w-full h-full"
+                        width={80}
+                        height={80}
+                        className="rounded-lg object-cover aspect-square"
+                        loader={() => product.image}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -192,16 +198,18 @@ export default function ShopNav() {
           {currentUser ? (
             <Button
               onClick={() => router.push("/account")}
-              className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
+              className="bg-transparent border border-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
             >
-              <User size={20} />
+              <div className="hover:scale-x-[-1] transition duration-300">
+                <User />
+              </div>
             </Button>
           ) : (
             <Button
               onClick={() => router.push("/login")}
-              className="bg-transparent border-none text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
+              className="bg-transparent border border-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
             >
-              <User size={20} />
+              <User />
             </Button>
           )}
         </div>
