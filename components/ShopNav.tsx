@@ -124,7 +124,6 @@ export default function ShopNav() {
                   className="relative bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
                 >
                   <Heart size={20} />
-                  Wishlist
                   {wishlist.length > 0 ? (
                     <span className="absolute -top-0.5 -right-0.5 h-4 w-4 text-yellow-700 text-xs rounded-full flex items-center justify-center">
                       {wishlist.length}
@@ -196,7 +195,6 @@ export default function ShopNav() {
               className="bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
             >
               <User size={20} />
-              Account
             </Button>
           ) : (
             <Button
@@ -204,7 +202,6 @@ export default function ShopNav() {
               className="bg-transparent border-none text-white hover:bg-transparent hover:text-white hover:border hover:border-white"
             >
               <User size={20} />
-              Login/Register
             </Button>
           )}
         </div>

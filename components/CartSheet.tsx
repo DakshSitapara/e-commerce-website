@@ -50,7 +50,6 @@ export default function CartSheet() {
       <SheetTrigger asChild>
         <Button className="relative bg-transparent text-white hover:bg-transparent hover:text-white hover:border hover:border-white">
           <ShoppingCart size={20} />
-          Cart
           {cart.length > 0 || guestCart.length > 0 ? (
             <span className="absolute -top-0.5 -right-0.5 h-4 w-4 text-yellow-700 text-xs rounded-full flex items-center justify-center">
               {cart.length > 0 ? cart.length : guestCart.length}
