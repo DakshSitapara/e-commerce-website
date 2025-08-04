@@ -83,7 +83,10 @@ export default function ProductTabs({ product }: { product: Product }) {
                   <span className="text-xs text-gray-500">01/01/2023</span>
                   <div className="flex">
                     {Array.from({ length: 4 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-500" />
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-yellow-500 text-yellow-500"
+                      />
                     ))}
                     <Star className="w-4 h-4 text-gray-300" />
                   </div>
@@ -103,7 +106,10 @@ export default function ProductTabs({ product }: { product: Product }) {
                   <span className="text-xs text-gray-500">02/02/2023</span>
                   <div className="flex">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-500" />
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-yellow-500 text-yellow-500"
+                      />
                     ))}
                   </div>
                 </div>
@@ -129,7 +135,7 @@ export default function ProductTabs({ product }: { product: Product }) {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className="w-6 h-6 text-gray-300 cursor-default"
+                        className="w-6 h-6 text-gray-300 cursor-pointer hover:fill-yellow-500 hover:text-yellow-500"
                       />
                     ))}
                   </div>
