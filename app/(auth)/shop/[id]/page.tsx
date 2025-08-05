@@ -97,7 +97,7 @@ export default function ProductPage() {
           </div>
           <p className="text-lg text-gray-600 flex items-center">
             {product.rating}
-            <Star className="h-4 w-4 text-yellow-400 ml-1" />
+            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 ml-1" />
           </p>
           <p className="text-lg text-gray-600">{product.description}</p>
 
