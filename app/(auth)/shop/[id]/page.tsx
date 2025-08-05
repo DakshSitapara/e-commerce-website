@@ -24,10 +24,24 @@ export default function ProductPage() {
 
   const [selectedQuantity, setSelectedQuantity] = React.useState(1);
 
-  const { addToCart, removeFromCart, addToWishlist, removeFromWishlist, currentUser , updateQuantity, quantity } = useUserStore();
+  const { addToCart, removeFromCart, addToWishlist, removeFromWishlist, currentUser, updateQuantity, quantity } = useUserStore();
 
   const cart = currentUser?.cart || [];
   const wishlist = currentUser?.wishlist || [];
+
+  const cartItem = cart.find((item) => item.id === product.id);
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+
+  const isAddToCartDisabled = cartQuantity + selectedQuantity > product.availableQuantity;
+
+  const handleAddToCart = () => {
+    if (isAddToCartDisabled) {
+      toast.error(`Cannot add more ${product.name}. Only ${product.availableQuantity - cartQuantity} items available.`);
+      return;
+    }
+    addToCart({ ...product, quantity: selectedQuantity });
+    toast.success(`${product.name} added to cart!`);
+  };
 
   if (!product) {
     return (
@@ -40,7 +54,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <nav className=" fixed top-0 z-10 w-full bg-zinc-900 shadow-md">
+      <nav className="fixed top-0 z-10 w-full bg-zinc-900 shadow-md">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <ShopNav />
         </div>
@@ -113,7 +127,7 @@ export default function ProductPage() {
                     <SelectValue placeholder={selectedQuantity.toString()} />
                   </SelectTrigger>
                   <SelectContent>
-                    {Array.from({ length: product.availableQuantity }, (_, i) =>
+                    {Array.from({ length: product.availableQuantity - cartQuantity }, (_, i) =>
                       (i + 1).toString()
                     ).map((num) => (
                       <SelectItem key={num} value={num}>
@@ -126,11 +140,9 @@ export default function ProductPage() {
 
               <Button
                 variant="outline"
-                onClick={() => {
-                  addToCart({ ...product, quantity: selectedQuantity });
-                  toast.success(`${product.name} added to cart!`);
-                }}
+                onClick={handleAddToCart}
                 className="bg-transparent"
+                disabled={isAddToCartDisabled}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 Add to Cart
@@ -163,36 +175,37 @@ export default function ProductPage() {
                   />
                 </div>
                 {currentUser && (
-                    <Button
-                      title={
-                        wishlist.some((item) => item.id === similarProduct.id)
-                          ? "Remove from wishlist"
-                          : "Add to wishlist"
+                  <Button
+                    title={
+                      wishlist.some((item) => item.id === similarProduct.id)
+                        ? "Remove from wishlist"
+                        : "Add to wishlist"
+                    }
+                    className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
+                    size={"icon"}
+                    onClick={() => {
+                      if (wishlist.some((item) => item.id === similarProduct.id)) {
+                        removeFromWishlist(similarProduct.id);
+                        toast.success(
+                          `${similarProduct.name} removed from wishlist!`
+                        );
+                      } else {
+                        addToWishlist({ ...similarProduct, quantity: 1 });
+                        toast.success(
+                          `${similarProduct.name} added to wishlist!`
+                        );
                       }
-                      className="absolute top-2 right-2 bg-transparent shadow-none hover:shadow-none hover:bg-transparent"
-                      size={"icon"}
-                      onClick={() => {
-                        if (wishlist.some((item) => item.id === similarProduct.id)) {
-                          removeFromWishlist(similarProduct.id);
-                          toast.success(
-                            `${similarProduct.name} removed from wishlist!`
-                          );
-                        } else {
-                          addToWishlist({...similarProduct, quantity: 1});
-                          toast.success(
-                            `${similarProduct.name} added to wishlist!`
-                          );
-                        }
-                      }}
-                    >
-                      <Heart
-                        className={`h-10 w-10 ${wishlist.some((item) => item.id === similarProduct.id)
+                    }}
+                  >
+                    <Heart
+                      className={`h-10 w-10 ${
+                        wishlist.some((item) => item.id === similarProduct.id)
                           ? "fill-red-500 text-red-500"
                           : " text-red-500"
-                        }`}
-                      />
-                    </Button>
-                  )}
+                      }`}
+                    />
+                  </Button>
+                )}
                 <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
                 <p className="text-lg font-semibold text-gray-800">
                   ₹{similarProduct.price}

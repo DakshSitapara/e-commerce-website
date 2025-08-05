@@ -15,19 +15,18 @@ import {
   CreditCardIcon,
   Minus,
   Plus,
-  RotateCw,
-  Trash2,
-  Trash2Icon,
   ShoppingBag,
   ShoppingCart,
   X,
+  Trash2Icon
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { CategoryColor, TypeColor } from "@/lib/shop_data";
+import { CategoryColor, TypeColor, products } from "@/lib/shop_data";
 import { useUserStore } from "@/lib/userStore";
 import toast from "react-hot-toast";
 
 export default function CartSheet() {
+
   const router = useRouter();
   const {
     removeFromCart,
@@ -37,12 +36,25 @@ export default function CartSheet() {
     updateQuantity,
     gusteUser,
   } = useUserStore();
+
   const { cart: guestCart } = gusteUser ?? { cart: [] };
   const { cart } = currentUser ? currentUser : gusteUser ?? { cart: [] };
 
   const handleClearCart = () => {
     clearCart();
     toast.success("Cart cleared!");
+  };
+
+  const handleUpdateQuantity = (productId: number, newQuantity: number) => {
+    const product = products.find((p) => p.id === productId);
+    const availableQuantity = product?.availableQuantity || 0;
+    if (newQuantity > availableQuantity) {
+      toast.error(`Cannot add more ${product?.name}. Only ${availableQuantity} items available.`);
+      return;
+    }
+    if (newQuantity >= 1) {
+      updateQuantity(productId, newQuantity);
+    }
   };
 
   return (
@@ -78,76 +90,82 @@ export default function CartSheet() {
             </div>
           ) : (
             <div className="space-y-4 px-2">
-              {cart.map((product, index) => (
-                <div
-                  key={product.id}
-                  className={`flex gap-4 pb-4 border-b border-gray-200 ${
-                    index === cart.length - 1 ? "border-none" : ""
-                  }`}
-                >
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={80}
-                    height={80}
-                    className="rounded-lg object-cover aspect-square"
-                    loader={() => product.image}
-                  />
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div className="flex justify-between items-center">
-                      <h1 className="font-semibold text-lg text-gray-800">
-                        {product.name}
-                      </h1>
-                      <Button
-                        title="Remove from Cart"
-                        variant="link"
-                        size="sm"
-                        className="text-xs text-red-600 hover:animate-pulse transition-colors"
-                        onClick={() => removeFromCart(product.id)}
-                      >
-                        <X size={14} />
-                      </Button>
-                    </div>
+              {cart.map((product, index) => {
+                const availableQuantity = products.find((p) => p.id === product.id)?.availableQuantity || 0;
+                const isIncreaseDisabled = quantity(product.id) >= availableQuantity;
 
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col items-start gap-1">
-                        <span className="text-sm font-medium text-gray-600">
-                          Price: ₹{product.price}
-                        </span>
-                        <span className="text-sm font-medium text-gray-600">
-                          Total: ₹{product.price * quantity(product.id)}
-                        </span>
+                return (
+                  <div
+                    key={product.id}
+                    className={`flex gap-4 pb-4 border-b border-gray-200 ${
+                      index === cart.length - 1 ? "border-none" : ""
+                    }`}
+                  >
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={80}
+                      height={80}
+                      className="rounded-lg object-cover aspect-square"
+                      loader={() => product.image}
+                    />
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="flex justify-between items-center">
+                        <h1 className="font-semibold text-lg text-gray-800">
+                          {product.name}<span className="text-sm text-gray-400"> x {quantity(product.id)}</span>
+                        </h1>
+                        <Button
+                          title="Remove from Cart"
+                          variant="link"
+                          size="sm"
+                          className="text-xs text-red-600 hover:animate-pulse transition-colors"
+                          onClick={() => removeFromCart(product.id)}
+                        >
+                          <X size={14} />
+                        </Button>
                       </div>
-                      <div className="flex items-center border border-gray-300 rounded-full overflow-hidden">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity(product.id) - 1)
-                          }
-                          className="px-2"
-                          disabled={quantity(product.id) <= 1}
-                        >
-                          <Minus size={14} />
-                        </Button>
-                        <span className="text-sm px-3 text-gray-700">
-                          {quantity(product.id)}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity(product.id) + 1)
-                          }
-                          className="px-2"
-                        >
-                          <Plus size={14} />
-                        </Button>
+
+                      <div className="flex justify-between items-center">
+                        <div className="flex flex-col items-start gap-1">
+                          <span className="text-sm font-medium text-gray-600">
+                            Price: ₹{product.price}
+                          </span>
+                          <span className="text-sm font-medium text-gray-600">
+                            Total: ₹{product.price * quantity(product.id)}
+                          </span>
+                        </div>
+                        <div className="flex items-center border border-gray-300 rounded-full overflow-hidden">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleUpdateQuantity(product.id, quantity(product.id) - 1)
+                            }
+                            className="px-2"
+                            disabled={quantity(product.id) <= 1}
+                          >
+                            <Minus size={14} />
+                          </Button>
+                          <span className="text-sm px-3 text-gray-700">
+                            {quantity(product.id)}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleUpdateQuantity(product.id, quantity(product.id) + 1)
+                            }
+                            className="px-2"
+                            disabled={isIncreaseDisabled}
+                          >
+                            <Plus size={14} />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
