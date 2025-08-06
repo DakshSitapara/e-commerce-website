@@ -36,15 +36,10 @@ const Header = () => (
         <span className="text-indigo-400">{BRAND_NAME.slice(0, 5)}</span>
         <span>{BRAND_NAME.slice(5)}</span>
       </Link>
-      <div className="hidden items-center gap-10 text-sm font-medium md:flex">
-        <Link href="/shop" className="relative text-gray-300 transition-colors hover:text-indigo-400 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-indigo-400 after:transition-all hover:after:w-full">Shop</Link>
-        <Link href="/categories" className="relative text-gray-300 transition-colors hover:text-indigo-400 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-indigo-400 after:transition-all hover:after:w-full">Categories</Link>
-        <Link href="/about" className="relative text-gray-300 transition-colors hover:text-indigo-400 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-indigo-400 after:transition-all hover:after:w-full">About Us</Link>
-      </div>
       <div className="flex items-center gap-3">
         <Link href="/login" passHref><Button variant="ghost" className="text-gray-300 hover:text-indigo-400">Log In</Button></Link>
         <Link href="/register" passHref><Button className="bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg transition-all duration-300 hover:shadow-indigo-400/50">Register</Button></Link>
-        <Link href="/cart" passHref><Button variant="outline" size="icon" className="border-indigo-500/50 text-gray-300 hover:bg-indigo-900/50"><ShoppingCart className="h-5 w-5" /></Button></Link>
+        <Link href="/cart" passHref><Button variant="ghost" className="border-indigo-500/50 hover:bg-indigo-900/50 transition-colors duration-300"><ShoppingCart className="h-5 w-5" /></Button></Link>
       </div>
     </nav>
   </header>
@@ -273,15 +268,15 @@ const TestimonialsSection = () => (
         <figcaption className="mt-10">
           <div className="relative mx-auto h-14 w-14 rounded-full ring-2 ring-indigo-400 ring-offset-2 overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+              src="https://github.com/shadcn.png"
               alt="Customer"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
             />
             <div className="absolute inset-0 bg-indigo-500/20 mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-500" />
           </div>
           <div className="mt-4 flex flex-col items-center justify-center text-base">
-            <div className="font-semibold text-white">Priya Sharma</div>
-            <div className="text-gray-300">Loyal Customer</div>
+            <div className="font-semibold text-white">XYZ ABC</div>
+            <div className="text-gray-300">Loyal customer</div>
           </div>
         </figcaption>
       </motion.figure>
