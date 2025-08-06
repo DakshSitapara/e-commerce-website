@@ -1,6 +1,6 @@
 # 🛒 E-Commerce Website
 
-A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Zustand**, and **ShadCN UI**. This project demonstrates best practices in frontend development with clean architecture, reusable components, and seamless UI/UX design.
+A modern, responsive e-commerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Zustand**, and **ShadCN UI**. This project showcases best practices in frontend development, featuring clean architecture, reusable components, and a seamless UI/UX design.
 
 ![Next.js](https://img.shields.io/badge/Next.js-15.x-000000.svg?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?style=flat-square&logo=typescript)
@@ -13,7 +13,6 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 ![Lint-Staged](https://img.shields.io/badge/Lint--Staged-13.x-000000.svg?style=flat-square)
 ![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000.svg?style=flat-square&logo=vercel)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)
-
 
 ---
 
@@ -44,16 +43,15 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 
 ## ✨ Features
 
-- ⚡️ Fast and optimized with Next.js App Router  
-- 💡 Type-safe components with TypeScript  
-- 💅 Beautiful, responsive design with Tailwind CSS  
-- 🧩 Reusable UI components from ShadCN  
-- 🔍 Product listing, filtering, and detailed views  
-- 🛍️ Shopping cart (add/remove items)  
-- 📦 Modular structure for scalability  
+- ⚡️ Fast and optimized with Next.js App Router
+- 💡 Type-safe components with TypeScript
+- 💅 Beautiful, responsive design with Tailwind CSS
+- 🧩 Reusable UI components from ShadCN
+- 🔍 Product listing, filtering, and detailed views
+- 🛍️ Shopping cart (add/remove items)
+- 📦 Modular structure for scalability
 
 ---
-
 
 ## 🧱 Folder Structure
 
@@ -77,9 +75,9 @@ A modern, responsive e-commerce web application built with **Next.js**, **TypeSc
 
 ### Prerequisites
 
-- Node.js ≥ 18  
-- pnpm (preferred), npm, yarn, or bun  
-- (Optional) Stripe key or mock payment setup  
+- Node.js ≥ 18
+- pnpm (preferred), npm, yarn, or bun
+- (Optional) Stripe key or mock payment setup
 
 ### Installation
 
@@ -147,8 +145,9 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 **Daksh Sitapara**  
 - GitHub: [@DakshSitapara](https://github.com/DakshSitapara)  
-- LinkedIn: [Daksh Sitapara](www.linkedin.com/in/daksh-sitapara-02b06b288)
+- LinkedIn: [Daksh Sitapara](https://www.linkedin.com/in/daksh-sitapara-02b06b288)
 
 ---
 
-> Built with using Next.js, TypeScript, Tailwind CSS, and ShadCN UI.
+> Built with Next.js, TypeScript, Tailwind CSS, and ShadCN UI.
+
