@@ -22,9 +22,9 @@ const Footer = () => {
   };
   
   return (
-    <div className="py-10 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-gray-100 text-sm mt-5">
-      <div className="flex flex-col md:flex-row justify-between gap-24">
-        <div className="hidden lg:flex justify-between w-full">
+    <div className="py-10 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 bg-gray-100 text-sm mt-5">
+      <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row 2xl:flex-row justify-between gap-24 sm:gap-12 md:gap-16 lg:gap-24 xl:gap-32 2xl:gap-48">
+        <div className="hidden lg:flex justify-between w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6">
           <div className="flex flex-col">
             <h1 className="font-medium text-lg">COMPANY</h1>
             <div className="flex flex-col gap-2">
@@ -65,7 +65,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-1/2 lg:w-1/4 flex flex-col gap-2">
+        <div className="flex flex-col gap-2 sm:w-1/2 md:w-2/3 lg:w-3/4 xl:w-4/5 2xl:w-5/6">
           <h1 className="font-medium text-lg">SUBSCRIBE</h1>
           <p>
             Be the first to get the latest news about trends, promotions, and
@@ -90,9 +90,9 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-1 mt-16 text-center text-sm text-muted-foreground">
-        &copy; 2025. All rights reserved. By continuing to use this website, you agree to our 
-        <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Terms of Service</a> 
-        and 
+        &copy; 2025. All rights reserved. By continuing to use this website, you agree to our
+        <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Terms of Service</a>
+        and
         <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Privacy Policy</a>.
       </div>
     </div>
