@@ -121,6 +121,58 @@ export const products: Product[] = [
     description:
       "These are high-quality jeans for women made from durable and comfortable fabric. They have a modern design and are suitable for formal wear.",
   },
+  {
+    id: 9,
+    name: "Men's Shirt",
+    image:
+      "https://images.unsplash.com/photo-1477345576052-7c9d1f8b0d7a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    price: 1499,
+    rating: 4.9,
+    category: "Men",
+    type: "Shirt",
+    availableQuantity: 2,
+    description:
+      "This is a high-quality shirt for men made from durable and comfortable materials. It has a modern design and is suitable for formal wear.",
+  },
+  {
+    id: 10,
+    name: "Women's Shirt",
+    image:
+      "https://images.unsplash.com/photo-1551115771-0c4d7d70d99e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    price: 1999,
+    rating: 4.8,
+    category: "Women",
+    type: "Shirt",
+    availableQuantity: 1,
+    description:
+      "This is a high-quality shirt for women made from durable and comfortable materials. It has a modern design and is suitable for formal wear.",
+  },
+  {
+    id: 11,
+    name: "Kids' T-Shirt",
+    image:
+      "https://images.unsplash.com/photo-1637069585336-827b298fe84a?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    price: 249,
+    rating: 4.4,
+    category: "Kids",
+    type: "T-Shirt",
+    availableQuantity: 4,
+    description:
+      "This is a high-quality T-shirt for kids made from durable and comfortable materials. It has a classic design and is suitable for casual wear.",
+  },
+  {
+    id: 12,
+    name: "Men's Hoodie",
+    image:
+      "https://images.unsplash.com/photo-1602810310375-69f3d31dce27?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    price: 899,
+    rating: 4.7,
+    category: "Men",
+    type: "T-Shirt",
+    availableQuantity: 5,
+    description:
+      "This is a comfortable and stylish unisex hoodie, perfect for casual wear. Made from soft and durable materials to ensure long-lasting comfort.",
+  }
 ];
 
   const getCategoryColor = (category : string) => {
