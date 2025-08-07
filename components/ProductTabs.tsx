@@ -30,15 +30,15 @@ export default function ProductTabs({ product }: { product: Product }) {
   const [rating, setRating] = useState(0);
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 py-8">
       <div className="mb-6 flex justify-center">
-        <div className="flex space-x-8 border-t border-b w-full items-center justify-center">
+        <div className="flex space-x-4 sm:space-x-6 md:space-x-8 border-t border-b w-full items-center justify-center">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "py-2 text-base font-medium transition-all duration-300 ease-in-out",
+                "py-2 text-sm sm:text-base font-medium transition-all duration-300 ease-in-out",
                 activeTab === tab
                   ? " text-black scale-110"
                   : " text-gray-500 hover:text-primary hover:scale-110 transform duration-300 ease-in-out transition-all"
@@ -52,7 +52,7 @@ export default function ProductTabs({ product }: { product: Product }) {
 
       <div className="mt-6">
         {activeTab === "Product Info" && (
-          <div className="space-y-4 max-w-4xl mx-auto">
+          <div className="space-y-4 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto">
             <div className="flex flex-wrap gap-2">
               <p className="px-2 py-1 bg-primary text-white rounded-full">
                 {product.category}
@@ -61,35 +61,34 @@ export default function ProductTabs({ product }: { product: Product }) {
                 {product.type}
               </p>
             </div>
-            <p className="text-lg text-gray-600">{product.description}</p>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600">{product.description}</p>
           </div>
         )}
 
         {activeTab === "Reviews" && (
-          <div className="space-y-6 max-w-4xl mx-auto">
+          <div className="space-y-6 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto">
             <div className="flex items-center space-x-1">
-              <FaStar className="w-5 h-5 fill-yellow-500" />
-              <FaStar className="w-5 h-5 fill-yellow-500" />
-              <FaStar className="w-5 h-5 fill-yellow-500" />
-              <FaStar className="w-5 h-5 fill-yellow-500" />
+              <FaStar className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-500" />
+              <FaStar className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-500" />
+              <FaStar className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-500" />
+              <FaStar className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-500" />
               {product.rating > 4 ? (
-                <FaStarHalf className="w-5 h-5 fill-yellow-500" />
+                <FaStarHalf className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-500" />
               ) : (
-                <Star className="w-5 h-5 text-gray-300" />
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
               )}
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs sm:text-sm text-muted-foreground">
                 ({product.rating} based on 102 reviews)
               </span>
             </div>
             <div className="space-y-4">
               <div className="p-4 flex justify-between">
-                <div className="flex items-center space-x-4">
-                  <User className="w-12 h-12" />
+                <div className="flex items-center space-x-2 sm:space-x-4">
+                  <User className="w-10 h-10 sm:w-12 sm:h-12" />
                   <div>
                     <p className="font-semibold">John Doe</p>
-                    <p className="text-sm text-muted-foreground">
-                      "Amazing product quality and fast delivery. Highly
-                      recommend!"
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      "Amazing product quality and fast delivery. Highly recommend!"
                     </p>
                   </div>
                 </div>
@@ -99,20 +98,20 @@ export default function ProductTabs({ product }: { product: Product }) {
                     {Array.from({ length: 4 }).map((_, i) => (
                       <Star
                         key={i}
-                        className="w-4 h-4 fill-yellow-500 text-yellow-500"
+                        className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-500 text-yellow-500"
                       />
                     ))}
-                    <Star className="w-4 h-4 text-gray-300" />
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-gray-300" />
                   </div>
                 </div>
               </div>
               <section className="border-t" />
               <div className="p-4 flex justify-between">
-                <div className="flex items-center space-x-4">
-                  <User className="w-12 h-12" />
+                <div className="flex items-center space-x-2 sm:space-x-4">
+                  <User className="w-10 h-10 sm:w-12 sm:h-12" />
                   <div>
                     <p className="font-semibold">Jane Smith</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       "Perfect fit and beautiful design. Will buy again."
                     </p>
                   </div>
@@ -123,7 +122,7 @@ export default function ProductTabs({ product }: { product: Product }) {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className="w-4 h-4 fill-yellow-500 text-yellow-500"
+                        className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-500 text-yellow-500"
                       />
                     ))}
                   </div>
@@ -131,13 +130,13 @@ export default function ProductTabs({ product }: { product: Product }) {
               </div>
             </div>
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4 underline">
+              <h3 className="text-base sm:text-lg font-semibold mb-4 underline">
                 Write a Review
               </h3>
               <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                 <Textarea
                   placeholder="Share your thoughts about the product..."
-                  className="w-full min-h-[100px]"
+                  className="w-full min-h-[80px] sm:min-h-[100px]"
                 />
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -165,41 +164,41 @@ export default function ProductTabs({ product }: { product: Product }) {
         )}
 
         {activeTab === "Share" && (
-          <div className="flex items-center justify-center space-x-4 mt-2 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-2 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto">
             <Button
               type="button"
               variant="ghost"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-600 p-2 transition duration-150 ease-in-out"
             >
-              <FaFacebook className="w-5 h-5" />
+              <FaFacebook className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               className="flex items-center space-x-2 text-black p-2 transition duration-150 ease-in-out"
             >
-              <BsTwitterX className="w-5 h-5" />
+              <BsTwitterX className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               className="flex items-center space-x-2 p-2 transition duration-150 ease-in-out"
             >
-              <FcGoogle className="w-5 h-5" />
+              <FcGoogle className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               className="flex items-center space-x-2 text-green-500 hover:text-green-500 p-2 transition duration-150 ease-in-out"
             >
-              <IoLogoWhatsapp className="w-5 h-5" />
+              <IoLogoWhatsapp className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               className="flex items-center space-x-2 text-red-600 hover:text-red-600 p-2 transition duration-150 ease-in-out"
             >
-              <FaPinterest className="w-5 h-5" />
+              <FaPinterest className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         )}

@@ -97,26 +97,26 @@ export default function ProductPage() {
         </div>
 
         <div className="w-full lg:w-1/2 space-y-6">
-          <h2 className="text-3xl font-bold">{product.name}</h2>
-          <p className="text-2xl font-semibold text-gray-800">
+          <h2 className="text-3xl font-bold md:text-4xl">{product.name}</h2>
+          <p className="text-2xl font-semibold text-gray-800 md:text-3xl">
             ₹{product.price}
           </p>
-          <div className="flex flex-wrap space-x-2">
-            <Badge className={`${CategoryColor(product.category)}`}>
+          <div className="flex flex-wrap space-x-2 md:space-x-4">
+            <Badge className={`${CategoryColor(product.category)} md:px-4`}>
               {product.category}
             </Badge>
-            <Badge className={`${TypeColor(product.type)}`}>
+            <Badge className={`${TypeColor(product.type)} md:px-4`}>
               {product.type}
             </Badge>
           </div>
-          <p className="text-lg text-gray-600 flex items-center">
+          <p className="text-lg text-gray-600 flex items-center md:text-xl">
             {product.rating}
-            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 ml-1" />
+            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 ml-1 md:ml-2" />
           </p>
-          <p className="text-lg text-gray-600">{product.description}</p>
+          <p className="text-lg text-gray-600 md:text-xl">{product.description}</p>
 
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <p className="text-lg">Quantity:</p>
                 <Select
@@ -154,7 +154,7 @@ export default function ProductPage() {
       <ProductTabs product={product} />
       <div className="w-full space-y-6 p-6">
         <h3 className="text-2xl font-bold">Similar Products</h3>
-        <div className="flex flex-wrap gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products
             .filter(
               (p) => p.category === product.category && p.id !== product.id
@@ -162,7 +162,7 @@ export default function ProductPage() {
             .map((similarProduct) => (
               <div
                 key={similarProduct.id}
-                className="relative flex flex-col items-center w-1/2 lg:w-1/4 space-y-2"
+                className="relative flex flex-col items-center space-y-2"
               >
                 <div className="relative w-full aspect-square overflow-hidden rounded-lg shadow">
                   <Image
@@ -206,8 +206,8 @@ export default function ProductPage() {
                     />
                   </Button>
                 )}
-                <h4 className="text-lg font-semibold">{similarProduct.name}</h4>
-                <p className="text-lg font-semibold text-gray-800">
+                <h4 className="text-lg font-semibold text-center">{similarProduct.name}</h4>
+                <p className="text-lg font-semibold text-gray-800 text-center">
                   ₹{similarProduct.price}
                 </p>
               </div>

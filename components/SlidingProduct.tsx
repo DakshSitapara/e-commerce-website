@@ -44,7 +44,7 @@ export default function ProductCarousel() {
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
                     {product.name}
                   </h2>
-                  <p className="text-gray-600 mb-4 text-sm">
+                  <p className="text-gray-600 mb-4 text-sm text-justify">
                     {product.description}
                   </p>
                   <div className="flex items-center justify-between gap-4 mb-2">
