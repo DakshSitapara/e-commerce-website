@@ -1,94 +1,148 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import React from "react";
 import Link from "next/link";
-import toast from "react-hot-toast";
-import { FaGithub,FaLinkedin } from "react-icons/fa";
-import { SiGmail } from "react-icons/si";
-import { FaXTwitter } from "react-icons/fa6";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { FcGoogle } from "react-icons/fc";
+import { FaPinterest } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
+import { FaFacebook } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa";
+import { MdEmail, MdLocationOn } from "react-icons/md";
 
 const Footer = () => {
-  const [email, setEmail] = useState("");
-
-  const handleJoin = () => {
-    if (email.trim() === "") {
-      toast.error("Please enter a valid email.");
-      return;
-    }
-    toast.success("Thank you for subscribing!");
-    setEmail("");
-  };
-  
   return (
-    <footer className="py-10 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 bg-gray-100 text-sm mt-5">
-      <div className="flex flex-col lg:flex-row gap-24 sm:gap-12 md:gap-16 lg:gap-24 xl:gap-32 2xl:gap-48">
-        <div className="hidden lg:flex justify-between w-full gap-8 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 2xl:w-1/6">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-medium text-lg">COMPANY</h1>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">About Us</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Careers</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Affiliates</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Blog</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Contact Us</Link>
+    <>
+    <Image
+      src="https://crafthica-nextjs.vercel.app/_next/image?url=%2Fimages%2Ffooter-shape.png&w=3840&q=75"
+      alt="Image of footer shape"
+      width={3840}
+      height={2160}
+      className="w-auto h-auto"
+    />
+    <footer className="bg-[#FBF0DF] text-gray-700 py-16 px-4 sm:px-6 lg:px-16 relative">
+      <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+        <div className="lg:col-span-1 flex flex-col gap-5">
+          <Link href="#">
+            <h1 className="text-3xl font-bold text-gray-800">Fashionista</h1>
+          </Link>
+          <p className="text-sm">
+            Discover the latest trends in fashion with our exclusive clothing
+            collections.
+          </p>
+          <div className="flex items-center justify-start">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center space-x-2 text-blue-600 hover:text-blue-600 p-2 transition duration-150 ease-in-out"
+            >
+              <FaFacebook className="w-5 h-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center space-x-2 text-black p-2 transition duration-150 ease-in-out"
+            >
+              <BsTwitterX className="w-5 h-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center space-x-2 p-2 transition duration-150 ease-in-out"
+            >
+              <FcGoogle className="w-5 h-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center space-x-2 text-green-500 hover:text-green-500 p-2 transition duration-150 ease-in-out"
+            >
+              <IoLogoWhatsapp className="w-5 h-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center space-x-2 text-red-600 hover:text-red-600 p-2 transition duration-150 ease-in-out"
+            >
+              <FaPinterest className="w-5 h-5" />
+            </Button>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <h1 className="font-medium text-lg">SHOP</h1>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">New Arrivals</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Men</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Women</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Kid</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">All Products</Link>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <h1 className="font-medium text-lg">HELP</h1>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Customer Service</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">My Account</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Find a Store</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Legal & Privacy</Link>
-            <Link href="" className="hover:scale-105 duration-200 transition-all">Gift Card</Link>
-          </div>
+          <p className="text-xs  text-gray-500">
+            © 2025 Fashionista, Inc. All rights reserved.
+          </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-24 sm:gap-12 md:gap-16 lg:gap-24 xl:gap-32 2xl:gap-48">
-          <div className="flex flex-col gap-2 sm:w-1/2 md:w-2/3 lg:w-3/4 xl:w-4/5 2xl:w-5/6">
-            <h1 className="font-medium text-lg">SUBSCRIBE</h1>
-            <p>
-              Be the first to get the latest news about trends, promotions, and
-              much more!
-            </p>
-            <div className="flex">
-              <Input
-                type="text"
-                placeholder="Email address"
-                className="p-0 border-none shadow-none"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Button
-                className="bg-transparent text-black shadow-none hover:bg-[#131921] hover:text-white"
-                onClick={handleJoin}
-              >
-                JOIN
-              </Button>
-            </div>
-          </div>
+        <div className="flex flex-col gap-2">
+          <h3 className="font-bold text-lg text-gray-800">Shop</h3>
+          <Link href="/shop" className="hover:underline">
+            <span className="text-gray-600">New Arrivals</span>
+          </Link>
+          <Link href="/shop" className="hover:underline">
+            <span className="text-gray-600">Best Sellers</span>
+          </Link>
+          <Link href="/shop" className="hover:underline">
+            <span className="text-gray-600">Men</span>
+          </Link>
+          <Link href="/shop" className="hover:underline">
+            <span className="text-gray-600">Women</span>
+          </Link>
+          <Link href="/shop" className="hover:underline">
+            <span className="text-gray-600">Kids</span>
+          </Link>
+        </div>
 
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold">Secure Payments</span>
-            <div className="flex items-center gap-1 mt-2 text-center text-sm text-muted-foreground">
-              &copy; 2025. All rights reserved. By continuing to use this website, you agree to our
-              <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Terms of Service</a>
-              and
-              <a href="#" className="hover:text-primary underline underline-offset-4 text-blue-500">Privacy Policy</a>.
-            </div>
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold text-lg text-gray-800">Customer Care</h3>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Help & Support</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Returns & Exchanges</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Shipping Information</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Track Order</span>
+          </Link>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold text-lg text-gray-800">Company</h3>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">About Us</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Careers</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Press</span>
+          </Link>
+          <Link href="#" className="hover:underline">
+            <span className="text-gray-600">Sustainability</span>
+          </Link>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold text-lg text-gray-800">Contact</h3>
+          <div className="flex items-center gap-3">
+            <FaPhoneAlt className="text-gray-600" />
+            <span>+1234 567 890</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <MdEmail className="text-gray-600" />
+            <span>support@fashionista.com</span>
+          </div>
+          <div className="flex items-start gap-3">
+            <MdLocationOn className="text-gray-600 mt-1 flex-shrink-0" />
+            <span>456 Fashion Avenue, Style City, Country</span>
           </div>
         </div>
       </div>
     </footer>
+    </>
   );
 };
 
