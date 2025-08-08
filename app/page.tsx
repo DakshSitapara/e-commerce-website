@@ -11,7 +11,6 @@ import { useUserStore } from '@/lib/userStore';
 import EmblaAutoScroll from '@/components/EmblaAutoScroll';
 import Footer from '@/components/footer';
 
-const BRAND_NAME = 'E-COMMERCE STORE';
 const featuredProducts = products.slice(0, 12);
 
 const HomePage: React.FC = () => (
@@ -33,8 +32,11 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-amber-200/50 shadow-sm">
       <nav className="container flex items-center justify-between px-4 py-3 md:py-4 lg:px-8">
-        <Link href="/" className="text-2xl lg:text-3xl font-extrabold text-amber-600 hover:text-amber-700 transition-colors">
-          {BRAND_NAME}
+        <Link
+          href="/"
+          className="text-2xl lg:text-3xl font-extrabold text-amber-600 hover:text-amber-700 transition-colors duration-300 ease-in-out flex items-center gap-2"
+          >
+          Fashionista
         </Link>
         <div className="flex items-center gap-3 md:gap-5">
           <Button asChild className="bg-amber-600 hover:bg-amber-700 text-white rounded-full shadow-md">
@@ -46,10 +48,12 @@ const Header: React.FC = () => {
             <Button
               variant="ghost"
               asChild
-              className="text-gray-700 hover:text-amber-600 flex items-center gap-2 font-medium transition"
+              className="group text-gray-700 hover:text-amber-600 flex items-center gap-2 font-medium transition"
             >
               <Link href={currentUser ? "/account" : "/login"}>
+              <div className='group-hover:scale-x-[-1] transition-transform'>
                 <User className="h-5 w-5" />
+              </div>
                 <span>{currentUser ? currentUser.name : 'Login / Register'}</span>
               </Link>
             </Button>
